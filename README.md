@@ -1,7 +1,7 @@
 # nextprot-js
 A JavaScript Library that communicates with the neXtProt api
 
-This is highly under development, it is not a stable version!!!
+This is highly under development, it is not a stable version!
 
 ##To read:
 
