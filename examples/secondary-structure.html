@@ -1,0 +1,75 @@
+<html>
+<head>
+  <title>neXtProt secondary structure</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://research-pub.gene.com/pviz/examples/deps/pviz-core.css">
+  <script src="http://research-pub.gene.com/pviz/examples/deps/pviz-bundle.min.js"></script>
+  <script src="../nextprot.js"></script>
+</head>
+<body class="container">
+
+  <h2><span id="entryName"></span></h2>
+  <h5>Gene name: <span id="geneName"></span></h4>
+  <h5>Evidence: <span id="proteinEvidence"></span></h4>
+
+  <!-- min-width is for http://bl.ocks.org/ iframe (doc width sometimes 0 at init time)-->
+  <div id="main" class="row" style="width:720px; height:200px;"></div>
+  <h5>Sequence (<span id="sequenceLength"></span>) :</h5>
+  <textarea disabled id="sequence" rows="6" cols="100" style="font-size: 12px;"></textarea>
+  <h5>Secondary strucutre features number: (<span id="numberOfFeatures"></span>)</h5>
+
+  <script class="example">
+  var pviz = this.pviz;
+
+
+  nx.getProteinOverview(function (overview){
+    $("#entryName").text(overview.proteinNames[0].synonymName);
+    $("#geneName").text(overview.geneNames[0].synonymName);
+    $("#proteinEvidence").text(overview.history.proteinExistence);
+  });
+
+  nx.getProteinSequence(function (sequence){
+
+    $("#sequence").text(sequence);
+    $("#sequenceLength").text(sequence.length);
+
+    var seq = sequence;
+    var seqEntry = new pviz.SeqEntry({
+      sequence : seq
+    });
+
+    var view = new pviz.SeqEntryAnnotInteractiveView({
+      model : seqEntry,
+      el : '#main',
+    })
+
+    //Setting secondary structure
+    nx.getSecondaryStructure(function (annotations){
+      var features = [];
+      $("#numberOfFeatures").text(annotations.length);
+      annotations.forEach(function(annot){
+        var isoform1 = nx.getEntryName() + "-1";
+        features.push({
+          category: 'secondary structure',
+          type: (annot.category === "beta strand") ? "beta_strand" : annot.category ,
+          start: annot.targetingIsoformsMap[isoform1].firstPosition,
+          end: annot.targetingIsoformsMap[isoform1].lastPosition
+        });
+      });
+
+      //Adding features
+      seqEntry.addFeatures(features);
+    })
+
+    //Render at the end
+    view.render();
+
+
+
+  });
+
+
+  </script>
+
+</body>
+</html>
