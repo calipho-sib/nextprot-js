@@ -7,7 +7,7 @@ function nextprot() {
 
   //Util methods
 
-  this.getURLParameter = function (name){
+  this._getURLParameter = function (name){
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     results = regex.exec(location.search);
@@ -16,42 +16,55 @@ function nextprot() {
 
   //Gets the entry set in the parameter
   this.getEntryName = function(){
-    return this.getURLParameter("nxentry") || 'NX_P01308'; //By default returns the insulin
+    return this._getURLParameter("nxentry") || 'NX_P01308'; //By default returns the insulin
   }
 
+  //private method, convention use an underscore
+  this._callURL = function (context){
 
+    var me = this;
 
-  this.callURL = function (context, cb){
+    return new Promise(function(resolve, reject) {
 
-    var xmlhttp = new XMLHttpRequest();
-    var url = this.nextprotApiUrl + this.getEntryName() + "/" + context + ".json";
+      var req = new XMLHttpRequest();
+      var url = me.nextprotApiUrl + me.getEntryName() + "/" + context + ".json";
+      req.open("GET", url);
 
-    xmlhttp.onreadystatechange = function() {
-      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-        if(cb) cb(JSON.parse(xmlhttp.responseText));
+      req.onload = function() {
+        // This is called even on errors so check the status
+        if (req.status == 200) {
+          resolve(JSON.parse(req.responseText));
+        }else {
+          reject(Error(req.statusText));
+        }
       }
-    }
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
 
+      // Handle network errors
+      req.onerror = function() {
+        reject(Error("Network Error"));
+      };
+
+      // Make the request
+      req.send();
+    });
   }
 
-  this.getProteinSequence = function(cb) {
-    return this.callURL("protein-sequence", function (data){
-      if(cb) cb(data.entry.isoforms[0].sequence);
+
+  this.getProteinOverview = function() {
+    return this._callURL("overview").then(function (data){
+      return data.entry.overview;
+    });
+  }
+
+  this.getProteinSequence = function() {
+    return this._callURL("protein-sequence").then(function (data){
+      return data.entry.isoforms[0].sequence;
     });
   };
 
-  this.getProteinOverview = function(cb) {
-    return this.callURL("overview", function (data){
-      if(cb) cb(data.entry.overview);
-    });
-  };
-
-
-  this.getSecondaryStructure = function(cb) {
-    return this.callURL("secondary-structure", function (data){
-      if(cb) cb(data.entry.annotations);
+  this.getSecondaryStructure = function() {
+    return this._callURL("secondary-structure").then(function (data){
+      return data.entry.annotations;
     });
   };
 
