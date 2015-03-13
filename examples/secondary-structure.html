@@ -22,13 +22,13 @@
   var pviz = this.pviz;
 
 
-  nx.getProteinOverview(function (overview){
+  nx.getProteinOverview().then(function (overview){
     $("#entryName").text(overview.proteinNames[0].synonymName);
     $("#geneName").text(overview.geneNames[0].synonymName);
     $("#proteinEvidence").text(overview.history.proteinExistence);
   });
 
-  nx.getProteinSequence(function (sequence){
+  nx.getProteinSequence().then(function (sequence){
 
     $("#sequence").text(sequence);
     $("#sequenceLength").text(sequence.length);
@@ -44,7 +44,7 @@
     })
 
     //Setting secondary structure
-    nx.getSecondaryStructure(function (annotations){
+    nx.getSecondaryStructure().then(function (annotations){
       var features = [];
       $("#numberOfFeatures").text(annotations.length);
       annotations.forEach(function(annot){
