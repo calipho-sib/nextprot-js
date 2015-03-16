@@ -2,7 +2,7 @@
 <head>
   <title>neXtProt overview</title>
   <script src="https://code.jquery.com/jquery-git2.min.js"></script>
-  <script src="../nextprot.js"></script>
+  <script src="../src/nextprot.js"></script>
 </head>
 <body class="container">
 
@@ -10,6 +10,9 @@
   <h5>Gene name: <span id="geneName"></span></h5>
   <h5>Evidence: <span id="proteinEvidence"></span></h5>
   <script>
+
+  var Nextprot = window.Nextprot;
+  var nx = new Nextprot.Client();
 
   nx.getProteinOverview().then(function(overview) {
     $("#entryName").text(overview.proteinNames[0].synonymName);
