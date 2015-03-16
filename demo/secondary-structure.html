@@ -1,10 +1,10 @@
 <html>
 <head>
   <title>neXtProt secondary structure</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="http://research-pub.gene.com/pviz/examples/deps/pviz-core.css">
-  <script src="http://research-pub.gene.com/pviz/examples/deps/pviz-bundle.min.js"></script>
-  <script src="../nextprot.js"></script>
+  <link rel="stylesheet" href="../vendor/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../vendor/css/pviz-core.css">
+  <script src="../vendor/js/pviz-bundle.min.js"></script>
+  <script src="../src/nextprot.js"></script>
 </head>
 <body class="container">
 
@@ -21,6 +21,9 @@
   <script class="example">
   var pviz = this.pviz;
 
+  var Nextprot = window.Nextprot;
+
+  var nx = new Nextprot.Client();
 
   nx.getProteinOverview().then(function (overview){
     $("#entryName").text(overview.proteinNames[0].synonymName);
