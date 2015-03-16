@@ -1,0 +1,14 @@
+{
+  "name": "nextprot-js",
+  "version": "0.0.1",
+  "main": "dist/nextprot.min.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "vendor",
+    "demo"
+  ],
+  "dependencies": {}
+}
