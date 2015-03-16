@@ -6,7 +6,9 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test"
+    "test",
+    "vendor",
+    "demo"
   ],
   "dependencies": {}
 }
