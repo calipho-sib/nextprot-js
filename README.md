@@ -1,10 +1,10 @@
 A javascript library that communicates directly with the nextprot REST api (https://api.nextprot.org)
 
 ##Installation 
-(or include the nextprot script)
 ```
 bower install nextprot
 ```
+or include the nextprot script
 
 ##Usage
 Create the client and access the information you need (see the list of methods in here: https://api.nextprot.org)
