@@ -1,6 +1,7 @@
 A javascript library that communicates directly with the nextprot REST api (https://api.nextprot.org)
 
-##Installation (or include the nextprot script)
+##Installation 
+(or include the nextprot script)
 ```
 bower install nextprot
 ```
