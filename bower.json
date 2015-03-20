@@ -10,5 +10,8 @@
     "vendor",
     "demo"
   ],
-  "dependencies": {}
+  "dependencies": {
+      "jquery": "x.x.x",
+      "handlebars": "x.x.x"
+  }
 }
