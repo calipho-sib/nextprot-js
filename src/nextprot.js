@@ -68,7 +68,7 @@
 
     NextprotClient.prototype.getProteinSequence = function() {
       return _callURL(this.getEntryName(), "protein-sequence").then(function (data){
-        return data.entry.isoforms[0].sequence;
+        return data.entry.isoforms;
       });
     };
 
@@ -77,6 +77,14 @@
         return data.entry.annotations;
       });
     };
+
+      NextprotClient.prototype.getPeptide = function(entry) {
+          return _callURL(entry || this.getEntryName(), "peptide").then(function (data){
+              return data.entry.peptideMappings;
+          });
+      };
+
+
 
     //node.js compatibility
     if (typeof exports !== 'undefined') {
