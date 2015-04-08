@@ -78,6 +78,12 @@
             });
         };
 
+        NextprotClient.prototype.getMatureProtein = function() {
+            return _callURL(this.getEntryName(), "mature-protein").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+
         NextprotClient.prototype.getPeptide = function(entry) {
             return _callURL(entry || this.getEntryName(), "peptide").then(function (data){
                 return data.entry.peptideMappings;
