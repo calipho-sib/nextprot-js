@@ -27,7 +27,7 @@
         //Gets the entry set in the parameter
         NextprotClient.prototype.getEntryName = function(){
             return _getURLParameter("nxentry") || 'NX_P01308'; //By default returns the insulin
-        }
+        };
 
         //private method, convention use an underscore
         var _callURL = function (entryName, context){
@@ -57,17 +57,17 @@
                 // Make the request
                 req.send();
             });
-        }
+        };
 
 
         NextprotClient.prototype.getProteinOverview = function() {
             return _callURL(this.getEntryName(), "overview").then(function (data){
                 return data.entry.overview;
             });
-        }
+        };
 
         NextprotClient.prototype.getProteinSequence = function() {
-            return _callURL(this.getEntryName(), "protein-sequence").then(function (data){
+            return _callURL(this.getEntryName(), "isoform").then(function (data){
                 return data.entry.isoforms;
             });
         };

@@ -39,8 +39,16 @@ var loadOverview = function(overview,nxEntryName){
 
         $("#extender").click(function (event) {
             event.stopPropagation();
+            //var isScrollbarActiveAtFirst= $(window).hasVerticalScrollBar();
             $("#INFOS-FULL").toggle("slow");
             $("#INFOS-LESS").toggle("slow");
+            //var isScrollbarActiveAtEnd= $(window).hasVerticalScrollBar();
+            //if ((isScrollbarActiveAtFirst) && isScrollbarActiveAtFirst !== isScrollbarActiveAtEnd) {
+            //    $(body).removeClass("ignoreShift");
+            //}
+            //else if ((isScrollbarActiveAtFirst === false) && isScrollbarActiveAtFirst !== isScrollbarActiveAtEnd) {
+            //    $(body).addClass("ignoreShift");
+            //}
             $(this).text(function (i, text) {
                 return text === "Extend overview" ? "Collapse overview" : "Extend overview";
             });
