@@ -47,7 +47,7 @@
                     }else {
                         reject(Error(req.statusText));
                     }
-                }
+                };
 
                 // Handle network errors
                 req.onerror = function() {
