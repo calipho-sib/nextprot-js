@@ -18,6 +18,7 @@ var loadOverview = function(overview,nxEntryName){
 
         var data = {
             "entryName": overview.proteinNames[0].synonymName,
+            "alternativeName": overview.proteinNames[0].synonyms,
             "geneName": overview.geneNames[0].synonymName,
             "cleavage": overview.cleavedRegionNames,
             "family": overview.families,
