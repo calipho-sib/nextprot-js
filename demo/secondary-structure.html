@@ -5,7 +5,7 @@
   <link rel="stylesheet" type="text/css" href="../vendor/css/pviz-core.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js"></script>
   <script src="../vendor/js/pviz-bundle.min.js"></script>
-  <script src="../src/nextprot.js"></script>
+  <script src="app.js"></script>
 </head>
 <body class="container">
 
@@ -22,12 +22,6 @@
 
   var Nextprot = window.Nextprot;
   var nx = new Nextprot.Client();
-
-  nx.getProteinOverview().then(function (overview){
-    $("#entryName").text(overview.proteinNames[0].synonymName);
-    $("#geneName").text(overview.geneNames[0].synonymName);
-    $("#proteinEvidence").text(overview.history.proteinExistence);
-  });
 
   nx.getProteinSequence().then(function (sequence){
 
@@ -72,7 +66,5 @@
 
 
   </script>
-  <script src="../src/nextprot-templates.js"></script>
-
 </body>
 </html>

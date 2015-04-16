@@ -11,8 +11,9 @@ module.exports = function(grunt) {
         src: ['bower_components/jquery/dist/jquery.js',
           'bower_components/handlebars/handlebars.js',
           'src/nextprot.js',
+          'dist/compiled-templates.js',
           'src/nextprot-templates.js'],
-        dest: 'dependencies.js'
+        dest: 'demo/app.js'
       }
     },
     uglify: {
@@ -64,7 +65,7 @@ module.exports = function(grunt) {
     handlebars: {
       compile: {
         src: 'templates/*.tmpl',
-        dest: 'compiled_templates.js',
+        dest: 'dist/compiled-templates.js',
         options: {
           namespace: "HBtemplates"
         }
