@@ -21,8 +21,10 @@ module.exports = function(grunt) {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-        src: 'src/<%= pkg.name %>.js',
-        dest: 'dist/<%= pkg.name %>.min.js'
+        src: ['src/nextprot.js',
+            'nextprot-templates.js',
+            'dist/compiled-templates.js'],
+        dest: 'dist/nextprot.min.js'
       }
     },
     bump: {
