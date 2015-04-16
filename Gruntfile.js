@@ -22,7 +22,7 @@ module.exports = function(grunt) {
       },
       build: {
         src: ['src/nextprot.js',
-            'nextprot-templates.js',
+            'src/nextprot-templates.js',
             'dist/compiled-templates.js'],
         dest: 'dist/nextprot.min.js'
       }
