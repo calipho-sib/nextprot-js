@@ -1,26 +1,18 @@
 <html>
 <head>
   <title>neXtProt overview</title>
-  <script src="https://code.jquery.com/jquery-git2.min.js"></script>
-  <script src="../src/nextprot.js"></script>
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <script src="../dependencies.js"></script>
+  <script src="../compiled_templates.js"></script>
 </head>
 <body class="container">
-
-  <h2><span id="entryName"></span></h2>
-  <h5>Gene name: <span id="geneName"></span></h5>
-  <h5>Evidence: <span id="proteinEvidence"></span></h5>
   <script>
 
-  var Nextprot = window.Nextprot;
-  var nx = new Nextprot.Client();
 
-  nx.getProteinOverview().then(function(overview) {
-    $("#entryName").text(overview.proteinNames[0].synonymName);
-    $("#geneName").text(overview.geneNames[0].synonymName);
-    $("#proteinEvidence").text(overview.history.proteinExistence);
-  });
 
   </script>
+  <div id="nx-overview" class="row" style="width:1200px; height:auto;padding:0px 20px 10px;margin:10px 30px;background:#fff;border-top: 4px solid #E7EAEC;border-bottom: 1px solid #E7EAEC;"></div>
+
 
 </body>
 </html>

@@ -11,7 +11,8 @@
     "demo"
   ],
   "dependencies": {
-      "jquery": "x.x.x",
-      "handlebars": "x.x.x"
+    "jquery": "x.x.x",
+    "handlebars": "x.x.x",
+    "bootstrap": "3.x.x"
   }
 }
