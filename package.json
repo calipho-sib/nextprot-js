@@ -16,7 +16,6 @@
   "author": "Daniel Teixeira",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-bump": "^0.3.0",
