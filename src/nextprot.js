@@ -130,7 +130,7 @@
 
         NextprotClient.prototype.getSrmPeptide = function(entry) {
             return _callURL(entry || this.getEntryName(), "srm-peptide").then(function (data){
-                return data.entry.peptideMappings;
+                return data.entry.srmPeptideMappings;
             });
         };
 
