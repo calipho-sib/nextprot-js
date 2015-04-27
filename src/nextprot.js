@@ -42,8 +42,12 @@
             "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#> ";
 
 
+        var applicationName = null;
+        var clientInfo = null;
 
-        var NextprotClient = function () {
+        var NextprotClient = function (appName, cInfo) {
+            applicationName = appName;
+            clientInfo = cInfo;
         };
 
         //Util methods
@@ -59,6 +63,13 @@
             return _getURLParameter("nxentry") || 'NX_P01308'; //By default returns the insulin
         };
 
+        var normalizeEntry = function (entry) {
+            if (entry.substring(0,3) !== "NX_") {
+                entry = "NX_"+ entry;
+            }
+            return entry;
+        };
+
         //private method, convention use an underscore
         var _callURL = function (entryName, context){
 
@@ -67,7 +78,7 @@
             return new Promise(function(resolve, reject) {
 
                 var req = new XMLHttpRequest();
-                var url = nextprotApiUrl + entryName + "/" + context + ".json";
+                var url = nextprotApiUrl + entryName + "/" + context + ".json" + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
                 req.open("GET", url);
 
                 req.onload = function() {
@@ -89,47 +100,52 @@
             });
         };
 
-        NextprotClient.prototype.executeSparql = function(sparql) {
+        //NextprotClient.prototype.getProteinOverview = function() {
+        //    return _callURL(this.getEntryName(), "overview").then(function (data){
+        //        return data.entry.overview;
+        //    });
+        //};
 
+        NextprotClient.prototype.executeSparql = function(sparql) {
             var sparqlQuery = sparqlPrefixes+sparql;
-            var url = sparqlEndpoint+sparqlFormat+"&query="+encodeURIComponent(sparqlQuery);
+            var url = sparqlEndpoint+sparqlFormat+"&query="+encodeURIComponent(sparqlQuery) + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
             return Promise.resolve($.getJSON(url)).then(function (data){
                 return data;
             });
         };
 
-        NextprotClient.prototype.getProteinOverview = function() {
-            return _callURL(this.getEntryName(), "overview").then(function (data){
+        NextprotClient.prototype.getProteinOverview = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "overview").then(function (data){
                 return data.entry.overview;
             });
         };
 
-        NextprotClient.prototype.getProteinSequence = function() {
-            return _callURL(this.getEntryName(), "isoform").then(function (data){
+        NextprotClient.prototype.getProteinSequence = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "isoform").then(function (data){
                 return data.entry.isoforms;
             });
         };
 
-        NextprotClient.prototype.getSecondaryStructure = function() {
-            return _callURL(this.getEntryName(), "secondary-structure").then(function (data){
+        NextprotClient.prototype.getSecondaryStructure = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "secondary-structure").then(function (data){
                 return data.entry.annotations;
             });
         };
 
-        NextprotClient.prototype.getMatureProtein = function() {
-            return _callURL(this.getEntryName(), "mature-protein").then(function (data){
+        NextprotClient.prototype.getMatureProtein = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "mature-protein").then(function (data){
                 return data.entry.annotations;
             });
         };
 
         NextprotClient.prototype.getPeptide = function(entry) {
-            return _callURL(entry || this.getEntryName(), "peptide").then(function (data){
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "peptide").then(function (data){
                 return data.entry.peptideMappings;
             });
         };
 
         NextprotClient.prototype.getSrmPeptide = function(entry) {
-            return _callURL(entry || this.getEntryName(), "srm-peptide").then(function (data){
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "srm-peptide").then(function (data){
                 return data.entry.srmPeptideMappings;
             });
         };
