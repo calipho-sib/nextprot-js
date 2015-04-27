@@ -17,7 +17,9 @@ Create the client and access the information you need (see the list of methods i
 Example to access the sequence
 ```
  var Nextprot = window.Nextprot;
-  var nx = new Nextprot.Client();
+ var applicationName = 'demo app'; //please provide a name for your application
+ var clientInfo='calipho group at sib'; //please provide some information about you
+  var nx = new Nextprot.Client(applicationName, clientInfo);
 
  nx.getProteinSequence('NX_P01308').then(function (sequence){
  console.log(sequence);
