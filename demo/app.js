@@ -13037,7 +13037,8 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
                     if (req.status == 200) {
                         resolve(JSON.parse(req.responseText));
                     }else {
-                        reject(Error(req.statusText));
+                        //reject(Error(req.status + " - " + JSON.parse(req.response).message));
+                        reject(Error(req.status));
                     }
                 };
 

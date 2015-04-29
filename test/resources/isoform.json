@@ -1,0 +1,78 @@
+{
+  "NXUtils": "org.nextprot.api.core.utils.NXVelocityUtils",
+  "StringUtils": "org.nextprot.api.commons.utils.StringUtils",
+  "entry": {
+    "uniqueName": "NX_P46976",
+    "overview": null,
+    "publications": null,
+    "xrefs": null,
+    "keywords": null,
+    "identifiers": null,
+    "chromosomalLocations": null,
+    "isoforms": [
+      {
+        "sequence": "MTDQAFVTLTTNDAYAKGALVLGSSLKQHRTTRRLVVLATPQVSDSMRKVLETVFDEVIMVDVLDSGDSAHLTLMKRPELGVTLTKLHCWSLTQYSKCVFMDADTLVLANIDDLFDREELSAAPDPGWPDCFNSGVFVYQPSVETYNQLLHLASEQGSFDGGDQGILNTFFSSWATTDIRKHLPFIYNLSSISIYSYLPAFKVFGASAKVVHFLGRVKPWNYTYDPKTKSVKSEAHDPNMTHPEFLILWWNIFTTNVLPLLQQFGLVKDTCSYVNVLSDLVYTLAFSCGFCRKEDVSGAISHLSLGEIPAMAQPFVSSEERKERWEQGQADYMGADSFDNIKRKLDTYLQ",
+        "md5": "45a7ec2ad11b62ba2f1931df515b5a01",
+        "uniqueName": "NX_P46976-1",
+        "swissProtDisplayedIsoform": true,
+        "mainEntityName": {
+          "mainEntityName": null,
+          "type": "name",
+          "qualifier": null,
+          "value": "GN-1L"
+        },
+        "synonyms": [
+
+        ],
+        "isoelectricPointAsString": "5.27",
+        "massAsString": "39384",
+        "sequenceLength": 350
+      },
+      {
+        "sequence": null,
+        "md5": "16c118681820136ff5aa00cb13c8facb",
+        "uniqueName": "NX_P46976-2",
+        "swissProtDisplayedIsoform": false,
+        "mainEntityName": {
+          "mainEntityName": null,
+          "type": "name",
+          "qualifier": null,
+          "value": "GN-1"
+        },
+        "synonyms": [
+
+        ],
+        "isoelectricPointAsString": "5.17",
+        "massAsString": "37479",
+        "sequenceLength": 333
+      },
+      {
+        "sequence": "MTDQAFVTLTTNDAYAKGALVLGSSLKQHRTTRRLVVLATPQVSDSMRKVLETVFDEVIMVDVLDSGDSAHLTLMKRPELGVTLTKLHCWSLTQYSKCVFMDADTLVLANIDDLFDREELSAAPDPGWPDCFNSGVFVYQPSVETYNQLLHLASEQGSFDGGDQGILNTFFSSWATTDIRKHLPFIYNLSSISIYSYLPAFKVKMSQEPYHICPLGRSQLWHSRLYPRKNGRNDGNRARLIIWEQIPLTTSRGNLTLTSSRNTAFFCEHIHFTSLVSDT",
+        "md5": "1a42311eb5eb579ca9d79fda654587ee",
+        "uniqueName": "NX_P46976-3",
+        "swissProtDisplayedIsoform": false,
+        "mainEntityName": {
+          "mainEntityName": null,
+          "type": "name",
+          "qualifier": null,
+          "value": "GN-1S"
+        },
+        "synonyms": [
+
+        ],
+        "isoelectricPointAsString": "6.12",
+        "massAsString": "31467",
+        "sequenceLength": 279
+      }
+    ],
+    "annotations": null,
+    "peptideMappings": null,
+    "srmPeptideMappings": null,
+    "antibodyMappings": null,
+    "genomicMappings": null,
+    "interactions": null,
+    "enzymes": null,
+    "experimentalContexts": null,
+    "uniprotName": "P46976"
+  }
+}

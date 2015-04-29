@@ -17,14 +17,10 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "grunt": "~0.4.5",
-    "grunt-bump": "^0.3.0",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-nodeunit": "~0.4.1",
-    "grunt-contrib-uglify": "~0.5.0",
+    "grunt": "x.x.x",
     "grunt-bower-concat": "^0.4.0",
     "grunt-bower-task": "^0.4.0",
+    "grunt-bump": "^0.3.0",
     "grunt-concat-css": "^0.3.1",
     "grunt-connect": "^0.2.0",
     "grunt-contrib-clean": "~0.4.0",
@@ -34,6 +30,10 @@
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-cssmin": "~0.6.1",
     "grunt-contrib-handlebars": "^0.10.1",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-qunit": "^0.7.0",
+    "grunt-contrib-uglify": "~0.5.0",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-hustler": "0.11.2",
     "grunt-regarde": "~0.1.1",
@@ -41,8 +41,10 @@
     "load-grunt-tasks": "^0.6.0"
   },
   "dependencies": {
-    "bower": "^1.3.12",
-    "grunt-cli": "^0.1.13"
-
+    "bower": "x.x.x",
+    "grunt-cli": "x.x.x"
+  },
+  "scripts": {
+    "test": "grunt test --verbose"
   }
 }
