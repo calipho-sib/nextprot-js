@@ -28,6 +28,9 @@ module.exports = function (grunt) {
             }
         },
         qunit: {
+            options: {
+                timeout: 10000
+            },
             all: ['test/*.html']
         },
         bump: {
