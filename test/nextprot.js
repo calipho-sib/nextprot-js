@@ -79,13 +79,17 @@
 
                 var req = new XMLHttpRequest();
                 var url = nextprotApiUrl + entryName + "/" + context + ".json" + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
+                console.log("etape zero");
                 req.open("GET", url);
+                console.log("etape one");
 
                 req.onload = function() {
                     // This is called even on errors so check the status
                     if (req.status == 200) {
                         resolve(JSON.parse(req.responseText));
+                        console.log("etape two");
                     }else {
+                        console.log("load not working");
                         //reject(Error(req.status + " - " + JSON.parse(req.response).message));
                         reject(Error(req.status));
                     }
@@ -118,6 +122,7 @@
         NextprotClient.prototype.getProteinOverview = function(entry) {
             console.log("wtffffff");
             return _callURL(normalizeEntry(entry || this.getEntryName()), "overview").then(function (data){
+                console.log("transition");
                 return data.entry.overview;
             });
         };
