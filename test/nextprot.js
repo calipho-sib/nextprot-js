@@ -116,6 +116,7 @@
         };
 
         NextprotClient.prototype.getProteinOverview = function(entry) {
+            console.log("wtffffff");
             return _callURL(normalizeEntry(entry || this.getEntryName()), "overview").then(function (data){
                 return data.entry.overview;
             });
