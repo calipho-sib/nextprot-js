@@ -28,10 +28,13 @@ module.exports = function (grunt) {
             }
         },
         qunit: {
-            options: {
-                timeout: 50000
-            },
-            all: ['test/*.html']
+            all: {
+                options: {
+                    urls: [
+                        'http://localhost:9000/test/index.html'
+                    ]
+                }
+            }
         },
         bump: {
             options: {
