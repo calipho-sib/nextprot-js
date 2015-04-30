@@ -79,6 +79,7 @@
 
                 var req = new XMLHttpRequest();
                 var url = nextprotApiUrl + entryName + "/" + context + ".json" + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
+                console.log(url);
                 console.log("etape zero");
                 req.open("GET", url);
                 console.log("etape one");
@@ -99,6 +100,9 @@
                 // Handle network errors
                 req.onerror = function() {
                     console.log("error spotteeeeed");
+                    console.log(req);
+                    console.log(req.status);
+                    console.log(JSON.parse(req.response).message);
                     reject(Error("Network Error"));
                 };
 
