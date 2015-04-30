@@ -18,58 +18,53 @@ console.log(nx.getProteinOverview());
 
 
 QUnit.test("API calls test", function (assert) {
-    QUnit.stop();
+    assert.expect(5);
+    var done1 = assert.async();
+    var done2 = assert.async();
+    var done3 = assert.async();
+    var done4 = assert.async();
+    var done5 = assert.async();
     var promise1 = nx.getProteinOverview();
     promise1.then(function (data) {
+        console.log("why is it not woorkiiiing !!");
         assert.ok(data.proteinNames, 'Overview Json filled');
-    }).then(QUnit.start);
+        console.log("oh COME ON !!");
+        done1();
+    });
+    var promise2 = nx.getProteinSequence();
+    promise2.then(function (data) {
+        assert.ok(data.length, 'should get a Sequence Json filled');
+        done2();
+    }, function (error) {
+        assert.notOk("failed to load protein sequence");
+    });
+    var promise3 = nx.getPeptide();
+    promise3.then(function (data) {
+        assert.ok(data, 'should get a Peptide Json filled');
+        done3();
+    }, function(message) {
+        assert.equal(message, "failed to load peptides");
+        done3();
+    });
+
+    var promise4 = nx.getSrmPeptide();
+    promise4.then(function (data) {
+        assert.ok(data, 'should get a Srm Peptide Json filled');
+        done4();
+    }, function(message) {
+        assert.equal(message, "failed to load srm peptides");
+        done4();
+    });
+
+    var promise5 = nx.getMatureProtein();
+    promise5.then(function (data) {
+        assert.ok(data, 'should get a Mature-Prot Json filled');
+        done5();
+    }, function(message) {
+        assert.equal(message, "failed to load mature protein");
+        done5();
+    })
 });
-//QUnit.test("API calls test", function (assert) {
-//    assert.expect(5);
-//    var done1 = assert.async();
-//    var done2 = assert.async();
-//    var done3 = assert.async();
-//    var done4 = assert.async();
-//    var done5 = assert.async();
-//    var promise1 = nx.getProteinOverview();
-//    promise1.then(function (data) {
-//        assert.ok(data.proteinNames, 'Overview Json filled');
-//        done1();
-//    });
-//    var promise2 = nx.getProteinSequence();
-//    promise2.then(function (data) {
-//        assert.ok(data.length, 'should get a Sequence Json filled');
-//        done2();
-//    }, function (error) {
-//        assert.notOk("failed to load protein sequence");
-//    });
-//    var promise3 = nx.getPeptide();
-//    promise3.then(function (data) {
-//        assert.ok(data, 'should get a Peptide Json filled');
-//        done3();
-//    }, function(message) {
-//        assert.equal(message, "failed to load peptides");
-//        done3();
-//    });
-//
-//    var promise4 = nx.getSrmPeptide();
-//    promise4.then(function (data) {
-//        assert.ok(data, 'should get a Srm Peptide Json filled');
-//        done4();
-//    }, function(message) {
-//        assert.equal(message, "failed to load srm peptides");
-//        done4();
-//    });
-//
-//    var promise5 = nx.getMatureProtein();
-//    promise5.then(function (data) {
-//        assert.ok(data, 'should get a Mature-Prot Json filled');
-//        done5();
-//    }, function(message) {
-//        assert.equal(message, "failed to load mature protein");
-//        done5();
-//    })
-//});
 
 // OVERVIEW JSON TEST
 QUnit.test("Overview Json test", function (assert) {
