@@ -24,41 +24,6 @@ QUnit.test("API calls test", function (assert) {
         assert.ok(data.proteinNames, 'Overview Json filled');
     }).then(QUnit.start);
 });
-//    var promise2 = nx.getProteinSequence();
-//    promise2.then(function (data) {
-//        assert.ok(data.length, 'should get a Sequence Json filled');
-//        done2();
-//    }, function (error) {
-//        assert.notOk("failed to load protein sequence");
-//    });
-//    var promise3 = nx.getPeptide();
-//    promise3.then(function (data) {
-//        assert.ok(data, 'should get a Peptide Json filled');
-//        done3();
-//    }, function(message) {
-//        assert.equal(message, "failed to load peptides");
-//        done3();
-//    });
-//
-//    var promise4 = nx.getSrmPeptide();
-//    promise4.then(function (data) {
-//        assert.ok(data, 'should get a Srm Peptide Json filled');
-//        done4();
-//    }, function(message) {
-//        assert.equal(message, "failed to load srm peptides");
-//        done4();
-//    });
-//
-//    var promise5 = nx.getMatureProtein();
-//    promise5.then(function (data) {
-//        assert.ok(data, 'should get a Mature-Prot Json filled');
-//        done5();
-//    }, function(message) {
-//        assert.equal(message, "failed to load mature protein");
-//        done5();
-//    })
-//});
-
 //QUnit.test("API calls test", function (assert) {
 //    assert.expect(5);
 //    var done1 = assert.async();
