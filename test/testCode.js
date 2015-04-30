@@ -24,8 +24,7 @@ QUnit.test("API calls test", function (assert) {
     var done3 = assert.async();
     var done4 = assert.async();
     var done5 = assert.async();
-    var promise1 = nx.getProteinOverview();
-    promise1.then(function (data) {
+    nx.getProteinOverview().then(function (data) {
         console.log("why is it not woorkiiiing !!");
         assert.ok(data.proteinNames, 'Overview Json filled');
         console.log("oh COME ON !!");
