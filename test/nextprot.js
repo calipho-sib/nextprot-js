@@ -13,7 +13,7 @@
 
         //?default-graph-uri=&named-graph-uri=&output=json
 
-        var nextprotApiUrl = "https://api.nextprot.org/entry/";
+            var nextprotApiUrl = "http://alpha-api.nextprot.org/entry/";
         var sparqlEndpoint = "http://alpha-api.nextprot.org/sparql";
         var sparqlFormat = "?output=json";
         var sparqlPrefixes = "PREFIX :<http://nextprot.org/rdf#> "+
@@ -92,8 +92,10 @@
                         console.log("etape two");
                     }else {
                         console.log("load not working");
+                        console.log(req);
+                        console.log(req.response);
                         //reject(Error(req.status + " - " + JSON.parse(req.response).message));
-                        reject(Error(req.status));
+                        reject(Error(req));
                     }
                 };
 
@@ -104,6 +106,8 @@
                     console.log(req.status);
                     console.log(req.response);
                     console.log(JSON.parse(req.response).message);
+                    reject(Error(req));
+                    //reject(Error(req.status + " - " + JSON.parse(req.response).message));
                     reject(Error("Network Error"));
                 };
 
