@@ -78,14 +78,14 @@
             return new Promise(function(resolve, reject) {
 
                 var req = new XMLHttpRequest();
-                var url = nextprotApiUrl + entryName + "/" + context + ".json" + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
+                var url = nextprotApiUrl + entryName + "/" + context + ".json";
                 console.log(url);
                 console.log("etape zero");
                 req.open("GET", url);
                 console.log("etape one");
 
                 req.onload = function() {
-                    console.log("etape one and half")
+                    console.log("etape one and half");
                     // This is called even on errors so check the status
                     if (req.status == 200) {
                         resolve(JSON.parse(req.responseText));
@@ -102,6 +102,7 @@
                     console.log("error spotteeeeed");
                     console.log(req);
                     console.log(req.status);
+                    console.log(req.response);
                     console.log(JSON.parse(req.response).message);
                     reject(Error("Network Error"));
                 };
