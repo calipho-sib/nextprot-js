@@ -84,6 +84,7 @@
                 console.log("etape one");
 
                 req.onload = function() {
+                    console.log("etape one and half")
                     // This is called even on errors so check the status
                     if (req.status == 200) {
                         resolve(JSON.parse(req.responseText));
@@ -97,6 +98,7 @@
 
                 // Handle network errors
                 req.onerror = function() {
+                    console.log("error spotteeeeed");
                     reject(Error("Network Error"));
                 };
 

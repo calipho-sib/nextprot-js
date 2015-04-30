@@ -28,13 +28,10 @@ module.exports = function (grunt) {
             }
         },
         qunit: {
-            all: {
-                options: {
-                    timeout: 80000,
-                    urls: [
-                        'http://localhost:9000/test/index.html'
-                    ]
-                }
+            all: 'test/index.html',
+            options: {
+                timeout: 80000,
+                console: true
             }
         },
         bump: {
@@ -97,7 +94,7 @@ module.exports = function (grunt) {
 
     // Default task(s).
     grunt.registerTask('default', ['uglify']);
-    grunt.registerTask('test', ['connect:server','qunit']);
+    grunt.registerTask('test', ['qunit']);
     grunt.registerTask('concating', ['concat']);
     grunt.registerTask('hbs', ['handlebars:compile']);
     grunt.registerTask('serve', ['connect:server', 'watch']);
