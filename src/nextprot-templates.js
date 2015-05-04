@@ -10,7 +10,7 @@ var loadOverview = function(overview,nxEntryName){
                     console.log(type);
                     console.log(this);
                     var url = "http://www.uniprot.org/uniprot/" + this.slice(3) + "?version=*";
-                    return "<a href='" + url + "'>Complete UniprotKB history</a>";
+                    return "<a href='" + url + "'>Complete UniProtKB history</a>";
             }
         });
 
