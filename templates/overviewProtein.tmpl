@@ -32,12 +32,13 @@
                 {{#cleavage}}
                 <dd>{{synonymName}}</dd>
                 {{/cleavage}}{{/if}}
-                <dt>Alernative Name</dt>
+                {{#if alternativeName}}
+                <dt>Alternative Name</dt>
                 {{#alternativeName}}
                 <dd> {{synonymName}}
                     {{#if synonyms}}<em style="font-size:12px;">(short : {{synonyms.[0].synonymName}}) </em>{{/if}}
                 </dd>
-                {{/alternativeName}}
+                {{/alternativeName}}{{/if}}
             </dl>
         </div>
     </div>
@@ -58,13 +59,13 @@
         <div class="col-md-2 col-xs-3 text-uppercase" style="color: grey;">History</div>
         <div class="col-md-6 col-xs-6">
             <dl>
-                <dt>NeXtProt</dt>
+                <dt>neXtProt</dt>
                 <dd>Integrated {{integDate}}</dd>
                 <dd>Last Updated {{lastUpdate}}</dd>
-                <dt>UniprotKB</dt>
+                <dt>UniProtKB</dt>
                 <dd>Entry version {{version}}</dd>
                 <dd>Integration Date {{UniprotIntegDate}}</dd>
-                <dd>Last Update {{UniprotLastUpdate}}</dd>
+                <dd>Last Update {{UniProtLastUpdate}}</dd>
                 <dd>Sequence version {{seqVersion}}</dd>
                 <dd>{{#accessionNumber}}{{{link_to "history"}}}{{/accessionNumber}}</dd>
             </dl>
