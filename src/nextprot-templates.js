@@ -5,7 +5,7 @@ var loadOverview = function(overview,nxEntryName){
             switch (type) {
                 case "family":
                     var url = "http://www.nextprot.org/db/term/" + this.accession;
-                    return "<a href='" + url + "'>" + this.name.slice(0, -7) + "</a>";
+                    return "<a href='" + url + "'>" + this.name + "</a>";
                 case "history":
                     console.log(type);
                     console.log(this);

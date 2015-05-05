@@ -13060,7 +13060,7 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 
         NextprotClient.prototype.executeSparql = function(sparql) {
             var sparqlQuery = sparqlPrefixes+sparql;
-            var url = sparqlEndpoint+sparqlFormat+"&query="+encodeURIComponent(sparqlQuery) + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
+            var url = sparqlEndpoint+sparqlFormat+"&query="+encodeURIComponent(sparqlQuery) + "&clientInfo=" + clientInfo + "&applicationName=" + applicationName;
             return Promise.resolve($.getJSON(url)).then(function (data){
                 return data;
             });
@@ -13239,7 +13239,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
             switch (type) {
                 case "family":
                     var url = "http://www.nextprot.org/db/term/" + this.accession;
-                    return "<a href='" + url + "'>" + this.name.slice(0, -7) + "</a>";
+                    return "<a href='" + url + "'>" + this.name + "</a>";
                 case "history":
                     console.log(type);
                     console.log(this);

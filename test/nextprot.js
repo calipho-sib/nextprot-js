@@ -124,7 +124,7 @@
 
         NextprotClient.prototype.executeSparql = function(sparql) {
             var sparqlQuery = sparqlPrefixes+sparql;
-            var url = sparqlEndpoint+sparqlFormat+"&query="+encodeURIComponent(sparqlQuery) + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
+            var url = sparqlEndpoint+sparqlFormat+"&query="+encodeURIComponent(sparqlQuery) + "&clientInfo=" + clientInfo + "&applicationName=" + applicationName;
             return Promise.resolve($.getJSON(url)).then(function (data){
                 return data;
             });
