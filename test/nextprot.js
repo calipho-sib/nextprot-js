@@ -14,7 +14,7 @@
         //?default-graph-uri=&named-graph-uri=&output=json
 
             var nextprotApiUrl = "https://api.nextprot.org/entry/";
-        var sparqlEndpoint = "http://alpha-api.nextprot.org/sparql";
+        var sparqlEndpoint = "https://api.nextprot.org/sparql";
         var sparqlFormat = "?output=json";
         var sparqlPrefixes = "PREFIX :<http://nextprot.org/rdf#> "+
             "PREFIX annotation:<http://nextprot.org/rdf/annotation/> "+
