@@ -19,7 +19,6 @@ QUnit.test("should get a nextprot valid id again", function (assert) {
 });
 
 
-
 QUnit.test("should do a native API call", function (assert) {
     var d = assert.async();
 
@@ -48,11 +47,6 @@ QUnit.test("should do a jquery API call", function (assert) {
         d();
     });
 });
-
-
-
-console.log(nx.getProteinOverview());
-
 
 QUnit.test("API calls test", function (assert) {
     assert.expect(1);
