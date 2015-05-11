@@ -13023,33 +13023,7 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 
         //private method, convention use an underscore
         var _callURL = function (entryName, context){
-
-            var me = this;
-
-            return new Promise(function(resolve, reject) {
-
-                var req = new XMLHttpRequest();
-                var url = nextprotApiUrl + entryName + "/" + context + ".json" + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
-                req.open("GET", url);
-
-                req.onload = function() {
-                    // This is called even on errors so check the status
-                    if (req.status == 200) {
-                        resolve(JSON.parse(req.responseText));
-                    }else {
-                        //reject(Error(req.status + " - " + JSON.parse(req.response).message));
-                        reject(Error(req.status));
-                    }
-                };
-
-                // Handle network errors
-                req.onerror = function() {
-                    reject(Error("Network Error"));
-                };
-
-                // Make the request
-                req.send();
-            });
+             return Promise.resolve($.ajax(nextprotApiUrl + entryName + "/" + context + ".json"));
         };
 
         //NextprotClient.prototype.getProteinOverview = function() {
