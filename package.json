@@ -44,6 +44,6 @@
     "grunt-cli": "x.x.x"
   },
   "scripts": {
-    "test": "grunt test --verbose --force"
+    "test": "grunt test --verbose"
   }
 }
