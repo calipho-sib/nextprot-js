@@ -19,7 +19,28 @@ QUnit.test("should get a nextprot valid id again", function (assert) {
 });
 
 
-QUnit.test("should do an API call", function (assert) {
+
+QUnit.test("should do a native API call", function (assert) {
+    var d = assert.async();
+
+    var req = new XMLHttpRequest();
+    
+    
+        req.onreadystatechange = function() {
+            if (req.readyState == 4 && req.status == 200) {
+                 var object = JSON.parse(req.responseText);
+                	assert.ok(object.entry.isoforms.length, "should get a sequence length");
+                	d();
+            }
+        }     
+    
+    req.open('GET', 'https://api.nextprot.org/entry/NX_P46976/isoform.json');
+        req.send();
+
+});
+
+
+QUnit.test("should do a jquery API call", function (assert) {
     var d = assert.async();
     $.ajax('https://api.nextprot.org/entry/NX_P46976/isoform.json').then(function (data){
         console.log(data.entry);
@@ -27,6 +48,7 @@ QUnit.test("should do an API call", function (assert) {
         d();
     });
 });
+
 
 
 console.log(nx.getProteinOverview());
