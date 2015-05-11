@@ -14,6 +14,21 @@ QUnit.test("should get a nextprot valid id", function (assert) {
     assert.ok(isNeXtProt(nx.getEntryName()), "Expect a neXtProt ID");
 });
 
+QUnit.test("should get a nextprot valid id again", function (assert) {
+    assert.ok(isNeXtProt(nx.getEntryName()), "Expect a neXtProt ID again");
+});
+
+
+QUnit.test("should do an API call", function (assert) {
+    var d = assert.async();
+    $.ajax('https://api.nextprot.org/entry/NX_P46976/isoform.json').then(function (data){
+        console.log(data.entry);
+        assert.ok(data.entry.isoforms.length, "should get a sequence length");
+        d();
+    });
+});
+
+
 console.log(nx.getProteinOverview());
 
 
