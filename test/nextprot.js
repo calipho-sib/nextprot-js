@@ -100,7 +100,8 @@
                 };
 
                 // Handle network errors
-                req.onerror = function() {
+                req.onerror = function(error) {
+                    console.log(error);
                     console.log("error spotteeeeed");
                     console.log(req);
                     console.log(req.status);
