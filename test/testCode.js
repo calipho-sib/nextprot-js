@@ -18,7 +18,7 @@ QUnit.test("should get a nextprot valid id again", function (assert) {
     assert.ok(isNeXtProt(nx.getEntryName()), "Expect a neXtProt ID again");
 });
 
-
+/*
 QUnit.test("should do a native API call", function (assert) {
     var d = assert.async();
 
@@ -37,14 +37,16 @@ QUnit.test("should do a native API call", function (assert) {
         req.send();
 
 });
-
+*/
 
 QUnit.test("should do a jquery API call", function (assert) {
-    var d = assert.async();
-    $.ajax('https://api.nextprot.org/entry/NX_P46976/isoform.json').then(function (data){
+    $.ajax({
+        type: "GET", 
+        url: 'https://api.nextprot.org/entry/NX_P46976/isoform.json',
+        async:false
+    }).then(function (data){
         console.log(data.entry);
         assert.ok(data.entry.isoforms.length, "should get a sequence length");
-        d();
     });
 });
 
