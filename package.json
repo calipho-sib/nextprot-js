@@ -44,6 +44,6 @@
     "grunt-cli": "x.x.x"
   },
   "scripts": {
-    "test": "grunt test --verbose --debug"
+    "test": "grunt test --verbose --debug --web-security=no"
   }
 }
