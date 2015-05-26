@@ -121,6 +121,7 @@
             });
         };
 
+        
         //NextprotClient.prototype.getProteinOverview = function() {
         //    return _callURL(this.getEntryName(), "overview").then(function (data){
         //        return data.entry.overview;
