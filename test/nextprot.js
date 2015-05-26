@@ -13,7 +13,7 @@
 
         //?default-graph-uri=&named-graph-uri=&output=json
 
-            var nextprotApiUrl = "https://api.nextprot.org/entry/";
+            var nextprotApiUrl = "https://apiaaaa.nextprot.org/entry/";
         var sparqlEndpoint = "https://api.nextprot.org/sparql";
         var sparqlFormat = "?output=json";
         var sparqlPrefixes = "PREFIX :<http://nextprot.org/rdf#> "+
@@ -100,8 +100,12 @@
                 };
 
                 // Handle network errors
-                req.onerror = function(error) {
-                    console.log(error);
+                req.onerror = function(e) {
+                    console.log(e);
+
+                    console.log(e.target.responseText);
+                    console.log(e.target);
+
                     console.log("error spotteeeeed");
                     console.log(req);
                     console.log(req.status);
