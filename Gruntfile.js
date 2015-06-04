@@ -3,7 +3,7 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        concata: {
+        concatDemo: {
             options: {
                 separator: ';'
             },
@@ -21,7 +21,7 @@ module.exports = function (grunt) {
                 separator: ';'
             },
             dist: {
-                src: ['bower_components/jquery/dist/jquery.js', 'src/nextprot.js'],
+                src: ['bower_components/jquery/dist/jquery.js', 'bower_components/handlebars/handlebars.js', 'src/nextprot.js', 'src/nextprot-templates.js', 'dist/compiled-templates.js'],
                 dest: 'dist/nextprot.bundle.js'
             }
         },
@@ -30,7 +30,7 @@ module.exports = function (grunt) {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build: {
-                src: ['src/nextprot.js', 'src/nextprot-templates.js', 'dist/compiled-templates.js'],
+                src: ['src/nextprot.js'],
                 dest: 'dist/nextprot.min.js'
             }
         },
@@ -102,7 +102,7 @@ module.exports = function (grunt) {
     // Default task(s).
     grunt.registerTask('default', ['uglify']);
     grunt.registerTask('test', ['qunit']);
-    grunt.registerTask('con', ['concat']);
+    grunt.registerTask('concating', ['concat']);
     grunt.registerTask('hbs', ['handlebars:compile']);
     grunt.registerTask('serve', ['connect:server', 'watch']);
 };

@@ -59,10 +59,12 @@ var loadOverview = function(overview,nxEntryName){
 
 };
 $(function () {
-    var Nextprot = window.Nextprot;
-    var nx = new Nextprot.Client();
-    var nxEntryName = nx.getEntryName();
-    nx.getProteinOverview().then(function(data) {
-    loadOverview(data, nxEntryName);
-    });
+    if($("#nx-overview")){ // laad the overview if it exists
+        var Nextprot = window.Nextprot;
+        var nx = new Nextprot.Client();
+        var nxEntryName = nx.getEntryName();
+        nx.getProteinOverview().then(function(data) {
+        loadOverview(data, nxEntryName);
+        });
+    }
 });

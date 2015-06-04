@@ -45,9 +45,17 @@
         var applicationName = null;
         var clientInfo = null;
 
-        var NextprotClient = function (appName, cInfo) {
+        var NextprotClient = function (appName, clientInformation) {
             applicationName = appName;
-            clientInfo = cInfo;
+            clientInfo = clientInformation;
+            if(!appName){
+                throw "Please provide some application name  ex:  new Nextprot.Client('demo applicaiton for visualizing peptides', clientInformation);";
+            }
+            
+            if(!clientInformation){
+                throw "Please provide some client information ex:  new Nextprot.Client(applicationName, 'Calipho SIB at Geneva');";
+            }
+
         };
 
         //Util methods

@@ -1,3 +1,5 @@
+if(Handlebars){
+  
 this["HBtemplates"] = this["HBtemplates"] || {};
 
 this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
@@ -117,3 +119,5 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + alias3(((helper = (helper = helpers.proteineEvidence || (depth0 != null ? depth0.proteineEvidence : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"proteineEvidence","hash":{},"data":data}) : helper)))
     + "</p>";
 },"useData":true});
+  
+}
