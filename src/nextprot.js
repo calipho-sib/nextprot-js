@@ -164,3 +164,72 @@
 
 
 }(this));
+
+//Utility methods
+var NXUtils = {
+    
+    checkIsoformMatch:function(isoname, isonumber) {
+        return isoname.endsWith("-"+isonumber)
+    },
+
+    getSequenceForIsoform:function (isoSequences, isoformName){
+        var result = null;
+        //TODO allow users to specify isoform name without NX_
+        //TODO the API should return the results in a sorted array
+        
+        if(typeof isoformName === "number"){
+            isoSequences.forEach(function (d) {
+                
+                if (d.uniqueName.endsWith("-"+isoformName)) {
+                    console.log("returning" + d.sequence);
+                    result = d.sequence;
+                }
+            });
+        }else {
+            isoSequences.forEach(function (d) {
+            if (d.uniqueName === isoformName) 
+                return d.sequence;
+            })
+        }
+        return result;
+    },
+    convertMappingsToIsoformMap:function (mappings){
+        var result = {};
+        mappings.forEach(function (mapping) {
+            for (var name in mapping.targetingIsoformsMap) {
+                console.log(name);
+                if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
+                    var start = mapping.targetingIsoformsMap[name].firstPosition,
+                        end = mapping.targetingIsoformsMap[name].lastPosition,
+                        evidence = mapping.evidences.map(function(d) {return d.assignedBy}).filter(function(item, pos, self) {
+                            return self.indexOf(item) == pos;});
+                    if (!result[name]) result[name] = [];
+                    result[name].push({
+                        start: start,
+                        end: end,
+                        length: end-start+1,
+                        description: mapping.description,
+                        cvTermAccessionCode: mapping.cvTermAccessionCode,
+                        evidence: evidence,
+                        evidenceLength: evidence.length
+                    });
+                }
+            }
+        })      
+        return result;
+    }
+}
+
+var NXViewerUtils = {
+    convertNXAnnotations:function (annotations, category){
+        return annotations.map(function (annotation) {
+            return {
+                x: annotation.start,
+                y: annotation.end,
+                id: annotation.start.toString()+"_"+annotation.end.toString(),
+                category: category,
+                description: annotation.description
+            }
+        })
+    }
+}
