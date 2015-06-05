@@ -159,6 +159,49 @@
             });
         };
 
+        NextprotClient.prototype.getSignalPeptide = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "signal-peptide").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+
+        NextprotClient.prototype.getProPeptide = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "maturation-peptide").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+
+        NextprotClient.prototype.getDisulfideBond = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "disulfide-bond").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+
+        NextprotClient.prototype.getAntibody = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "antibody").then(function (data){
+                return data.entry.antibodyMappings;
+            });
+        };
+        NextprotClient.prototype.getInitMeth= function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "initiator-methionine").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+        NextprotClient.prototype.getModifResidue = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "modified-residue").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+        NextprotClient.prototype.getCrossLink = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "cross-link").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+        NextprotClient.prototype.getGlycoSite = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "glycosylation-site").then(function (data){
+                return data.entry.annotations;
+            });
+        };
 
         //node.js compatibility
         if (typeof exports !== 'undefined') {
@@ -204,32 +247,62 @@ var NXUtils = {
     convertMappingsToIsoformMap:function (mappings){
         var result = {};
         mappings.forEach(function (mapping) {
-            for (var name in mapping.targetingIsoformsMap) {
-                console.log(name);
-                if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
-                    var start = mapping.targetingIsoformsMap[name].firstPosition,
-                        end = mapping.targetingIsoformsMap[name].lastPosition,
-                        evidence = mapping.evidences.map(function(d) {return d.assignedBy}).filter(function(item, pos, self) {
-                            return self.indexOf(item) == pos;});
-                    if (!result[name]) result[name] = [];
-                    result[name].push({
-                        start: start,
-                        end: end,
-                        length: end-start+1,
-                        description: mapping.description,
-                        cvTermAccessionCode: mapping.cvTermAccessionCode,
-                        evidence: evidence,
-                        evidenceLength: evidence.length
-                    });
+            if (mapping.hasOwnProperty("targetingIsoformsMap")) {
+                for (var name in mapping.targetingIsoformsMap) {
+                    if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
+                        var start = mapping.targetingIsoformsMap[name].firstPosition,
+                            end = mapping.targetingIsoformsMap[name].lastPosition,
+                            evidence = mapping.evidences.map(function(d) {return d.assignedBy}).filter(function(item, pos, self) {
+                                return self.indexOf(item) == pos;});
+                        if (!result[name]) result[name] = [];
+                        result[name].push({
+                            start: start,
+                            end: end,
+                            length: end-start+1,
+                            description: mapping.description,
+                            cvTermAccessionCode: mapping.cvTermAccessionCode,
+                            evidence: evidence,
+                            evidenceLength: evidence.length
+                        });
+                    }
                 }
             }
-        })      
+            //TODO This is the old format, the API should evolve
+            else if (mapping.hasOwnProperty("isoformSpecificity")) {
+                        for (var name in o.isoformSpecificity) {
+                            if (o.isoformSpecificity.hasOwnProperty(name)) {
+                                var start = o.isoformSpecificity[name].positions[0].first,
+                                    end = o.isoformSpecificity[name].positions[0].second,
+                                    evidence = "";
+                                if (o.hasOwnProperty("evidences")) evidence = mapping.evidences.map(function(d) {return d.assignedBy}).filter(function(item, pos, self) {
+                                    return self.indexOf(item) == pos;});
+                                else evidence = [o.assignedBy];
+
+                                if (!features[name]) features[name] = {};
+                                if (!features[name][property]) features[name][property] = [];
+
+                                features[name][property].push({
+                                    x: start,
+                                    y: end,
+                                    length: end - start,
+                                    id:start.toString()+"_"+end.toString(),
+                                    category: category,
+                                    description: o.xrefs[0].accession,
+                                    cvCode: o.xrefs[0].resolvedUrl,
+                                    evidence: evidence,
+                                    evidenceLength: evidence.length
+                                });
+                            }
+                        }
+            }
+        });
         return result;
     }
-}
+};
 
 var NXViewerUtils = {
     convertNXAnnotations:function (annotations, category){
+        if (!annotations) return "Cannot load this";
         return annotations.map(function (annotation) {
             return {
                 x: annotation.start,

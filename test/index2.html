@@ -1,0 +1,44 @@
+<html>
+<head>
+  <title>neXtProt test</title>
+  <link rel="stylesheet" type="text/css" href="../demo/bootstrap.min.css">
+  <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="../src/nextprot.js"></script>
+</head>
+
+<body class="container">
+<div class="row">
+  <div id="popo"></div>
+</div>
+
+<script>
+  // Create an instance of nextprot client
+  var appName = "demo app for showing how to extract sequences"; //replace this with what your application is doing
+  var clientInfo = "calipho group at SIB"; //replace this with who you are
+  var nx = new Nextprot.Client(appName, clientInfo);
+
+  var entry = "NX_P01308";
+
+  Promise.all([nx.getProteinSequence(entry), nx.getMatureProtein(entry), nx.getProPeptide(entry), nx.getAntibody(entry), nx.getPeptide(entry)]).then(function (arrayResult) {
+
+    var isoSequences = arrayResult[0];
+    var matureProteinMappings = arrayResult[1];
+    var proPeptideMappings = arrayResult[2];
+    var antibodyMappings = arrayResult[3];
+    var peptideMappings = arrayResult[4];
+
+    var sequenceForIso1 = NXUtils.getSequenceForIsoform(isoSequences, 1);
+    var peptidesByIsoformMap = NXUtils.convertMappingsToIsoformMap(matureProteinMappings);
+    var proPeptidesByIsoformMap = NXUtils.convertMappingsToIsoformMap(proPeptideMappings);
+
+    //feature viewer
+    var peptidesForViewer = NXViewerUtils.convertNXAnnotations(peptidesByIsoformMap["NX_P46976-1"], "mature-protein");
+    console.log(sequenceForIso1);
+    console.log(peptidesByIsoformMap);
+    console.log(proPeptidesByIsoformMap);
+    console.log(peptidesForViewer);
+
+  });
+</script>
+</body>
+</html>
