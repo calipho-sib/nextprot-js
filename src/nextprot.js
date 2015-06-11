@@ -215,7 +215,7 @@
 
 
 }(this));
-
+var numero = 0;
 //Utility methods
 var NXUtils = {
     
@@ -244,6 +244,22 @@ var NXUtils = {
         }
         return result;
     },
+    getLinkForFeature: function(accession, description, type) {
+        if (type === "peptide"){
+            var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
+            return "<a href='" + url + "'>" + description + "</a>";
+        }
+        else if (type === "antibody") {
+            var url = accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        }
+        else if (accession) {
+            var url = "http://www.nextprot.org/db/term/" + accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        }
+        else if (description) return description;
+        else return "";
+    },
     convertMappingsToIsoformMap:function (mappings){
         var result = {};
         mappings.forEach(function (mapping) {
@@ -252,6 +268,7 @@ var NXUtils = {
                     if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
                         var start = mapping.targetingIsoformsMap[name].firstPosition,
                             end = mapping.targetingIsoformsMap[name].lastPosition,
+                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, mapping.description),
                             evidence = mapping.evidences.map(function(d) {return d.assignedBy}).filter(function(item, pos, self) {
                                 return self.indexOf(item) == pos;});
                         if (!result[name]) result[name] = [];
@@ -259,8 +276,9 @@ var NXUtils = {
                             start: start,
                             end: end,
                             length: end-start+1,
+                            id:start.toString()+"_"+end.toString(),
                             description: mapping.description,
-                            cvTermAccessionCode: mapping.cvTermAccessionCode,
+                            link: link,
                             evidence: evidence,
                             evidenceLength: evidence.length
                         });
@@ -269,26 +287,38 @@ var NXUtils = {
             }
             //TODO This is the old format, the API should evolve
             else if (mapping.hasOwnProperty("isoformSpecificity")) {
-                        for (var name in o.isoformSpecificity) {
-                            if (o.isoformSpecificity.hasOwnProperty(name)) {
-                                var start = o.isoformSpecificity[name].positions[0].first,
-                                    end = o.isoformSpecificity[name].positions[0].second,
-                                    evidence = "";
-                                if (o.hasOwnProperty("evidences")) evidence = mapping.evidences.map(function(d) {return d.assignedBy}).filter(function(item, pos, self) {
+                        for (var name in mapping.isoformSpecificity) {
+                            if (mapping.isoformSpecificity.hasOwnProperty(name)) {
+                                var start = mapping.isoformSpecificity[name].positions[0].first,
+                                    end = mapping.isoformSpecificity[name].positions[0].second,
+                                    evidence = "",
+                                    description="",
+                                    link="";
+                                if (mapping.hasOwnProperty("evidences")) evidence = mapping.evidences.map(function(d) {return d.assignedBy}).filter(function(item, pos, self) {
                                     return self.indexOf(item) == pos;});
-                                else evidence = [o.assignedBy];
+                                else evidence = [mapping.assignedBy];
+                                if (mapping.hasOwnProperty("xrefs")) {
+                                    description = mapping.xrefs[0].accession;
+                                    link = NXUtils.getLinkForFeature(mapping.xrefs[0].resolvedUrl, description, "antibody")
+                                }
+                                else {
+                                    description = mapping.evidences[0].accession;
+                                    for (ev in mapping.evidences) if (mapping.evidences[ev].databaseName === "PeptideAtlas" || mapping.evidences[ev].databaseName === "SRMAtlas") {
+                                        description = mapping.evidences[ev].accession;
+                                        link = NXUtils.getLinkForFeature(description, description, "peptide");
 
-                                if (!features[name]) features[name] = {};
-                                if (!features[name][property]) features[name][property] = [];
+                                        break;
+                                    }
+                                }
 
-                                features[name][property].push({
-                                    x: start,
-                                    y: end,
+                                if (!result[name]) result[name] = [];
+                                result[name].push({
+                                    start: start,
+                                    end: end,
                                     length: end - start,
                                     id:start.toString()+"_"+end.toString(),
-                                    category: category,
-                                    description: o.xrefs[0].accession,
-                                    cvCode: o.xrefs[0].resolvedUrl,
+                                    description: description,
+                                    link: link,
                                     evidence: evidence,
                                     evidenceLength: evidence.length
                                 });
@@ -296,6 +326,8 @@ var NXUtils = {
                         }
             }
         });
+        numero+=1;
+        console.log(numero);
         return result;
     }
 };
@@ -303,14 +335,18 @@ var NXUtils = {
 var NXViewerUtils = {
     convertNXAnnotations:function (annotations, category){
         if (!annotations) return "Cannot load this";
-        return annotations.map(function (annotation) {
+        result={};
+        for (name in annotations){
+            result[name]=annotations[name].map(function (annotation) {
             return {
                 x: annotation.start,
                 y: annotation.end,
-                id: annotation.start.toString()+"_"+annotation.end.toString(),
+                id: annotation.id,
                 category: category,
                 description: annotation.description
-            }
-        })
+                }
+            })
+        }
+        return result;
     }
 }
