@@ -45,9 +45,17 @@
         var applicationName = null;
         var clientInfo = null;
 
-        var NextprotClient = function (appName, cInfo) {
+        var NextprotClient = function (appName, clientInformation) {
             applicationName = appName;
-            clientInfo = cInfo;
+            clientInfo = clientInformation;
+            if(!appName){
+                throw "Please provide some application name  ex:  new Nextprot.Client('demo applicaiton for visualizing peptides', clientInformation);";
+            }
+            
+            if(!clientInformation){
+                throw "Please provide some client information ex:  new Nextprot.Client(applicationName, 'Calipho SIB at Geneva');";
+            }
+
         };
 
         //Util methods
@@ -125,6 +133,49 @@
             });
         };
 
+        NextprotClient.prototype.getSignalPeptide = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "signal-peptide").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+
+        NextprotClient.prototype.getProPeptide = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "maturation-peptide").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+
+        NextprotClient.prototype.getDisulfideBond = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "disulfide-bond").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+
+        NextprotClient.prototype.getAntibody = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "antibody").then(function (data){
+                return data.entry.antibodyMappings;
+            });
+        };
+        NextprotClient.prototype.getInitMeth= function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "initiator-methionine").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+        NextprotClient.prototype.getModifResidue = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "modified-residue").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+        NextprotClient.prototype.getCrossLink = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "cross-link").then(function (data){
+                return data.entry.annotations;
+            });
+        };
+        NextprotClient.prototype.getGlycoSite = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "glycosylation-site").then(function (data){
+                return data.entry.annotations;
+            });
+        };
 
         //node.js compatibility
         if (typeof exports !== 'undefined') {
@@ -138,3 +189,138 @@
 
 
 }(this));
+var numero = 0;
+//Utility methods
+var NXUtils = {
+    
+    checkIsoformMatch:function(isoname, isonumber) {
+        return isoname.endsWith("-"+isonumber)
+    },
+
+    getSequenceForIsoform:function (isoSequences, isoformName){
+        var result = null;
+        //TODO allow users to specify isoform name without NX_
+        //TODO the API should return the results in a sorted array
+        
+        if(typeof isoformName === "number"){
+            isoSequences.forEach(function (d) {
+                
+                if (d.uniqueName.endsWith("-"+isoformName)) {
+                    console.log("returning" + d.sequence);
+                    result = d.sequence;
+                }
+            });
+        }else {
+            isoSequences.forEach(function (d) {
+            if (d.uniqueName === isoformName) 
+                return d.sequence;
+            })
+        }
+        return result;
+    },
+    getLinkForFeature: function(accession, description, type) {
+        if (type === "peptide"){
+            var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
+            return "<a href='" + url + "'>" + description + "</a>";
+        }
+        else if (type === "antibody") {
+            var url = accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        }
+        else if (accession) {
+            var url = "http://www.nextprot.org/db/term/" + accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        }
+        else if (description) return description;
+        else return "";
+    },
+    convertMappingsToIsoformMap:function (mappings){
+        var result = {};
+        mappings.forEach(function (mapping) {
+            if (mapping.hasOwnProperty("targetingIsoformsMap")) {
+                for (var name in mapping.targetingIsoformsMap) {
+                    if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
+                        var start = mapping.targetingIsoformsMap[name].firstPosition,
+                            end = mapping.targetingIsoformsMap[name].lastPosition,
+                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, mapping.description),
+                            evidence = mapping.evidences.map(function(d) {return d.assignedBy}).filter(function(item, pos, self) {
+                                return self.indexOf(item) == pos;});
+                        if (!result[name]) result[name] = [];
+                        result[name].push({
+                            start: start,
+                            end: end,
+                            length: end-start+1,
+                            id:start.toString()+"_"+end.toString(),
+                            description: mapping.description,
+                            link: link,
+                            evidence: evidence,
+                            evidenceLength: evidence.length
+                        });
+                    }
+                }
+            }
+            //TODO This is the old format, the API should evolve
+            else if (mapping.hasOwnProperty("isoformSpecificity")) {
+                        for (var name in mapping.isoformSpecificity) {
+                            if (mapping.isoformSpecificity.hasOwnProperty(name)) {
+                                var start = mapping.isoformSpecificity[name].positions[0].first,
+                                    end = mapping.isoformSpecificity[name].positions[0].second,
+                                    evidence = "",
+                                    description="",
+                                    link="";
+                                if (mapping.hasOwnProperty("evidences")) evidence = mapping.evidences.map(function(d) {return d.assignedBy}).filter(function(item, pos, self) {
+                                    return self.indexOf(item) == pos;});
+                                else evidence = [mapping.assignedBy];
+                                if (mapping.hasOwnProperty("xrefs")) {
+                                    description = mapping.xrefs[0].accession;
+                                    link = NXUtils.getLinkForFeature(mapping.xrefs[0].resolvedUrl, description, "antibody")
+                                }
+                                else {
+                                    description = mapping.evidences[0].accession;
+                                    for (ev in mapping.evidences) if (mapping.evidences[ev].databaseName === "PeptideAtlas" || mapping.evidences[ev].databaseName === "SRMAtlas") {
+                                        description = mapping.evidences[ev].accession;
+                                        link = NXUtils.getLinkForFeature(description, description, "peptide");
+
+                                        break;
+                                    }
+                                }
+
+                                if (!result[name]) result[name] = [];
+                                result[name].push({
+                                    start: start,
+                                    end: end,
+                                    length: end - start,
+                                    id:start.toString()+"_"+end.toString(),
+                                    description: description,
+                                    link: link,
+                                    evidence: evidence,
+                                    evidenceLength: evidence.length
+                                });
+                            }
+                        }
+            }
+        });
+        numero+=1;
+        console.log(numero);
+        return result;
+    }
+};
+
+var NXViewerUtils = {
+    convertNXAnnotations:function (annotations, category){
+        if (!annotations) return "Cannot load this";
+        result={};
+        for (name in annotations){
+            result[name]=annotations[name].map(function (annotation) {
+            return {
+                x: annotation.start,
+                y: annotation.end,
+                id: annotation.id,
+                category: category,
+                description: annotation.description
+                }
+            })
+        }
+        return result;
+    }
+}

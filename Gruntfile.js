@@ -3,7 +3,7 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        concat: {
+        concatDemo: {
             options: {
                 separator: ';'
             },
@@ -16,14 +16,21 @@ module.exports = function (grunt) {
                 dest: 'demo/app.js'
             }
         },
+        concat: {
+            options: {
+                separator: ';'
+            },
+            dist: {
+                src: ['bower_components/jquery/dist/jquery.js', 'bower_components/handlebars/handlebars.js', 'src/nextprot.js', 'src/nextprot-templates.js', 'dist/compiled-templates.js'],
+                dest: 'dist/nextprot.bundle.js'
+            }
+        },
         uglify: {
             options: {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build: {
-                src: ['src/nextprot.js',
-                    'src/nextprot-templates.js',
-                    'dist/compiled-templates.js'],
+                src: ['src/nextprot.js'],
                 dest: 'dist/nextprot.min.js'
             }
         },
