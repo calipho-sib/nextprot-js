@@ -44,6 +44,7 @@
     "grunt-cli": "x.x.x"
   },
   "scripts": {
-    "test": "grunt test --verbose --debug --web-security=no"
+    "test": "grunt test --verbose --debug --web-security=no",
+    "dist": "grunt && grunt concating"
   }
 }
