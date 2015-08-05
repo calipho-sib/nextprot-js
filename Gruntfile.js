@@ -21,7 +21,7 @@ module.exports = function (grunt) {
                 separator: ';'
             },
             dist: {
-                src: ['bower_components/jquery/dist/jquery.js', 'bower_components/handlebars/handlebars.js', 'src/nextprot.js', 'src/nextprot-templates.js', 'dist/compiled-templates.js'],
+                src: ['vendor/js/es5-shim.min.js','vendor/js/promise-6.1.0.js','bower_components/jquery/dist/jquery.js', 'bower_components/handlebars/handlebars.js', 'src/nextprot.js', 'src/nextprot-templates.js', 'dist/compiled-templates.js'],
                 dest: 'dist/nextprot.bundle.js'
             }
         },
