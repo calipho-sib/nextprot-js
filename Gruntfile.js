@@ -3,26 +3,17 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        concatDemo: {
-            options: {
-                separator: ';'
-            },
-            dist: {
-                src: ['bower_components/jquery/dist/jquery.js',
-                    'bower_components/handlebars/handlebars.js',
-                    'src/nextprot.js',
-                    'dist/compiled-templates.js',
-                    'src/nextprot-templates.js'],
-                dest: 'demo/app.js'
-            }
-        },
         concat: {
             options: {
-                separator: ';'
+                separator: ';\n'
             },
-            dist: {
+            basic: {
                 src: ['vendor/js/es5-shim.min.js','vendor/js/promise-6.1.0.js','bower_components/jquery/dist/jquery.js', 'bower_components/handlebars/handlebars.js', 'src/nextprot.js', 'src/nextprot-templates.js', 'dist/compiled-templates.js'],
                 dest: 'dist/nextprot.bundle.js'
+            },
+            extras: {
+                src: ['vendor/js/es5-shim.min.js','vendor/js/promise-6.1.0.js','bower_components/jquery/dist/jquery.js', 'bower_components/handlebars/handlebars.js', 'src/nextprot.js', 'src/nextprot-templates.js', 'dist/compiled-templates.js'],
+                dest: 'demo/app.js'
             }
         },
         uglify: {

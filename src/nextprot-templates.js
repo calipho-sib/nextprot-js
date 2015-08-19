@@ -61,7 +61,7 @@ var loadOverview = function(overview,nxEntryName){
 $(function () {
     if($("#nx-overview")){ // laad the overview if it exists
         var Nextprot = window.Nextprot;
-        var nx = new Nextprot.Client();
+        var nx = new Nextprot.Client("Demo nextprot", "Calipho Group");
         var nxEntryName = nx.getEntryName();
         nx.getProteinOverview().then(function(data) {
         loadOverview(data, nxEntryName);

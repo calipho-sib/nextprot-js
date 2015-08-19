@@ -1,4 +1,387 @@
 /*!
+ * https://github.com/es-shims/es5-shim
+ * @license es5-shim Copyright 2009-2014 by contributors, MIT License
+ * see https://github.com/es-shims/es5-shim/blob/master/LICENSE
+ */
+(function(t,r){if(typeof define==="function"&&define.amd){define(r)}else if(typeof exports==="object"){module.exports=r()}else{t.returnExports=r()}})(this,function(){var t=Function.prototype.call;var r=Array.prototype;var e=Object.prototype;var n=r.slice;var i=Array.prototype.splice;var o=Array.prototype.push;var a=Array.prototype.unshift;var l=e.toString;var u=function(t){return e.toString.call(t)==="[object Function]"};var p=function(t){return e.toString.call(t)==="[object RegExp]"};var s=function W(t){return l.call(t)==="[object Array]"};var f=function tr(t){var r=l.call(t);var e=r==="[object Arguments]";if(!e){e=!s(r)&&t!==null&&typeof t==="object"&&typeof t.length==="number"&&t.length>=0&&u(t.callee)}return e};function c(){}if(!Function.prototype.bind){Function.prototype.bind=function rr(t){var r=this;if(!u(r)){throw new TypeError("Function.prototype.bind called on incompatible "+r)}var e=n.call(arguments,1);var i=function(){if(this instanceof p){var i=r.apply(this,e.concat(n.call(arguments)));if(Object(i)===i){return i}return this}else{return r.apply(t,e.concat(n.call(arguments)))}};var o=Math.max(0,r.length-e.length);var a=[];for(var l=0;l<o;l++){a.push("$"+l)}var p=Function("binder","return function ("+a.join(",")+"){return binder.apply(this,arguments)}")(i);if(r.prototype){c.prototype=r.prototype;p.prototype=new c;c.prototype=null}return p}}var h=t.bind(e.hasOwnProperty);var y;var g;var v;var d;var b;if(b=h(e,"__defineGetter__")){y=t.bind(e.__defineGetter__);g=t.bind(e.__defineSetter__);v=t.bind(e.__lookupGetter__);d=t.bind(e.__lookupSetter__)}var m=function(){var t={};Array.prototype.splice.call(t,0,0,1);return t.length===1}();var w=[1].splice(0).length===0;var S=function(){var t=[1,2];var r=t.splice();return t.length===2&&s(r)&&r.length===0}();if(S){Array.prototype.splice=function er(t,r){if(arguments.length===0){return[]}else{return i.apply(this,arguments)}}}if(!w||!m){Array.prototype.splice=function nr(t,r){if(arguments.length===0){return[]}var e=arguments;this.length=Math.max(q(this.length),0);if(arguments.length>0&&typeof r!=="number"){e=n.call(arguments);if(e.length<2){e.push(q(r))}else{e[1]=q(r)}}return i.apply(this,e)}}if([].unshift(0)!==1){Array.prototype.unshift=function(){a.apply(this,arguments);return this.length}}if(!Array.isArray){Array.isArray=s}var x=Object("a");var A=x[0]!=="a"||!(0 in x);var j=function ir(t){var r=true;var e=true;if(t){t.call("foo",function(t,e,n){if(typeof n!=="object"){r=false}});t.call([1],function(){"use strict";e=typeof this==="string"},"x")}return!!t&&r&&e};if(!Array.prototype.forEach||!j(Array.prototype.forEach)){Array.prototype.forEach=function or(t){var r=Q(this),e=A&&l.call(this)==="[object String]"?this.split(""):r,n=arguments[1],i=-1,o=e.length>>>0;if(!u(t)){throw new TypeError}while(++i<o){if(i in e){t.call(n,e[i],i,r)}}}}if(!Array.prototype.map||!j(Array.prototype.map)){Array.prototype.map=function ar(t){var r=Q(this),e=A&&l.call(this)==="[object String]"?this.split(""):r,n=e.length>>>0,i=Array(n),o=arguments[1];if(!u(t)){throw new TypeError(t+" is not a function")}for(var a=0;a<n;a++){if(a in e){i[a]=t.call(o,e[a],a,r)}}return i}}if(!Array.prototype.filter||!j(Array.prototype.filter)){Array.prototype.filter=function lr(t){var r=Q(this),e=A&&l.call(this)==="[object String]"?this.split(""):r,n=e.length>>>0,i=[],o,a=arguments[1];if(!u(t)){throw new TypeError(t+" is not a function")}for(var p=0;p<n;p++){if(p in e){o=e[p];if(t.call(a,o,p,r)){i.push(o)}}}return i}}if(!Array.prototype.every||!j(Array.prototype.every)){Array.prototype.every=function ur(t){var r=Q(this),e=A&&l.call(this)==="[object String]"?this.split(""):r,n=e.length>>>0,i=arguments[1];if(!u(t)){throw new TypeError(t+" is not a function")}for(var o=0;o<n;o++){if(o in e&&!t.call(i,e[o],o,r)){return false}}return true}}if(!Array.prototype.some||!j(Array.prototype.some)){Array.prototype.some=function pr(t){var r=Q(this),e=A&&l.call(this)==="[object String]"?this.split(""):r,n=e.length>>>0,i=arguments[1];if(!u(t)){throw new TypeError(t+" is not a function")}for(var o=0;o<n;o++){if(o in e&&t.call(i,e[o],o,r)){return true}}return false}}var O=false;if(Array.prototype.reduce){O=typeof Array.prototype.reduce.call("es5",function(t,r,e,n){return n})==="object"}if(!Array.prototype.reduce||!O){Array.prototype.reduce=function sr(t){var r=Q(this),e=A&&l.call(this)==="[object String]"?this.split(""):r,n=e.length>>>0;if(!u(t)){throw new TypeError(t+" is not a function")}if(!n&&arguments.length===1){throw new TypeError("reduce of empty array with no initial value")}var i=0;var o;if(arguments.length>=2){o=arguments[1]}else{do{if(i in e){o=e[i++];break}if(++i>=n){throw new TypeError("reduce of empty array with no initial value")}}while(true)}for(;i<n;i++){if(i in e){o=t.call(void 0,o,e[i],i,r)}}return o}}var E=false;if(Array.prototype.reduceRight){E=typeof Array.prototype.reduceRight.call("es5",function(t,r,e,n){return n})==="object"}if(!Array.prototype.reduceRight||!E){Array.prototype.reduceRight=function fr(t){var r=Q(this),e=A&&l.call(this)==="[object String]"?this.split(""):r,n=e.length>>>0;if(!u(t)){throw new TypeError(t+" is not a function")}if(!n&&arguments.length===1){throw new TypeError("reduceRight of empty array with no initial value")}var i,o=n-1;if(arguments.length>=2){i=arguments[1]}else{do{if(o in e){i=e[o--];break}if(--o<0){throw new TypeError("reduceRight of empty array with no initial value")}}while(true)}if(o<0){return i}do{if(o in e){i=t.call(void 0,i,e[o],o,r)}}while(o--);return i}}if(!Array.prototype.indexOf||[0,1].indexOf(1,2)!==-1){Array.prototype.indexOf=function cr(t){var r=A&&l.call(this)==="[object String]"?this.split(""):Q(this),e=r.length>>>0;if(!e){return-1}var n=0;if(arguments.length>1){n=q(arguments[1])}n=n>=0?n:Math.max(0,e+n);for(;n<e;n++){if(n in r&&r[n]===t){return n}}return-1}}if(!Array.prototype.lastIndexOf||[0,1].lastIndexOf(0,-3)!==-1){Array.prototype.lastIndexOf=function hr(t){var r=A&&l.call(this)==="[object String]"?this.split(""):Q(this),e=r.length>>>0;if(!e){return-1}var n=e-1;if(arguments.length>1){n=Math.min(n,q(arguments[1]))}n=n>=0?n:e-Math.abs(n);for(;n>=0;n--){if(n in r&&t===r[n]){return n}}return-1}}var N=Object.keys&&function(){return Object.keys(arguments).length===2}(1,2);if(!Object.keys){var T=!{toString:null}.propertyIsEnumerable("toString"),I=function(){}.propertyIsEnumerable("prototype"),D=["toString","toLocaleString","valueOf","hasOwnProperty","isPrototypeOf","propertyIsEnumerable","constructor"],_=D.length;Object.keys=function yr(t){var r=u(t),e=f(t),n=t!==null&&typeof t==="object",i=n&&l.call(t)==="[object String]";if(!n&&!r&&!e){throw new TypeError("Object.keys called on a non-object")}var o=[];var a=I&&r;if(i||e){for(var p=0;p<t.length;++p){o.push(String(p))}}else{for(var s in t){if(!(a&&s==="prototype")&&h(t,s)){o.push(String(s))}}}if(T){var c=t.constructor,y=c&&c.prototype===t;for(var g=0;g<_;g++){var v=D[g];if(!(y&&v==="constructor")&&h(t,v)){o.push(v)}}}return o}}else if(!N){var M=Object.keys;Object.keys=function gr(t){if(f(t)){return M(Array.prototype.slice.call(t))}else{return M(t)}}}var F=-621987552e5,R="-000001";if(!Date.prototype.toISOString||new Date(F).toISOString().indexOf(R)===-1){Date.prototype.toISOString=function vr(){var t,r,e,n,i;if(!isFinite(this)){throw new RangeError("Date.prototype.toISOString called on non-finite value.")}n=this.getUTCFullYear();i=this.getUTCMonth();n+=Math.floor(i/12);i=(i%12+12)%12;t=[i+1,this.getUTCDate(),this.getUTCHours(),this.getUTCMinutes(),this.getUTCSeconds()];n=(n<0?"-":n>9999?"+":"")+("00000"+Math.abs(n)).slice(0<=n&&n<=9999?-4:-6);r=t.length;while(r--){e=t[r];if(e<10){t[r]="0"+e}}return n+"-"+t.slice(0,2).join("-")+"T"+t.slice(2).join(":")+"."+("000"+this.getUTCMilliseconds()).slice(-3)+"Z"}}var k=false;try{k=Date.prototype.toJSON&&new Date(NaN).toJSON()===null&&new Date(F).toJSON().indexOf(R)!==-1&&Date.prototype.toJSON.call({toISOString:function(){return true}})}catch(C){}if(!k){Date.prototype.toJSON=function dr(t){var r=Object(this),e=K(r),n;if(typeof e==="number"&&!isFinite(e)){return null}n=r.toISOString;if(typeof n!=="function"){throw new TypeError("toISOString property is not callable")}return n.call(r)}}var U=Date.parse("+033658-09-27T01:46:40.000Z")===1e15;var Z=!isNaN(Date.parse("2012-04-04T24:00:00.500Z"))||!isNaN(Date.parse("2012-11-31T23:59:59.000Z"));var J=isNaN(Date.parse("2000-01-01T00:00:00.000Z"));if(!Date.parse||J||Z||!U){Date=function(t){function r(e,n,i,o,a,l,u){var p=arguments.length;if(this instanceof t){var s=p===1&&String(e)===e?new t(r.parse(e)):p>=7?new t(e,n,i,o,a,l,u):p>=6?new t(e,n,i,o,a,l):p>=5?new t(e,n,i,o,a):p>=4?new t(e,n,i,o):p>=3?new t(e,n,i):p>=2?new t(e,n):p>=1?new t(e):new t;s.constructor=r;return s}return t.apply(this,arguments)}var e=new RegExp("^"+"(\\d{4}|[+-]\\d{6})"+"(?:-(\\d{2})"+"(?:-(\\d{2})"+"(?:"+"T(\\d{2})"+":(\\d{2})"+"(?:"+":(\\d{2})"+"(?:(\\.\\d{1,}))?"+")?"+"("+"Z|"+"(?:"+"([-+])"+"(\\d{2})"+":(\\d{2})"+")"+")?)?)?)?"+"$");var n=[0,31,59,90,120,151,181,212,243,273,304,334,365];function i(t,r){var e=r>1?1:0;return n[r]+Math.floor((t-1969+e)/4)-Math.floor((t-1901+e)/100)+Math.floor((t-1601+e)/400)+365*(t-1970)}function o(r){return Number(new t(1970,0,1,0,0,0,r))}for(var a in t){r[a]=t[a]}r.now=t.now;r.UTC=t.UTC;r.prototype=t.prototype;r.prototype.constructor=r;r.parse=function l(r){var n=e.exec(r);if(n){var a=Number(n[1]),l=Number(n[2]||1)-1,u=Number(n[3]||1)-1,p=Number(n[4]||0),s=Number(n[5]||0),f=Number(n[6]||0),c=Math.floor(Number(n[7]||0)*1e3),h=Boolean(n[4]&&!n[8]),y=n[9]==="-"?1:-1,g=Number(n[10]||0),v=Number(n[11]||0),d;if(p<(s>0||f>0||c>0?24:25)&&s<60&&f<60&&c<1e3&&l>-1&&l<12&&g<24&&v<60&&u>-1&&u<i(a,l+1)-i(a,l)){d=((i(a,l)+u)*24+p+g*y)*60;d=((d+s+v*y)*60+f)*1e3+c;if(h){d=o(d)}if(-864e13<=d&&d<=864e13){return d}}return NaN}return t.parse.apply(this,arguments)};return r}(Date)}if(!Date.now){Date.now=function br(){return(new Date).getTime()}}if(!Number.prototype.toFixed||8e-5.toFixed(3)!=="0.000"||.9.toFixed(0)==="0"||1.255.toFixed(2)!=="1.25"||0xde0b6b3a7640080.toFixed(0)!=="1000000000000000128"){(function(){var t,r,e,n;t=1e7;r=6;e=[0,0,0,0,0,0];function i(n,i){var o=-1;while(++o<r){i+=n*e[o];e[o]=i%t;i=Math.floor(i/t)}}function o(n){var i=r,o=0;while(--i>=0){o+=e[i];e[i]=Math.floor(o/n);o=o%n*t}}function a(){var t=r;var n="";while(--t>=0){if(n!==""||t===0||e[t]!==0){var i=String(e[t]);if(n===""){n=i}else{n+="0000000".slice(0,7-i.length)+i}}}return n}function l(t,r,e){return r===0?e:r%2===1?l(t,r-1,e*t):l(t*t,r/2,e)}function u(t){var r=0;while(t>=4096){r+=12;t/=4096}while(t>=2){r+=1;t/=2}return r}Number.prototype.toFixed=function p(t){var r,e,n,p,s,f,c,h;r=Number(t);r=r!==r?0:Math.floor(r);if(r<0||r>20){throw new RangeError("Number.toFixed called with invalid number of decimals")}e=Number(this);if(e!==e){return"NaN"}if(e<=-1e21||e>=1e21){return String(e)}n="";if(e<0){n="-";e=-e}p="0";if(e>1e-21){s=u(e*l(2,69,1))-69;f=s<0?e*l(2,-s,1):e/l(2,s,1);f*=4503599627370496;s=52-s;if(s>0){i(0,f);c=r;while(c>=7){i(1e7,0);c-=7}i(l(10,c,1),0);c=s-1;while(c>=23){o(1<<23);c-=23}o(1<<c);i(1,1);o(2);p=a()}else{i(0,f);i(1<<-s,0);p=a()+"0.00000000000000000000".slice(2,2+r)}}if(r>0){h=p.length;if(h<=r){p=n+"0.0000000000000000000".slice(0,r-h+2)+p}else{p=n+p.slice(0,h-r)+"."+p.slice(h-r)}}else{p=n+p}return p}})()}var $=String.prototype.split;if("ab".split(/(?:ab)*/).length!==2||".".split(/(.?)(.?)/).length!==4||"tesst".split(/(s)*/)[1]==="t"||"test".split(/(?:)/,-1).length!==4||"".split(/.?/).length||".".split(/()()/).length>1){(function(){var t=/()??/.exec("")[1]===void 0;String.prototype.split=function(r,e){var n=this;if(r===void 0&&e===0){return[]}if(l.call(r)!=="[object RegExp]"){return $.call(this,r,e)}var i=[],o=(r.ignoreCase?"i":"")+(r.multiline?"m":"")+(r.extended?"x":"")+(r.sticky?"y":""),a=0,u,p,s,f;r=new RegExp(r.source,o+"g");n+="";if(!t){u=new RegExp("^"+r.source+"$(?!\\s)",o)}e=e===void 0?-1>>>0:V(e);while(p=r.exec(n)){s=p.index+p[0].length;if(s>a){i.push(n.slice(a,p.index));if(!t&&p.length>1){p[0].replace(u,function(){for(var t=1;t<arguments.length-2;t++){if(arguments[t]===void 0){p[t]=void 0}}})}if(p.length>1&&p.index<n.length){Array.prototype.push.apply(i,p.slice(1))}f=p[0].length;a=s;if(i.length>=e){break}}if(r.lastIndex===p.index){r.lastIndex++}}if(a===n.length){if(f||!r.test("")){i.push("")}}else{i.push(n.slice(a))}return i.length>e?i.slice(0,e):i}})()}else if("0".split(void 0,0).length){String.prototype.split=function mr(t,r){if(t===void 0&&r===0){return[]}return $.call(this,t,r)}}var G=String.prototype.replace;var P=function(){var t=[];"x".replace(/x(.)?/g,function(r,e){t.push(e)});return t.length===1&&typeof t[0]==="undefined"}();if(!P){String.prototype.replace=function wr(t,r){var e=u(r);var n=p(t)&&/\)[*?]/.test(t.source);if(!e||!n){return G.call(this,t,r)}else{var i=function(e){var n=arguments.length;var i=t.lastIndex;t.lastIndex=0;var o=t.exec(e);t.lastIndex=i;o.push(arguments[n-2],arguments[n-1]);return r.apply(this,o)};return G.call(this,t,i)}}}if("".substr&&"0b".substr(-1)!=="b"){var B=String.prototype.substr;String.prototype.substr=function Sr(t,r){return B.call(this,t<0?(t=this.length+t)<0?0:t:t,r)}}var H="	\n\f\r \xa0\u1680\u180e\u2000\u2001\u2002\u2003"+"\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028"+"\u2029\ufeff";var L="\u200b";if(!String.prototype.trim||H.trim()||!L.trim()){H="["+H+"]";var X=new RegExp("^"+H+H+"*"),Y=new RegExp(H+H+"*$");String.prototype.trim=function xr(){if(this===void 0||this===null){throw new TypeError("can't convert "+this+" to object")}return String(this).replace(X,"").replace(Y,"")}}if(parseInt(H+"08")!==8||parseInt(H+"0x16")!==22){parseInt=function(t){var r=/^0[xX]/;return function e(n,i){n=String(n).trim();if(!Number(i)){i=r.test(n)?16:10}return t(n,i)}}(parseInt)}function q(t){t=+t;if(t!==t){t=0}else if(t!==0&&t!==1/0&&t!==-(1/0)){t=(t>0||-1)*Math.floor(Math.abs(t))}return t}function z(t){var r=typeof t;return t===null||r==="undefined"||r==="boolean"||r==="number"||r==="string"}function K(t){var r,e,n;if(z(t)){return t}e=t.valueOf;if(u(e)){r=e.call(t);if(z(r)){return r}}n=t.toString;if(u(n)){r=n.call(t);if(z(r)){return r}}throw new TypeError}var Q=function(t){if(t==null){throw new TypeError("can't convert "+t+" to object")}return Object(t)};var V=function Ar(t){return t>>>0}});
+//# sourceMappingURL=es5-shim.map;
+(function e(t, n, r) {
+  function s(o, u) {
+    if (!n[o]) {
+      if (!t[o]) {
+        var a = typeof require == "function" && require;
+        if (!u && a) return a(o, !0);
+        if (i) return i(o, !0);
+        var f = new Error("Cannot find module '" + o + "'");
+        throw f.code = "MODULE_NOT_FOUND", f;
+      }
+      var l = n[o] = {
+        exports: {}
+      };
+      t[o][0].call(l.exports, function(e) {
+        var n = t[o][1][e];
+        return s(n ? n : e);
+      }, l, l.exports, e, t, n, r);
+    }
+    return n[o].exports;
+  }
+  var i = typeof require == "function" && require;
+  for (var o = 0; o < r.length; o++) s(r[o]);
+  return s;
+})({
+  1: [ function(require, module, exports) {
+    var process = module.exports = {};
+    process.nextTick = function() {
+      var canSetImmediate = typeof window !== "undefined" && window.setImmediate;
+      var canPost = typeof window !== "undefined" && window.postMessage && window.addEventListener;
+      if (canSetImmediate) {
+        return function(f) {
+          return window.setImmediate(f);
+        };
+      }
+      if (canPost) {
+        var queue = [];
+        window.addEventListener("message", function(ev) {
+          var source = ev.source;
+          if ((source === window || source === null) && ev.data === "process-tick") {
+            ev.stopPropagation();
+            if (queue.length > 0) {
+              var fn = queue.shift();
+              fn();
+            }
+          }
+        }, true);
+        return function nextTick(fn) {
+          queue.push(fn);
+          window.postMessage("process-tick", "*");
+        };
+      }
+      return function nextTick(fn) {
+        setTimeout(fn, 0);
+      };
+    }();
+    process.title = "browser";
+    process.browser = true;
+    process.env = {};
+    process.argv = [];
+    function noop() {}
+    process.on = noop;
+    process.addListener = noop;
+    process.once = noop;
+    process.off = noop;
+    process.removeListener = noop;
+    process.removeAllListeners = noop;
+    process.emit = noop;
+    process.binding = function(name) {
+      throw new Error("process.binding is not supported");
+    };
+    process.cwd = function() {
+      return "/";
+    };
+    process.chdir = function(dir) {
+      throw new Error("process.chdir is not supported");
+    };
+  }, {} ],
+  2: [ function(require, module, exports) {
+    "use strict";
+    var asap = require("asap");
+    module.exports = Promise;
+    function Promise(fn) {
+      if (typeof this !== "object") throw new TypeError("Promises must be constructed via new");
+      if (typeof fn !== "function") throw new TypeError("not a function");
+      var state = null;
+      var value = null;
+      var deferreds = [];
+      var self = this;
+      this.then = function(onFulfilled, onRejected) {
+        return new self.constructor(function(resolve, reject) {
+          handle(new Handler(onFulfilled, onRejected, resolve, reject));
+        });
+      };
+      function handle(deferred) {
+        if (state === null) {
+          deferreds.push(deferred);
+          return;
+        }
+        asap(function() {
+          var cb = state ? deferred.onFulfilled : deferred.onRejected;
+          if (cb === null) {
+            (state ? deferred.resolve : deferred.reject)(value);
+            return;
+          }
+          var ret;
+          try {
+            ret = cb(value);
+          } catch (e) {
+            deferred.reject(e);
+            return;
+          }
+          deferred.resolve(ret);
+        });
+      }
+      function resolve(newValue) {
+        try {
+          if (newValue === self) throw new TypeError("A promise cannot be resolved with itself.");
+          if (newValue && (typeof newValue === "object" || typeof newValue === "function")) {
+            var then = newValue.then;
+            if (typeof then === "function") {
+              doResolve(then.bind(newValue), resolve, reject);
+              return;
+            }
+          }
+          state = true;
+          value = newValue;
+          finale();
+        } catch (e) {
+          reject(e);
+        }
+      }
+      function reject(newValue) {
+        state = false;
+        value = newValue;
+        finale();
+      }
+      function finale() {
+        for (var i = 0, len = deferreds.length; i < len; i++) handle(deferreds[i]);
+        deferreds = null;
+      }
+      doResolve(fn, resolve, reject);
+    }
+    function Handler(onFulfilled, onRejected, resolve, reject) {
+      this.onFulfilled = typeof onFulfilled === "function" ? onFulfilled : null;
+      this.onRejected = typeof onRejected === "function" ? onRejected : null;
+      this.resolve = resolve;
+      this.reject = reject;
+    }
+    function doResolve(fn, onFulfilled, onRejected) {
+      var done = false;
+      try {
+        fn(function(value) {
+          if (done) return;
+          done = true;
+          onFulfilled(value);
+        }, function(reason) {
+          if (done) return;
+          done = true;
+          onRejected(reason);
+        });
+      } catch (ex) {
+        if (done) return;
+        done = true;
+        onRejected(ex);
+      }
+    }
+  }, {
+    asap: 4
+  } ],
+  3: [ function(require, module, exports) {
+    "use strict";
+    var Promise = require("./core.js");
+    var asap = require("asap");
+    module.exports = Promise;
+    function ValuePromise(value) {
+      this.then = function(onFulfilled) {
+        if (typeof onFulfilled !== "function") return this;
+        return new Promise(function(resolve, reject) {
+          asap(function() {
+            try {
+              resolve(onFulfilled(value));
+            } catch (ex) {
+              reject(ex);
+            }
+          });
+        });
+      };
+    }
+    ValuePromise.prototype = Promise.prototype;
+    var TRUE = new ValuePromise(true);
+    var FALSE = new ValuePromise(false);
+    var NULL = new ValuePromise(null);
+    var UNDEFINED = new ValuePromise(undefined);
+    var ZERO = new ValuePromise(0);
+    var EMPTYSTRING = new ValuePromise("");
+    Promise.resolve = function(value) {
+      if (value instanceof Promise) return value;
+      if (value === null) return NULL;
+      if (value === undefined) return UNDEFINED;
+      if (value === true) return TRUE;
+      if (value === false) return FALSE;
+      if (value === 0) return ZERO;
+      if (value === "") return EMPTYSTRING;
+      if (typeof value === "object" || typeof value === "function") {
+        try {
+          var then = value.then;
+          if (typeof then === "function") {
+            return new Promise(then.bind(value));
+          }
+        } catch (ex) {
+          return new Promise(function(resolve, reject) {
+            reject(ex);
+          });
+        }
+      }
+      return new ValuePromise(value);
+    };
+    Promise.all = function(arr) {
+      var args = Array.prototype.slice.call(arr);
+      return new Promise(function(resolve, reject) {
+        if (args.length === 0) return resolve([]);
+        var remaining = args.length;
+        function res(i, val) {
+          try {
+            if (val && (typeof val === "object" || typeof val === "function")) {
+              var then = val.then;
+              if (typeof then === "function") {
+                then.call(val, function(val) {
+                  res(i, val);
+                }, reject);
+                return;
+              }
+            }
+            args[i] = val;
+            if (--remaining === 0) {
+              resolve(args);
+            }
+          } catch (ex) {
+            reject(ex);
+          }
+        }
+        for (var i = 0; i < args.length; i++) {
+          res(i, args[i]);
+        }
+      });
+    };
+    Promise.reject = function(value) {
+      return new Promise(function(resolve, reject) {
+        reject(value);
+      });
+    };
+    Promise.race = function(values) {
+      return new Promise(function(resolve, reject) {
+        values.forEach(function(value) {
+          Promise.resolve(value).then(resolve, reject);
+        });
+      });
+    };
+    Promise.prototype["catch"] = function(onRejected) {
+      return this.then(null, onRejected);
+    };
+  }, {
+    "./core.js": 2,
+    asap: 4
+  } ],
+  4: [ function(require, module, exports) {
+    (function(process) {
+      var head = {
+        task: void 0,
+        next: null
+      };
+      var tail = head;
+      var flushing = false;
+      var requestFlush = void 0;
+      var isNodeJS = false;
+      function flush() {
+        while (head.next) {
+          head = head.next;
+          var task = head.task;
+          head.task = void 0;
+          var domain = head.domain;
+          if (domain) {
+            head.domain = void 0;
+            domain.enter();
+          }
+          try {
+            task();
+          } catch (e) {
+            if (isNodeJS) {
+              if (domain) {
+                domain.exit();
+              }
+              setTimeout(flush, 0);
+              if (domain) {
+                domain.enter();
+              }
+              throw e;
+            } else {
+              setTimeout(function() {
+                throw e;
+              }, 0);
+            }
+          }
+          if (domain) {
+            domain.exit();
+          }
+        }
+        flushing = false;
+      }
+      if (typeof process !== "undefined" && process.nextTick) {
+        isNodeJS = true;
+        requestFlush = function() {
+          process.nextTick(flush);
+        };
+      } else if (typeof setImmediate === "function") {
+        if (typeof window !== "undefined") {
+          requestFlush = setImmediate.bind(window, flush);
+        } else {
+          requestFlush = function() {
+            setImmediate(flush);
+          };
+        }
+      } else if (typeof MessageChannel !== "undefined") {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = flush;
+        requestFlush = function() {
+          channel.port2.postMessage(0);
+        };
+      } else {
+        requestFlush = function() {
+          setTimeout(flush, 0);
+        };
+      }
+      function asap(task) {
+        tail = tail.next = {
+          task: task,
+          domain: isNodeJS && process.domain,
+          next: null
+        };
+        if (!flushing) {
+          flushing = true;
+          requestFlush();
+        }
+      }
+      module.exports = asap;
+    }).call(this, require("_process"));
+  }, {
+    _process: 1
+  } ],
+  5: [ function(require, module, exports) {
+    if (typeof Promise.prototype.done !== "function") {
+      Promise.prototype.done = function(onFulfilled, onRejected) {
+        var self = arguments.length ? this.then.apply(this, arguments) : this;
+        self.then(null, function(err) {
+          setTimeout(function() {
+            throw err;
+          }, 0);
+        });
+      };
+    }
+  }, {} ],
+  6: [ function(require, module, exports) {
+    var asap = require("asap");
+    if (typeof Promise === "undefined") {
+      Promise = require("./lib/core.js");
+      require("./lib/es6-extensions.js");
+    }
+    require("./polyfill-done.js");
+  }, {
+    "./lib/core.js": 2,
+    "./lib/es6-extensions.js": 3,
+    "./polyfill-done.js": 5,
+    asap: 4
+  } ]
+}, {}, [ 6 ]);
+//# sourceMappingURL=/polyfills/promise-6.1.0.js.map;
+/*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
  *
@@ -9203,7 +9586,8 @@ if ( typeof noGlobal === strundefined ) {
 return jQuery;
 
 }));
-;/*!
+;
+/*!
 
  handlebars v3.0.0
 
@@ -12949,7 +13333,8 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 
   return __module0__;
 }));
-;/**
+;
+/**
  * A neXtProt js client
  */
 ( function (root) {
@@ -12964,7 +13349,8 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 
         //?default-graph-uri=&named-graph-uri=&output=json
 
-        var nextprotApiUrl = "https://api.nextprot.org/entry/";
+        var tempApiUrl = "http://dev-api.nextprot.org/entries/";
+        var nextprotApiUrl = "https://api.nextprot.org//entry/";
         var sparqlEndpoint = "https://api.nextprot.org/sparql";
         var sparqlFormat = "?output=json";
         var sparqlPrefixes = "PREFIX :<http://nextprot.org/rdf#> "+
@@ -12988,7 +13374,6 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "+
             "PREFIX sim:<http://purl.org/ontology/similarity/> "+
             "PREFIX source:<http://nextprot.org/rdf/source/> "+
-            "PREFIX term:<http://nextprot.org/rdf/terminology/> "+
             "PREFIX xref:<http://nextprot.org/rdf/xref/> "+
             "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#> ";
 
@@ -12996,9 +13381,17 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
         var applicationName = null;
         var clientInfo = null;
 
-        var NextprotClient = function (appName, cInfo) {
+
+        var NextprotClient = function (appName, clientInformation) {
             applicationName = appName;
-            clientInfo = cInfo;
+            clientInfo = clientInformation;
+            if(!appName){
+                throw "Please provide some application name  ex:  new Nextprot.Client('demo application for visualizing peptides', clientInformation);";
+            }
+
+            if(!clientInformation){
+                throw "Please provide some client information ex:  new Nextprot.Client(applicationName, 'Calipho SIB at Geneva');";
+            }
         };
 
         //Util methods
@@ -13009,11 +13402,6 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         };
 
-        //Gets the entry set in the parameter
-        NextprotClient.prototype.getEntryName = function(){
-            return _getURLParameter("nxentry") || 'NX_P01308'; //By default returns the insulin
-        };
-
         var normalizeEntry = function (entry) {
             if (entry.substring(0,3) !== "NX_") {
                 entry = "NX_"+ entry;
@@ -13021,9 +13409,86 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             return entry;
         };
 
+        function _changeParamOrAddParamByName(href, paramName, newVal) {
+            var tmpRegex = new RegExp("(" + paramName + "=)[a-zA-Z0-9_]+", 'ig');
+            if (href.match(tmpRegex) != null) {
+                return href.replace(tmpRegex, '$1'+newVal);
+            }
+            return href += (((href.indexOf("?") != -1) ? "&" : "?") + paramName + "=" + newVal);
+        }
+
+        //Gets the entry set in the parameter
+        NextprotClient.prototype.getEntryName = function(){
+            return normalizeEntry(_getURLParameter("nxentry") || 'NX_P01308'); //By default returns the insulin
+        };
+
+        NextprotClient.prototype.getInputOption = function(){
+            return _getURLParameter("inputOption") || ''; //By default returns the insulin
+        };
+
+        NextprotClient.prototype.changeEntry = function(elem){
+            var new_url = _changeParamOrAddParamByName(window.location.href, "nxentry", elem.value);
+            window.location.href = new_url;
+        };
+
         //private method, convention use an underscore
         var _callURL = function (entryName, context){
-             return Promise.resolve($.ajax(nextprotApiUrl + entryName + "/" + context + ".json"));
+
+            var me = this;
+
+            return new Promise(function(resolve, reject) {
+
+                var req = new XMLHttpRequest();
+                var url = nextprotApiUrl + entryName + "/" + context + ".json" + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
+                req.open("GET", url);
+
+                req.onload = function() {
+                    // This is called even on errors so check the status
+                    if (req.status == 200) {
+                        resolve(JSON.parse(req.responseText));
+                    }else {
+                        //reject(Error(req.status + " - " + JSON.parse(req.response).message));
+                        reject(Error(req.status));
+                    }
+                };
+
+                // Handle network errors
+                req.onerror = function() {
+                    reject(Error("Network Error"));
+                };
+
+                // Make the request
+                req.send();
+            });
+        };
+        var _callURLTemp = function (seq, mode){
+
+            var me = this;
+
+            return new Promise(function(resolve, reject) {
+
+                var req = new XMLHttpRequest();
+                var url = tempApiUrl + "search/peptide.json?peptide=" + seq + "&modeIL=" + mode;
+                req.open("GET", url);
+
+                req.onload = function() {
+                    // This is called even on errors so check the status
+                    if (req.status == 200) {
+                        resolve(JSON.parse(req.responseText));
+                    }else {
+                        //reject(Error(req.status + " - " + JSON.parse(req.response).message));
+                        reject(Error(req.status));
+                    }
+                };
+
+                // Handle network errors
+                req.onerror = function() {
+                    reject(Error("Network Error"));
+                };
+
+                // Make the request
+                req.send();
+            });
         };
 
         //NextprotClient.prototype.getProteinOverview = function() {
@@ -13032,11 +13497,23 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
         //    });
         //};
 
+        NextprotClient.prototype.getEntryforPeptide = function(seq) {
+            return _callURLTemp(seq, "true").then(function (data){
+                return data;
+            });
+        };
+
         NextprotClient.prototype.executeSparql = function(sparql) {
             var sparqlQuery = sparqlPrefixes+sparql;
             var url = sparqlEndpoint+sparqlFormat+"&query="+encodeURIComponent(sparqlQuery) + "&clientInfo=" + clientInfo + "&applicationName=" + applicationName;
             return Promise.resolve($.getJSON(url)).then(function (data){
                 return data;
+            });
+        };
+
+        NextprotClient.prototype.getAccession = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "accession").then(function (data){
+                return data.entry.properties;
             });
         };
 
@@ -13054,28 +13531,447 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 
         NextprotClient.prototype.getSecondaryStructure = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "secondary-structure").then(function (data){
-                return data.entry.annotations;
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
             });
         };
 
+        //NextprotClient.prototype.getPublicationById = function(pubId) {
+        //    return publicationsMap[p.md5];
+        //
+        //    //TODO if does not exist on map go and get it by the rest api
+        //
+        //};
+
+
         NextprotClient.prototype.getMatureProtein = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "mature-protein").then(function (data){
-                return data.entry.annotations;
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
             });
         };
 
         NextprotClient.prototype.getPeptide = function(entry) {
-            return _callURL(normalizeEntry(entry || this.getEntryName()), "peptide").then(function (data){
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "peptide-mapping").then(function (data){
                 return data.entry.peptideMappings;
             });
         };
 
         NextprotClient.prototype.getSrmPeptide = function(entry) {
-            return _callURL(normalizeEntry(entry || this.getEntryName()), "srm-peptide").then(function (data){
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "srm-peptide-mapping").then(function (data){
                 return data.entry.srmPeptideMappings;
             });
         };
 
+        NextprotClient.prototype.getSignalPeptide = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "signal-peptide").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getProPeptide = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "propeptide").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getDisulfideBond = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "disulfide-bond").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getAntibody = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "antibody").then(function (data){
+                return data.entry.antibodyMappings;
+            });
+        };
+        NextprotClient.prototype.getInitMeth= function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "initiator-methionine").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                //return data.entry.annotations;
+            });
+        };
+        NextprotClient.prototype.getModifResidue = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "modified-residue").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                //return data.entry.annotations;
+            });
+        };
+        NextprotClient.prototype.getCrossLink = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "cross-link").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+        NextprotClient.prototype.getGlycoSite = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "glycosylation-site").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getInteractingRegion = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "interacting-region").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getMiscellaneousSite = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "miscellaneous-site").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getActiveSite = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "active-site").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getMetalBindingSite = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "metal-binding-site").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getVariant = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "variant").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getExons = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "genomic-mapping").then(function (data){
+                return data.entry.genomicMappings[0].isoformMappings;
+            });
+        };
+
+        NextprotClient.prototype.getIsoformMapping = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "isoform/mapping").then(function (data){
+                return data;
+            });
+        };
+
+        NextprotClient.prototype.getLipidationSite = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "lipidation-site").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getTopologicalDomain = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "topological-domain").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getTransmembraneRegion = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "transmembrane-region").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getMutagenesis = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "mutagenesis").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getSequenceConflict = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "sequence-conflict").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getPeroxisomeTransitPeptide = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "peroxisome-transit-peptide").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getMitochondrialTransitPeptide = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "mitochondrial-transit-peptide").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getSelenocysteine = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "selenocysteine").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+
+        NextprotClient.prototype.getMiscellaneousRegion = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "miscellaneous-region").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getDomain = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "domain").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getRepeat = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "repeat").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getCalciumBinding = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "calcium-binding-region").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getZincFinger = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "zinc-finger-region").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getDnaBinding = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "dna-binding-region").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getMotif = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "short-sequence-motif").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getBiasedRegion = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "compositionally-biased-region").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getNucleotideBinding = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "nucleotide-phosphate-binding-region").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getCoiledCoilRegion = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "coiled-coil-region").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getBindingSite = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "binding-site").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getCleavageSite = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "cleavage-site").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getBetaStrand = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "beta-strand").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getHelix = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "helix").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
+
+        NextprotClient.prototype.getTurn = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "turn").then(function (data){
+                var publiMap = {};
+                var xrefMap = {};
+                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+                //return data.entry.annotations;
+                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+            });
+        };
 
         //node.js compatibility
         if (typeof exports !== 'undefined') {
@@ -13089,10 +13985,10 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 
 
 }(this));
-
+var numero = 0;
 //Utility methods
 var NXUtils = {
-    
+
     checkIsoformMatch:function(isoname, isonumber) {
         return isoname.endsWith("-"+isonumber)
     },
@@ -13101,10 +13997,10 @@ var NXUtils = {
         var result = null;
         //TODO allow users to specify isoform name without NX_
         //TODO the API should return the results in a sorted array
-        
+
         if(typeof isoformName === "number"){
             isoSequences.forEach(function (d) {
-                
+
                 if (d.uniqueName.endsWith("-"+isoformName)) {
                     console.log("returning" + d.sequence);
                     result = d.sequence;
@@ -13112,52 +14008,300 @@ var NXUtils = {
             });
         }else {
             isoSequences.forEach(function (d) {
-            if (d.uniqueName === isoformName) 
-                return d.sequence;
+                if (d.uniqueName === isoformName)
+                    return d.sequence;
             })
         }
         return result;
     },
-    convertMappingsToIsoformMap:function (mappings){
+    getLinkForFeature: function(accession, description, type) {
+        if (type === "peptide"){
+            var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
+            return "<a href='" + url + "'>" + description + "</a>";
+        }
+        else if (type === "antibody") {
+            var url = accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        }
+        else if (accession) {
+            var url = "http://www.nextprot.org/db/term/" + accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        }
+        else if (type==="publication") {
+            var url = "http://www.nextprot.org/db/publication/" + accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        }
+        else if (description) return description;
+        else return "";
+    },
+    convertMappingsToIsoformMap:function (featMappings, category,group){
+        var mappings = jQuery.extend([], featMappings);
+        var publiActive = false;
+        if (!(featMappings instanceof Array)) {
+            publiActive = true;
+            mappings = jQuery.extend([], featMappings.annot);
+        }
+        //console.log(mmappings);
         var result = {};
         mappings.forEach(function (mapping) {
-            for (var name in mapping.targetingIsoformsMap) {
-                console.log(name);
-                if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
-                    var start = mapping.targetingIsoformsMap[name].firstPosition,
-                        end = mapping.targetingIsoformsMap[name].lastPosition,
-                        evidence = mapping.evidences.map(function(d) {return d.assignedBy}).filter(function(item, pos, self) {
-                            return self.indexOf(item) == pos;});
-                    if (!result[name]) result[name] = [];
-                    result[name].push({
-                        start: start,
-                        end: end,
-                        length: end-start+1,
-                        description: mapping.description,
-                        cvTermAccessionCode: mapping.cvTermAccessionCode,
-                        evidence: evidence,
-                        evidenceLength: evidence.length
-                    });
+            if (mapping.hasOwnProperty("targetingIsoformsMap")) {
+                for (var name in mapping.targetingIsoformsMap) {
+                    if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
+                        var start = mapping.targetingIsoformsMap[name].firstPosition,
+                            end = mapping.targetingIsoformsMap[name].lastPosition,
+                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, mapping.description),
+                            description = mapping.description,
+                            quality = mapping.qualityQualifier !== "GOLD" ? mapping.qualityQualifier.toLowerCase() : "",
+                            source = mapping.evidences.map(function (d) {
+                                var pub = null;
+                                var xref = null;
+                                if (publiActive) {
+                                    if (featMappings.publi[d.publicationMD5]) {
+                                        pub = d.publicationMD5;
+                                    }
+                                    if (featMappings.xrefs[d.resourceId]) {
+                                        xref = featMappings.xrefs[d.resourceId];
+                                    }
+                                    return {
+                                        evidenceCodeName: d.evidenceCodeName,
+                                        assignedBy: d.assignedBy,
+                                        resourceDb: d.resourceDb,
+                                        externalDb: d.resourceDb !== "UniProt",
+                                        publicationMD5: d.publicationMD5,
+                                        title: pub ? NXUtils.getLinkForFeature(featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
+                                        authors: pub ? featMappings.publi[pub].authors.map(function (d) { return {lastName: d.lastName, initials: d.initials}}) : [],
+                                        journal: pub ? featMappings.publi[pub].cvJournal ? featMappings.publi[pub].cvJournal.name : "" : "",
+                                        volume: pub ? featMappings.publi[pub].volume : "",
+                                        year: pub ? featMappings.publi[pub].publicationYear : "",
+                                        firstPage: pub ? featMappings.publi[pub].firstPage  : "",
+                                        lastPage: pub ? (featMappings.publi[pub].lastPage === "" ? featMappings.publi[pub].firstPage : featMappings.publi[pub].lastPage) : "",
+                                        pubId: pub ? featMappings.publi[pub].publicationId : "",
+                                        abstract: pub ? featMappings.publi[pub].abstractText : "",
+                                        dbXrefs: pub ? featMappings.publi[pub].dbXrefs.map( function (o) {return {name: o.databaseName==="DOI" ? "Full Text" : o.databaseName, url:o.resolvedUrl, accession: o.accession}}) : [],
+                                        crossRef: xref ? {dbName: xref.databaseName, name: xref.accession, url: xref.resolvedUrl} : null
+                                    }
+                                }
+                                else return {
+                                    evidenceCodeName: d.evidenceCodeName,
+                                    assignedBy: d.assignedBy,
+                                    publicationMD5: d.publicationMD5,
+                                    title:"",
+                                    authors:[],
+                                    journal:"",
+                                    volume:"",
+                                    abstract:""
+                                }
+                            }),
+                            variant = false;
+                        if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
+                            link = "<span style='color:#00C500'>" + mapping.variant.original + " → " +  mapping.variant.variant + "</span>";
+                            description = "<span style=\"color:#00C500\">" + mapping.variant.original + " → " +  mapping.variant.variant + "</span>  ";
+                            variant = true;
+                            if (mapping.description) {
+                                var reg = /\[(.*?)\]/g;
+                                var match = reg.exec(mapping.description);
+                                var desc = mapping.description;
+                                if (match) {
+                                    var parseMatch = match[1].split(":");
+                                    var desc = mapping.description.replace(/(\[.*?\])/g,NXUtils.getLinkForFeature(parseMatch[2],parseMatch[0]));
+
+                                }
+                                link += " ; "+ desc;
+                            }
+                        }
+                        if (!result[name]) result[name] = [];
+                        result[name].push({
+                            start: start,
+                            end: end,
+                            length: end-start+1,
+                            id: category.replace(/\s/g,'')+"_"+start.toString()+"_"+end.toString(),
+                            description: description,
+                            quality: quality,
+                            category: category,
+                            group:group,
+                            link: link,
+                            evidenceLength: source.length,
+                            source:source,
+                            variant: variant
+                        });
+                    }
                 }
             }
-        })      
-        return result;
-    }
-}
+            //TODO This is the old format, the API should evolve
+            else if (mapping.hasOwnProperty("isoformSpecificity")) {
+                for (var name in mapping.isoformSpecificity) {
+                    if (mapping.isoformSpecificity.hasOwnProperty(name)) {
+                        for (var i = 0; i < mapping.isoformSpecificity[name].positions.length; i++) {
+                            var start = mapping.isoformSpecificity[name].positions[i].first,
+                                end = mapping.isoformSpecificity[name].positions[i].second,
+                                description = "",
+                                link = "",
+                                source = [];
+                            if (mapping.hasOwnProperty("evidences")) {
+                                source = mapping.evidences.map(function (d) {return {
+                                    evidenceCodeName: d.evidenceCodeName,
+                                    assignedBy: d.assignedBy,
+                                    publicationMD5: d.publicationMD5
+                                }});
+                            }
+                            if (mapping.hasOwnProperty("xrefs")) {
+                                description = mapping.xrefs[0].accession;
+                                link = NXUtils.getLinkForFeature(mapping.xrefs[0].resolvedUrl, description, "antibody")
+                            }
+                            else {
+                                description = mapping.evidences[0].accession;
+                                for (ev in mapping.evidences) if (mapping.evidences[ev].databaseName === "PeptideAtlas" || mapping.evidences[ev].databaseName === "SRMAtlas") {
+                                    description = mapping.evidences[ev].accession;
+                                    link = NXUtils.getLinkForFeature(description, description, "peptide");
 
-var NXViewerUtils = {
-    convertNXAnnotations:function (annotations, category){
-        return annotations.map(function (annotation) {
+                                    break;
+                                }
+                            }
+
+                            if (!result[name]) result[name] = [];
+                            result[name].push({
+                                start: start,
+                                end: end,
+                                length: end - start,
+                                id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString(),
+                                description: description,
+                                category: category,
+                                group:group,
+                                link: link,
+                                evidenceLength: source.length,
+                                source:source
+                            });
+                        }
+                    }
+                }
+            }
+        });
+        numero+=1;
+        for (var iso in result) {
+            result[iso].sort(function (a, b) {
+                return a.start - b.start;
+            })
+        }
+        return result;
+    },
+    convertPublications: function (publi, HashMD5) {
+        for (var pub in publi) {
+            HashMD5[publi[pub].md5]= {
+                title:publi[pub].title,
+                author:publi[pub].authors.map(function (d) { return {lastName: d.lastName, initials: d.initials}}),
+                journal:publi[pub].cvJournal.name,
+                volume:publi[pub].volume,
+                abstract:publi[pub].abstractText
+            }
+        }
+
+    },
+    convertExonsMappingsToIsoformMap:function (mappings) {
+        return mappings.map( function (d) {
             return {
-                x: annotation.start,
-                y: annotation.end,
-                id: annotation.start.toString()+"_"+annotation.end.toString(),
-                category: category,
-                description: annotation.description
+                uniqueName: d.uniqueName,
+                isoMainName: d.isoMainName,
+                mapping: d.positionsOfIsoformOnReferencedGene.map(function (o) {
+                    return {start:o.key,end:o.value};
+                })
             }
         })
     }
-};this["HBtemplates"] = this["HBtemplates"] || {};
+};
+
+var NXViewerUtils = {
+    convertNXAnnotations:function (annotations, metadata){
+        if (!annotations) return "Cannot load this";
+        var result={};
+        for (name in annotations) {
+            var meta = jQuery.extend({}, metadata);
+            meta.data = annotations[name].map(function (annotation) {
+                return {
+                    x: annotation.start,
+                    y: annotation.end,
+                    id: annotation.id,
+                    category: annotation.category,
+                    description: annotation.description
+                }
+            });
+            result[name] = meta;
+        }
+        return result;
+    }
+};;
+var loadOverview = function(overview,nxEntryName){
+
+    if ($("#nx-overview").length > 0) {
+        Handlebars.registerHelper('link_to', function (type, options) {
+            switch (type) {
+                case "family":
+                    var url = "http://www.nextprot.org/db/term/" + this.accession;
+                    return "<a href='" + url + "'>" + this.name + "</a>";
+                case "history":
+                    console.log(type);
+                    console.log(this);
+                    var url = "http://www.uniprot.org/uniprot/" + this.slice(3) + "?version=*";
+                    return "<a href='" + url + "'>Complete UniProtKB history</a>";
+            }
+        });
+
+        console.log(nxEntryName);
+
+        var data = {
+            "entryName": overview.proteinNames[0].synonymName,
+            "alternativeName": overview.proteinNames[0].synonyms,
+            "geneName": overview.geneNames[0].synonymName,
+            "cleavage": overview.cleavedRegionNames,
+            "family": overview.families,
+            "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),
+            "integDate": overview.history.formattedNextprotIntegrationDate,
+            "lastUpdate": overview.history.formattedNextprotUpdateDate,
+            "version": overview.history.uniprotVersion,
+            "UniprotIntegDate": overview.history.formattedUniprotIntegrationDate,
+            "UniprotLastUpdate": overview.history.formattedUniprotUpdateDate,
+            "seqVersion": overview.history.sequenceVersion,
+            "accessionNumber": nxEntryName
+        };
+
+        console.log(data);
+
+        var template = HBtemplates['templates/overviewProtein.tmpl'];
+        console.log(template);
+        var result = template(data);
+        $("#nx-overview").append(result);
+
+        $("#extender").click(function (event) {
+            event.stopPropagation();
+            //var isScrollbarActiveAtFirst= $(window).hasVerticalScrollBar();
+            $("#INFOS-FULL").toggle("slow");
+            $("#INFOS-LESS").toggle("slow");
+            //var isScrollbarActiveAtEnd= $(window).hasVerticalScrollBar();
+            //if ((isScrollbarActiveAtFirst) && isScrollbarActiveAtFirst !== isScrollbarActiveAtEnd) {
+            //    $(body).removeClass("ignoreShift");
+            //}
+            //else if ((isScrollbarActiveAtFirst === false) && isScrollbarActiveAtFirst !== isScrollbarActiveAtEnd) {
+            //    $(body).addClass("ignoreShift");
+            //}
+            $(this).text(function (i, text) {
+                return text === "Extend overview" ? "Collapse overview" : "Extend overview";
+            });
+        });
+    }
+
+};
+$(function () {
+    if($("#nx-overview")){ // laad the overview if it exists
+        var Nextprot = window.Nextprot;
+        var nx = new Nextprot.Client("Demo nextprot", "Calipho Group");
+        var nxEntryName = nx.getEntryName();
+        nx.getProteinOverview().then(function(data) {
+        loadOverview(data, nxEntryName);
+        });
+    }
+});;
+if(Handlebars){
+  
+this["HBtemplates"] = this["HBtemplates"] || {};
 
 this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
@@ -13275,71 +14419,6 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   return buffer + "</dd>\n            </dl>\n        </div>\n    </div>\n</div>\n<p style=\"margin:10px 10px;\">Entry whose protein(s) existence is based on "
     + alias3(((helper = (helper = helpers.proteineEvidence || (depth0 != null ? depth0.proteineEvidence : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"proteineEvidence","hash":{},"data":data}) : helper)))
     + "</p>";
-},"useData":true});;var loadOverview = function(overview,nxEntryName){
-
-    if ($("#nx-overview").length > 0) {
-        Handlebars.registerHelper('link_to', function (type, options) {
-            switch (type) {
-                case "family":
-                    var url = "http://www.nextprot.org/db/term/" + this.accession;
-                    return "<a href='" + url + "'>" + this.name + "</a>";
-                case "history":
-                    console.log(type);
-                    console.log(this);
-                    var url = "http://www.uniprot.org/uniprot/" + this.slice(3) + "?version=*";
-                    return "<a href='" + url + "'>Complete UniProtKB history</a>";
-            }
-        });
-
-        console.log(nxEntryName);
-
-        var data = {
-            "entryName": overview.proteinNames[0].synonymName,
-            "alternativeName": overview.proteinNames[0].synonyms,
-            "geneName": overview.geneNames[0].synonymName,
-            "cleavage": overview.cleavedRegionNames,
-            "family": overview.families,
-            "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),
-            "integDate": overview.history.formattedNextprotIntegrationDate,
-            "lastUpdate": overview.history.formattedNextprotUpdateDate,
-            "version": overview.history.uniprotVersion,
-            "UniprotIntegDate": overview.history.formattedUniprotIntegrationDate,
-            "UniprotLastUpdate": overview.history.formattedUniprotUpdateDate,
-            "seqVersion": overview.history.sequenceVersion,
-            "accessionNumber": nxEntryName
-        };
-
-        console.log(data);
-
-        var template = HBtemplates['templates/overviewProtein.tmpl'];
-        console.log(template);
-        var result = template(data);
-        $("#nx-overview").append(result);
-
-        $("#extender").click(function (event) {
-            event.stopPropagation();
-            //var isScrollbarActiveAtFirst= $(window).hasVerticalScrollBar();
-            $("#INFOS-FULL").toggle("slow");
-            $("#INFOS-LESS").toggle("slow");
-            //var isScrollbarActiveAtEnd= $(window).hasVerticalScrollBar();
-            //if ((isScrollbarActiveAtFirst) && isScrollbarActiveAtFirst !== isScrollbarActiveAtEnd) {
-            //    $(body).removeClass("ignoreShift");
-            //}
-            //else if ((isScrollbarActiveAtFirst === false) && isScrollbarActiveAtFirst !== isScrollbarActiveAtEnd) {
-            //    $(body).addClass("ignoreShift");
-            //}
-            $(this).text(function (i, text) {
-                return text === "Extend overview" ? "Collapse overview" : "Extend overview";
-            });
-        });
-    }
-
-};
-$(function () {
-    var Nextprot = window.Nextprot;
-    var nx = new Nextprot.Client();
-    var nxEntryName = nx.getEntryName();
-    nx.getProteinOverview().then(function(data) {
-    loadOverview(data, nxEntryName);
-    });
-});
+},"useData":true});
+  
+}

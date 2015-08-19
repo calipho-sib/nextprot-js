@@ -21,7 +21,7 @@
   var pviz = this.pviz;
 
   var Nextprot = window.Nextprot;
-  var nx = new Nextprot.Client();
+  var nx = new Nextprot.Client("demo nextprot", "Calipho Group");
 
   nx.getProteinSequence().then(function (sequence){
 
@@ -41,8 +41,8 @@
     //Setting secondary structure
     nx.getSecondaryStructure().then(function (annotations){
       var features = [];
-      $("#numberOfFeatures").text(annotations.length);
-      annotations.forEach(function(annot){
+      $("#numberOfFeatures").text(annotations.annot.length);
+      annotations.annot.forEach(function(annot){
         var isoform1 = nx.getEntryName() + "-1";
         features.push({
           category: 'secondary structure',
