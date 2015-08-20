@@ -125,7 +125,7 @@
                 req.send();
             });
         };
-        var _callURLTemp = function (seq, mode){
+        var _callPepX = function (seq, mode){
 
             var me = this;
 
@@ -155,6 +155,15 @@
             });
         };
 
+        var _convertToTupleMap = function (data){
+            var publiMap = {};
+            var xrefMap = {};
+            data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
+            data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
+            //return data.entry.annotations;
+            return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+        };
+
         //NextprotClient.prototype.getProteinOverview = function() {
         //    return _callURL(this.getEntryName(), "overview").then(function (data){
         //        return data.entry.overview;
@@ -162,7 +171,7 @@
         //};
 
         NextprotClient.prototype.getEntryforPeptide = function(seq) {
-            return _callURLTemp(seq, "true").then(function (data){
+            return _callPepX(seq, "true").then(function (data){
                 return data;
             });
         };
@@ -195,31 +204,13 @@
 
         NextprotClient.prototype.getSecondaryStructure = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "secondary-structure").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
-        //NextprotClient.prototype.getPublicationById = function(pubId) {
-        //    return publicationsMap[p.md5];
-        //
-        //    //TODO if does not exist on map go and get it by the rest api
-        //
-        //};
-
-
         NextprotClient.prototype.getMatureProtein = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "mature-protein").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
@@ -237,34 +228,19 @@
 
         NextprotClient.prototype.getSignalPeptide = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "signal-peptide").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getProPeptide = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "propeptide").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getDisulfideBond = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "disulfide-bond").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
@@ -275,99 +251,54 @@
         };
         NextprotClient.prototype.getInitMeth= function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "initiator-methionine").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
                 //return data.entry.annotations;
             });
         };
         NextprotClient.prototype.getModifResidue = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "modified-residue").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
                 //return data.entry.annotations;
             });
         };
         NextprotClient.prototype.getCrossLink = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "cross-link").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
         NextprotClient.prototype.getGlycoSite = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "glycosylation-site").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getInteractingRegion = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "interacting-region").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getMiscellaneousSite = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "miscellaneous-site").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getActiveSite = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "active-site").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getMetalBindingSite = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "metal-binding-site").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getVariant = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "variant").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
@@ -385,255 +316,139 @@
 
         NextprotClient.prototype.getLipidationSite = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "lipidation-site").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getTopologicalDomain = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "topological-domain").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getTransmembraneRegion = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "transmembrane-region").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getMutagenesis = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "mutagenesis").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getSequenceConflict = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "sequence-conflict").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getPeroxisomeTransitPeptide = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "peroxisome-transit-peptide").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getMitochondrialTransitPeptide = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "mitochondrial-transit-peptide").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getSelenocysteine = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "selenocysteine").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
-
         NextprotClient.prototype.getMiscellaneousRegion = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "miscellaneous-region").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getDomain = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "domain").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getRepeat = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "repeat").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getCalciumBinding = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "calcium-binding-region").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getZincFinger = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "zinc-finger-region").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getDnaBinding = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "dna-binding-region").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getMotif = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "short-sequence-motif").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getBiasedRegion = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "compositionally-biased-region").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getNucleotideBinding = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "nucleotide-phosphate-binding-region").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getCoiledCoilRegion = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "coiled-coil-region").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getBindingSite = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "binding-site").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getCleavageSite = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "cleavage-site").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getBetaStrand = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "beta-strand").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getHelix = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "helix").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getTurn = function(entry) {
             return _callURL(normalizeEntry(entry || this.getEntryName()), "turn").then(function (data){
-                var publiMap = {};
-                var xrefMap = {};
-                data.entry.publications.forEach(function (p){ publiMap[p.md5] = p});
-                data.entry.xrefs.forEach(function (p){ xrefMap[p.dbXrefId] = p});
-                //return data.entry.annotations;
-                return {annot:data.entry.annotations,publi:publiMap,xrefs:xrefMap};
+                return _convertToTupleMap(data);
             });
         };
 
@@ -649,7 +464,6 @@
 
 
 }(this));
-var numero = 0;
 //Utility methods
 var NXUtils = {
 
@@ -666,7 +480,7 @@ var NXUtils = {
             isoSequences.forEach(function (d) {
 
                 if (d.uniqueName.endsWith("-"+isoformName)) {
-                    console.log("returning" + d.sequence);
+                    //console.log("returning" + d.sequence);
                     result = d.sequence;
                 }
             });
@@ -705,7 +519,6 @@ var NXUtils = {
             publiActive = true;
             mappings = jQuery.extend([], featMappings.annot);
         }
-        //console.log(mmappings);
         var result = {};
         mappings.forEach(function (mapping) {
             if (mapping.hasOwnProperty("targetingIsoformsMap")) {
@@ -840,7 +653,6 @@ var NXUtils = {
                 }
             }
         });
-        numero+=1;
         for (var iso in result) {
             result[iso].sort(function (a, b) {
                 return a.start - b.start;

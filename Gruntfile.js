@@ -8,7 +8,13 @@ module.exports = function (grunt) {
                 separator: ';\n'
             },
             basic: {
-                src: ['vendor/js/es5-shim.min.js','vendor/js/promise-6.1.0.js','bower_components/jquery/dist/jquery.js', 'bower_components/handlebars/handlebars.js', 'src/nextprot.js', 'src/nextprot-templates.js', 'dist/compiled-templates.js'],
+                src: ['vendor/js/es5-shim.min.js', //support for promises in IE lower than ie 9
+                    'vendor/js/promise-6.1.0.js', //support for promises in IE
+                    'bower_components/jquery/dist/jquery.js',
+                    'bower_components/handlebars/handlebars.js',
+                    'src/nextprot.js',
+                    'src/nextprot-templates.js',
+                    'dist/compiled-templates.js'],
                 dest: 'dist/nextprot.bundle.js'
             },
             extras: {
