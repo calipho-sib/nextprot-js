@@ -7,9 +7,12 @@ $(function () {
         if ($("#nx-overview").length > 0) {
             Handlebars.registerHelper('link_to', function (type, options) {
                 switch (type) {
-                    case "family":
+                    case "term":
                         var url = "http://www.nextprot.org/db/term/" + this.accession;
                         return "<a href='" + url + "'>" + this.name + "</a>";
+                    case "EC" :
+                        var url = "http://www.nextprot.org/db/term/" + this;
+                        return "<a href='" + url + "'> EC " + this + " </a>";
                     case "history":
                         console.log(type);
                         console.log(this);
@@ -19,11 +22,23 @@ $(function () {
             });
 
             console.log(nxEntryName);
+            var EC = [];
+            var short = [];
+            overview.recommendedProteinName.synonyms.forEach(function(p) {
+                if (p.qualifier === "EC") EC.push(p.name);
+                if (p.qualifier === "short") short.push(p.name);
+            });
 
             var data = {
                 "entryName": overview.proteinNames[0].synonymName,
-                "alternativeName": overview.proteinNames[0].synonyms,
-                "geneName": overview.geneNames[0].synonymName,
+                "recommendedProteinName": {
+                    name: overview.recommendedProteinName.name,
+                    EC: EC,
+                    short: short,
+                    synonymName:overview.recommendedProteinName.synonymName
+                },
+                "alternativeProteinNames": overview.alternativeProteinNames.map(function(p) {return {name: p.name, short: p.synonyms}}),
+                "geneName": overview.geneNames.map(function (o) {return {name: o.name, synonyms: o.synonyms.filter(function (p) {return p.category === "gene name"}), orf: o.synonyms.filter(function (p) {return p.category === "ORF"})}}),
                 "cleavage": overview.cleavedRegionNames,
                 "family": overview.families,
                 "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),
