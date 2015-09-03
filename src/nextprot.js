@@ -452,6 +452,12 @@
             });
         };
 
+        NextprotClient.prototype.getPTM = function(entry) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), "ptm").then(function (data){
+                return _convertToTupleMap(data);
+            });
+        };
+
         //node.js compatibility
         if (typeof exports !== 'undefined') {
             exports.Client = NextprotClient;

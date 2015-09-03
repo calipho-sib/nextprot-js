@@ -14041,11 +14041,10 @@ var NXViewerUtils = {
         return result;
     }
 };;
-
 $(function () {
 
 
-    var loadOverview = function(overview,nxEntryName){
+    var loadOverview = function (overview, nxEntryName) {
 
         if ($("#nx-overview").length > 0) {
             Handlebars.registerHelper('link_to', function (type, options) {
@@ -14067,10 +14066,13 @@ $(function () {
             console.log(nxEntryName);
             var EC = [];
             var short = [];
-            overview.recommendedProteinName.synonyms.forEach(function(p) {
-                if (p.qualifier === "EC") EC.push(p.name);
-                if (p.qualifier === "short") short.push(p.name);
-            });
+
+            if (overview.recommendedProteinName.synonyms) {
+                overview.recommendedProteinName.synonyms.forEach(function (p) {
+                    if (p.qualifier === "EC") EC.push(p.name);
+                    if (p.qualifier === "short") short.push(p.name);
+                });
+            }
 
             var data = {
                 "entryName": overview.proteinNames[0].synonymName,
@@ -14078,10 +14080,22 @@ $(function () {
                     name: overview.recommendedProteinName.name,
                     EC: EC,
                     short: short,
-                    synonymName:overview.recommendedProteinName.synonymName
+                    synonymName: overview.recommendedProteinName.synonymName
                 },
-                "alternativeProteinNames": overview.alternativeProteinNames.map(function(p) {return {name: p.name, short: p.synonyms}}),
-                "geneName": overview.geneNames.map(function (o) {return {name: o.name, synonyms: o.synonyms.filter(function (p) {return p.category === "gene name"}), orf: o.synonyms.filter(function (p) {return p.category === "ORF"})}}),
+                "alternativeProteinNames": overview.alternativeProteinNames.map(function (p) {
+                    return {name: p.name, short: p.synonyms}
+                }),
+                "geneName": overview.geneNames.map(function (o) {
+                    return {
+                        name: o.name,
+                        synonyms: o.synonyms ? o.synonyms.filter(function (p) {
+                            return p.category === "gene name"
+                        }) : null,
+                        orf: o.synonyms ? o.synonyms.filter(function (p) {
+                            return p.category === "ORF"
+                        }) : null
+                    }
+                }),
                 "cleavage": overview.cleavedRegionNames,
                 "family": overview.families,
                 "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),
@@ -14121,12 +14135,12 @@ $(function () {
 
     };
 
-    if($("#nx-overview")){ // laad the overview if it exists
+    if ($("#nx-overview")) { // laad the overview if it exists
         var Nextprot = window.Nextprot;
         var nx = new Nextprot.Client("neXtprot overview loader", "Calipho Group");
         var nxEntryName = nx.getEntryName();
-        nx.getProteinOverview().then(function(data) {
-        loadOverview(data, nxEntryName);
+        nx.getProteinOverview().then(function (data) {
+            loadOverview(data, nxEntryName);
 
             var nxInputOption = nx.getInputOption();
 
@@ -14143,13 +14157,13 @@ $(function () {
             if (nxInputOption === "true") {
                 addEntrySelection();
                 nx.getAccession().then(function (data) {
-                    $(function() {
+                    $(function () {
                         $("#inputOptionDiv").append("<div class=\"alert alert-success entry-alert\" role=\"alert\" style=\"display:none\">You successfully load the entry !</div>");
                         $(".entry-alert").fadeIn("slow");
                         $(".entry-alert").delay(2000).fadeOut("slow");
                     });
-                }, function(error) {
-                    $(function() {
+                }, function (error) {
+                    $(function () {
                         $("#inputOptionDiv").append("<div class=\"alert alert-danger entry-alert\" role=\"alert\">This accession is not available !</div>");
                     });
                     console.error("Failed!", error);
