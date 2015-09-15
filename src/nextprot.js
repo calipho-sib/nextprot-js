@@ -12,35 +12,18 @@
     (function () {
 
         //?default-graph-uri=&named-graph-uri=&output=json
-
-        var tempApiUrl = "http://dev-api.nextprot.org/entries/";
-        var nextprotApiUrl = "https://api.nextprot.org//entry/";
-        var sparqlEndpoint = "https://api.nextprot.org/sparql";
+        
+        var apiBaseUrl = "http://alpha-api.nextprot.org";
+        var sparqlEndpoint = apiBaseUrl + "/sparql";
         var sparqlFormat = "?output=json";
-        var sparqlPrefixes = "PREFIX :<http://nextprot.org/rdf#> "+
-            "PREFIX annotation:<http://nextprot.org/rdf/annotation/> "+
-            "PREFIX context:<http://nextprot.org/rdf/context/> "+
-            "PREFIX cv:<http://nextprot.org/rdf/terminology/> "+
-            "PREFIX db:<http://nextprot.org/rdf/db/> "+
-            "PREFIX dc:<http://purl.org/dc/elements/1.1/> "+
-            "PREFIX dcterms:<http://purl.org/dc/terms/> "+
-            "PREFIX entry:<http://nextprot.org/rdf/entry/> "+
-            "PREFIX evidence:<http://nextprot.org/rdf/evidence/> "+
-            "PREFIX foaf:<http://xmlns.com/foaf/0.1/> "+
-            "PREFIX gene:<http://nextprot.org/rdf/gene/> "+
-            "PREFIX identifier:<http://nextprot.org/rdf/identifier/> "+
-            "PREFIX isoform:<http://nextprot.org/rdf/isoform/> "+
-            "PREFIX mo:<http://purl.org/ontology/mo/> "+
-            "PREFIX ov:<http://open.vocab.org/terms/> "+
-            "PREFIX owl:<http://www.w3.org/2002/07/owl#> "+
-            "PREFIX publication:<http://nextprot.org/rdf/publication/> "+
-            "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
-            "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "+
-            "PREFIX sim:<http://purl.org/ontology/similarity/> "+
-            "PREFIX source:<http://nextprot.org/rdf/source/> "+
-            "PREFIX xref:<http://nextprot.org/rdf/xref/> "+
-            "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#> ";
+        var sparqlPrefixes = "";
 
+        $.getJSON(apiBaseUrl + "/sparql-prefixes", function (result) {
+            for (var i in result) {
+                sparqlPrefixes += (result[i] + "\n");
+            }
+        });
+        
 
         var applicationName = null;
         var clientInfo = null;
@@ -81,6 +64,18 @@
             return href += (((href.indexOf("?") != -1) ? "&" : "?") + paramName + "=" + newVal);
         }
 
+        /** By default it is set to https://api.nextprot.org */
+        NextprotClient.prototype.setApiBaseUrl = function(_apiBaseUrl){
+            apiBaseUrl =  _apiBaseUrl;
+            sparqlEndpoint = apiBaseUrl + "/sparql";
+        };
+
+        /** By default it is set to https://api.nextprot.org/sparql */
+        NextprotClient.prototype.setSparqlEndpoint = function(_sparqlEndpoint){
+            sparqlEndpoint = _sparqlEndpoint;
+        };
+
+        
         //Gets the entry set in the parameter
         NextprotClient.prototype.getEntryName = function(){
             return normalizeEntry(_getURLParameter("nxentry") || 'NX_P01308'); //By default returns the insulin
@@ -103,7 +98,7 @@
             return new Promise(function(resolve, reject) {
 
                 var req = new XMLHttpRequest();
-                var url = nextprotApiUrl + entryName + "/" + context + ".json" + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
+                var url = apiBaseUrl + "/entry/"  + entryName + "/" + context + ".json" + "?clientInfo=" + clientInfo + "&applicationName=" + applicationName;
                 req.open("GET", url);
 
                 req.onload = function() {
