@@ -127,7 +127,7 @@
             return new Promise(function(resolve, reject) {
 
                 var req = new XMLHttpRequest();
-                var url = tempApiUrl + "search/peptide.json?peptide=" + seq + "&modeIL=" + mode;
+                var url = apiBaseUrl + "/entries/search/peptide.json?peptide=" + seq + "&modeIL=" + mode;
                 req.open("GET", url);
 
                 req.onload = function() {
