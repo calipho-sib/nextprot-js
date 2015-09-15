@@ -452,6 +452,14 @@
                 return _convertToTupleMap(data);
             });
         };
+        
+        /** USE THIS INSTEAD OF THE OTHERS for example getEntryPart(NX_1038042, "ptm") */
+        NextprotClient.prototype.getEntryPart = function(entry, entryPart) {
+            return _callURL(normalizeEntry(entry || this.getEntryName()), entryPart).then(function (data){
+                return _convertToTupleMap(data);
+            });
+        };
+
 
         //node.js compatibility
         if (typeof exports !== 'undefined') {

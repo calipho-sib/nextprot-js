@@ -1,6 +1,5 @@
 {
   "name": "nextprot-js",
-  "version": "0.0.8",
   "main": "dist/nextprot.min.js",
   "ignore": [
     "**/.*",
