@@ -129,4 +129,9 @@ $(function () {
 
         });
     }
+
+    if(nx.getEnvironment() !== 'pro'){
+        $("body").append("<span style='position: absolute; top: 0; left: 0; border: 0; color: darkred; margin: 20px; font-weight: bold'>" + nx.getEnvironment().toUpperCase() + " API</span>");
+    }
+
 });

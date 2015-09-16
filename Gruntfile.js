@@ -18,9 +18,10 @@ module.exports = function (grunt) {
                 dest: 'dist/nextprot.bundle.js'
             },
             extras: {
-                src: ['vendor/js/es5-shim.min.js','vendor/js/promise-6.1.0.js','bower_components/jquery/dist/jquery.js', 'bower_components/handlebars/handlebars.js', 'src/nextprot.js', 'src/nextprot-templates.js', 'dist/compiled-templates.js'],
-                dest: 'demo/app.js'
+                src: ['src/nextprot.js'],
+                dest: 'dist/nextprot.js'
             }
+
         },
         uglify: {
             options: {
@@ -68,7 +69,8 @@ module.exports = function (grunt) {
         watch: {
             all: {
                 options: {livereload: true},
-                files: ['*.js']
+                files: ['src/*.js'],
+                tasks: 'concat'
             },
             handlebars: {
                 files: 'templates/*.tmpl',

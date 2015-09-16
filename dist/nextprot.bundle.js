@@ -12964,9 +12964,19 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 
     (function () {
 
-        //?default-graph-uri=&named-graph-uri=&output=json
-        
-        var apiBaseUrl = "http://alpha-api.nextprot.org";
+        //Util methods
+        var _getURLParameter = function (name){
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        };
+
+        var environment = _getURLParameter("env") || 'pro'; //By default returns the production
+        var apiBaseUrl = "https://api.nextprot.org";
+        if(environment !== 'pro'){
+            apiBaseUrl = "http://" + environment + "-api.nextprot.org";
+        }
         var sparqlEndpoint = apiBaseUrl + "/sparql";
         var sparqlFormat = "?output=json";
         var sparqlPrefixes = "";
@@ -12976,7 +12986,6 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
                 sparqlPrefixes += (result[i] + "\n");
             }
         });
-        
 
         var applicationName = null;
         var clientInfo = null;
@@ -12994,13 +13003,6 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             }
         };
 
-        //Util methods
-        var _getURLParameter = function (name){
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                results = regex.exec(location.search);
-            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        };
 
         var normalizeEntry = function (entry) {
             if (entry.substring(0,3) !== "NX_") {
@@ -13028,6 +13030,10 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             sparqlEndpoint = _sparqlEndpoint;
         };
 
+        //Gets the entry set in the parameter
+        NextprotClient.prototype.getEnvironment = function(){
+            return _getURLParameter("env") || 'pro'; //By default returns the insulin
+        };
         
         //Gets the entry set in the parameter
         NextprotClient.prototype.getEntryName = function(){
@@ -13798,6 +13804,11 @@ $(function () {
 
         });
     }
+
+    if(nx.getEnvironment() !== 'pro'){
+        $("body").append("<span style='position: absolute; top: 0; left: 0; border: 0; color: darkred; margin: 20px; font-weight: bold'>" + nx.getEnvironment().toUpperCase() + " API</span>");
+    }
+
 });;
 this["HBtemplates"] = this["HBtemplates"] || {};
 
