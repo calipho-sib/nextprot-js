@@ -1,6 +1,5 @@
 $(function () {
 
-
     var loadOverview = function (overview, nxEntryName) {
 
         if ($("#nx-overview").length > 0) {
@@ -8,19 +7,16 @@ $(function () {
                 switch (type) {
                     case "term":
                         var url = "http://www.nextprot.org/db/term/" + this.accession;
-                        return "<a href='" + url + "'>" + this.name + "</a>";
+                        return "<a target='_blank' href='" + url + "'>" + this.name + "</a>";
                     case "EC" :
                         var url = "http://www.nextprot.org/db/term/" + this;
-                        return "<a href='" + url + "'> EC " + this + " </a>";
+                        return "<a target='_blank' href='" + url + "'> EC " + this + " </a>";
                     case "history":
-                        console.log(type);
-                        console.log(this);
                         var url = "http://www.uniprot.org/uniprot/" + this.slice(3) + "?version=*";
-                        return "<a href='" + url + "'>Complete UniProtKB history</a>";
+                        return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
                 }
             });
 
-            console.log(nxEntryName);
             var EC = [];
             var short = [];
 
@@ -65,10 +61,8 @@ $(function () {
                 "accessionNumber": nxEntryName
             };
 
-            console.log(data);
 
             var template = HBtemplates['templates/overviewProtein.tmpl'];
-            console.log(template);
             var result = template(data);
             $("#nx-overview").append(result);
 
