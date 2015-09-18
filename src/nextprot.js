@@ -22,7 +22,11 @@
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
         var apiBaseUrl = "https://api.nextprot.org";
         if(environment !== 'pro'){
-            apiBaseUrl = "http://" + environment + "-api.nextprot.org";
+            if(environment === 'localhost'){
+                apiBaseUrl = "http://localhost:8080/nextprot-api-web";
+            }else {
+                apiBaseUrl = "http://" + environment + "-api.nextprot.org";
+            }
         }
         var sparqlEndpoint = apiBaseUrl + "/sparql";
         var sparqlFormat = "?output=json";
