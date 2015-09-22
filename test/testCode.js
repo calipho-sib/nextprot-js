@@ -124,7 +124,7 @@ QUnit.test("SRM Peptide Json test", function (assert) {
         done9();
     });
 });
-
+/*
 QUnit.test("Mature protein Json test", function (assert) {
     var done10 = assert.async();
     var promise10 = nx.getAnnotationsByCategory(null, "mature-protein");
@@ -145,4 +145,4 @@ QUnit.test("Mature protein Json test", function (assert) {
         assert.equal(message, "failed to load mature protein");
         done10();
     });
-});
+});*/

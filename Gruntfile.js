@@ -33,6 +33,14 @@ module.exports = function (grunt) {
                 dest: 'dist/nextprot.min.js'
             }
         },
+        jshint: {
+            files: ['src/nextprot.js'], //would be great to do this: files: ['src/**/*.js', 'test/**/*.js'],
+            options: {
+                globals: {
+                    jQuery: true
+                }
+            }
+        },
         qunit: {
             all: 'test/index.html',
             options: {
@@ -69,7 +77,9 @@ module.exports = function (grunt) {
         },
         watch: {
             all: {
-                options: {livereload: true},
+                options: {
+                    livereload: true
+                },
                 files: ['src/*.js'],
                 tasks: 'concat'
             },
@@ -97,10 +107,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-handlebars');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 
 
     // Default task(s).
-    grunt.registerTask('default', ['uglify']);
+    grunt.registerTask('default', ['uglify', 'jshint']);
     grunt.registerTask('test', ['qunit']);
     grunt.registerTask('concating', ['concat']);
     grunt.registerTask('hbs', ['handlebars:compile']);
