@@ -18,7 +18,7 @@ QUnit.test("should get a nextprot valid id again", function (assert) {
 });
 
 
-QUnit.test("should do a jquery API call", function (assert) {
+/*QUnit.test("should do a jquery API call", function (assert) {
     $.ajax({
         type: "GET",
         url: 'https://api.nextprot.org/entry/NX_P46976/isoform.json',
@@ -40,7 +40,7 @@ QUnit.test("API calls test", function (assert) {
         done1();
     });
 
-});
+});*/
 
 // OVERVIEW JSON TEST
 QUnit.test("Overview Json test", function (assert) {
