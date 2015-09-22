@@ -1,13 +1,26 @@
 <html>
+
 <head>
-  <title>neXtProt overview</title>
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <script src="../dist/nextprot.bundle.js"></script>
+    <title>neXtProt overview</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <script src="../dist/nextprot.bundle.js"></script>
 </head>
+
 <body class="container">
-<div class="row">
-  <div id="nx-overview" class="col-md-10 col-xs-12 col-md-offset-1"
-       style="height:auto;background:#fff;border-top: 4px solid #E7EAEC;margin-top:10px;border-bottom: 1px solid #E7EAEC;"></div>
-</div>
+    <div class="row">
+        <div id="nx-overview" class="col-md-10 col-xs-12 col-md-offset-1 demo-overview"></div>
+    </div>
 </body>
+
+<script>
+    var nx = new Nextprot.Client("demo", "calipho");
+    //nx.getSparqlPrefixes().then();
+    nx.executeSparql("SELECT * WHERE { ?subject ?predicate ?object .} limit 10", false).then(
+        function (data) {
+            console.log(data);
+        }
+    );
+</script>
+
 </html>

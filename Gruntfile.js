@@ -13,6 +13,7 @@ module.exports = function (grunt) {
                     'bower_components/jquery/dist/jquery.js',
                     'bower_components/handlebars/handlebars.js',
                     'src/nextprot.js',
+                    'src/nextprot-utils.js',
                     'src/nextprot-templates.js',
                     'dist/compiled-templates.js'],
                 dest: 'dist/nextprot.bundle.js'
@@ -60,7 +61,7 @@ module.exports = function (grunt) {
         connect: {
             server: {
                 options: {
-                    port: 9000,
+                    port: 5000,
                     livereload: true,
                     base: '.'
                 }
