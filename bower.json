@@ -10,8 +10,8 @@
     "demo"
   ],
   "dependencies": {
-    "jquery": "x.x.x",
-    "handlebars": "x.x.x",
-    "bootstrap": "3.x.x"
+    "jquery": "~2.1.4",
+    "handlebars": "~4.0.2",
+    "bootstrap": "~3.3.5"
   }
 }
