@@ -12997,6 +12997,13 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             };
         };
 
+        var normalizeEntry = function (entry) {
+            if (entry.substring(0, 3) !== "NX_") {
+                entry = "NX_" + entry;
+            }
+            return entry;
+        };
+
 
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
         var apiBaseUrl = "https://api.nextprot.org";
@@ -13021,7 +13028,8 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
         }
 
 
-        var _getEntry = function (entryName, context) {
+        var _getEntry = function (entry, context) {
+            var entryName = normalizeEntry(entry || this.getEntryName())
             var url = apiBaseUrl + "/entry/" + entryName;
             if (context) {
                 url += "/" + context;
@@ -13047,13 +13055,6 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             }
         };
 
-
-        var normalizeEntry = function (entry) {
-            if (entry.substring(0, 3) !== "NX_") {
-                entry = "NX_" + entry;
-            }
-            return entry;
-        };
 
 
         //////////////// BEGIN Setters ////////////////////////////////////////////////////////////////////////
@@ -13108,7 +13109,7 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
         // Keeps SPARQL prefixes in cache
         var sparqlPrefixPromise;
         NextprotClient.prototype.getSparqlPrefixes = function (sparql) {
-            sparqlPrefixPromise = sparqlPrefixPromise || _getJSON(apiBaseUrl + "/sparql-prefixes.json").then(_transformPrefixesFunction);
+            sparqlPrefixPromise = sparqlPrefixPromise || _getJSON(apiBaseUrl + "/sparql-prefixes").then(_transformPrefixesFunction);
             return sparqlPrefixPromise;
         };
 
@@ -13120,20 +13121,11 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             });
         };
 
-        //TODO not a good name
-        NextprotClient.prototype.getAccession = function (entry) {
-            console.log("Use getEntryProperties instead");
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "accession").then(function (data) {
-                return data.entry.properties;
-            });
-        };
-
         NextprotClient.prototype.getEntryProperties = function (entry) {
             return _getEntry(normalizeEntry(entry || this.getEntryName()), "accession").then(function (data) {
                 return data.entry.properties;
             });
         };
-
 
         NextprotClient.prototype.getProteinOverview = function (entry) {
             return _getEntry(normalizeEntry(entry || this.getEntryName()), "overview").then(function (data) {
@@ -13146,21 +13138,6 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
                 return data.entry.isoforms;
             });
         };
-
-        //TODO This is extracting information from the first gene only!
-        NextprotClient.prototype.getExons = function (entry) {
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "genomic-mapping").then(function (data) {
-                return data.entry.genomicMappings[0].isoformMappings;
-            });
-        };
-
-        //TODO where is this needed?
-        NextprotClient.prototype.getIsoformMapping = function (entry) {
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "isoform/mapping").then(function (data) {
-                return data;
-            });
-        };
-
         /** USE THIS INSTEAD OF THE OTHERS for example getEntryPart(NX_1038042, "ptm") */
         NextprotClient.prototype.getAnnotoationsByCategory = function (entry, category) {
             return _getEntry(normalizeEntry(entry || this.getEntryName()), category).then(function (data) {
@@ -13173,6 +13150,32 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
                 return data.entry;
             });
         };
+
+
+        // NEEEDS REVIEW ///////////////////////////////////////////////////////////////////////////////////////////////
+        //TODO where is this needed?
+        NextprotClient.prototype.getIsoformMapping = function (entry) {
+            return _getEntry(entry, "isoform/mapping").then(function (data) {
+                return data;
+            });
+        };
+
+        //TODO This is extracting information from the first gene only!
+        NextprotClient.prototype.getExons = function (entry) {
+            return _getEntry(normalizeEntry(entry || this.getEntryName()), "genomic-mapping").then(function (data) {
+                return data.entry.genomicMappings[0].isoformMappings;
+            });
+        };
+
+        //TODO not a good name if it return properties???????
+        NextprotClient.prototype.getAccession = function (entry) {
+            console.log("Use getEntryProperties instead");
+            return _getEntry(normalizeEntry(entry || this.getEntryName()), "accession").then(function (data) {
+                return data.entry.properties;
+            });
+        };
+
+        // NEEEDS REVIEW ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
         // BEGIN Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////

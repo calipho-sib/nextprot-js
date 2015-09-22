@@ -1,71 +1,83 @@
 <html>
+
 <head>
-  <title>neXtProt test</title>
-  <link rel="stylesheet" type="text/css" href="../demo/bootstrap.min.css">
-  <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-  <script src="../src/nextprot.js"></script>
+    <title>neXtProt test</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="../dist/nextprot.bundle.js"></script>
 </head>
 
 <body class="container">
-<div class="row">
-  <div id="popo"></div>
-</div>
+    <div class="row">
+        <div id="popo"></div>
+    </div>
 
-<script>
-  // Create an instance of nextprot client
-  var appName = "demo app for showing how to extract sequences"; //replace this with what your application is doing
-  var clientInfo = "calipho group at SIB"; //replace this with who you are
-  var nx = new Nextprot.Client(appName, clientInfo);
+    <script>
+        // Create an instance of nextprot client
+        var appName = "demo app for showing how to extract sequences"; //replace this with what your application is doing
+        var clientInfo = "calipho group at SIB"; //replace this with who you are
+        var nx = new Nextprot.Client(appName, clientInfo);
 
-  var entry = "NX_P46976";
+        var entry = "NX_P46976";
 
-  Promise.all([nx.getProteinSequence(entry), nx.getProPeptide(entry), nx.getMatureProtein(entry), nx.getSignalPeptide(entry), nx.getDisulfideBond(entry),
-            nx.getAntibody(entry), nx.getInitMeth(entry), nx.getModifResidue(entry), nx.getCrossLink(entry), nx.getGlycoSite(entry), nx.getPeptide(entry),
-            nx.getSrmPeptide(entry)]).then(function (arrayResult) {
+        Promise.all([nx.getProteinSequence(entry), //0
+                     nx.getAnnotoationsByCategory(entry, "propeptide"), //1
+                     nx.getAnnotoationsByCategory(entry, "mature-protein"), //2
+                     nx.getAnnotoationsByCategory(entry, "signal-peptide"), //3
+                     nx.getAnnotoationsByCategory(entry, "disulfide-bond"), //4
+                     nx.getAnnotoationsByCategory(entry, "modified-residue"), //5
+                     nx.getAnnotoationsByCategory(entry, "cross-link"), //6
+                     nx.getAnnotoationsByCategory(entry, "glycosylation-site"), //7
+                     nx.getAnnotoationsByCategory(entry, "initiator-methionine"), //8
+                     nx.getAntibody(entry), //9
+                     nx.getPeptide(entry), //10
+                     nx.getSrmPeptide(entry)]). //11
 
-    var isoSequences = arrayResult[0];
-    var proPeptideMappings = arrayResult[1];
-    var matureProteinMappings = arrayResult[2];
-    var signalPeptideMappings = arrayResult[3];
-    var disulfideBondsMappings = arrayResult[4];
-    var antibodyMappings = arrayResult[5];
-    var initMethMappings = arrayResult[6];
-    var modifiedResidueMappings = arrayResult[7];
-    var crossLinkMappings = arrayResult[8];
-    var glycoSiteMappings = arrayResult[9];
-    var peptideMappings = arrayResult[10];
-    var srmPeptideMappings = arrayResult[11];
+        then(function (arrayResult) {
 
-    var sequenceForIso1 = NXUtils.getSequenceForIsoform(isoSequences, 1);
-    var proPeptidesByIsoformMap = NXUtils.convertMappingsToIsoformMap(proPeptideMappings);
-    var matureByIsoformMap = NXUtils.convertMappingsToIsoformMap(matureProteinMappings);
-    var signalPeptideByIsoformMap = NXUtils.convertMappingsToIsoformMap(signalPeptideMappings);
-    var disulfideBondsByIsoformMap = NXUtils.convertMappingsToIsoformMap(disulfideBondsMappings);
-    var antibodyByIsoformMap = NXUtils.convertMappingsToIsoformMap(antibodyMappings);
-    var initMethByIsoformMap = NXUtils.convertMappingsToIsoformMap(initMethMappings);
-    var modifiedResidueByIsoformMap = NXUtils.convertMappingsToIsoformMap(modifiedResidueMappings);
-    var crossLinkByIsoformMap = NXUtils.convertMappingsToIsoformMap(crossLinkMappings);
-    var glycoSiteByIsoformMap = NXUtils.convertMappingsToIsoformMap(glycoSiteMappings);
-    var peptideByIsoformMap = NXUtils.convertMappingsToIsoformMap(peptideMappings);
-    var srmPeptideByIsoformMap = NXUtils.convertMappingsToIsoformMap(srmPeptideMappings);
+            var isoSequences = arrayResult[0];
+            var proPeptideMappings = arrayResult[1];
+            var matureProteinMappings = arrayResult[2];
+            var signalPeptideMappings = arrayResult[3];
+            var disulfideBondsMappings = arrayResult[4];
+            var modifiedResidueMappings = arrayResult[5];
+            var crossLinkMappings = arrayResult[6];
+            var glycoSiteMappings = arrayResult[7];
+            var initMethMappings = arrayResult[8];
+            var antibodyMappings = arrayResult[9];
+            var peptideMappings = arrayResult[10];
+            var srmPeptideMappings = arrayResult[11];
 
-    //feature viewer
-    var matureForViewer = NXViewerUtils.convertNXAnnotations(matureByIsoformMap, "mature-protein");
-    console.log(sequenceForIso1);
-    console.log(proPeptidesByIsoformMap);
-    console.log(matureByIsoformMap);
-    console.log(signalPeptideByIsoformMap);
-    console.log(disulfideBondsByIsoformMap);
-    console.log(antibodyByIsoformMap);
-    console.log(initMethByIsoformMap);
-    console.log(modifiedResidueByIsoformMap);
-    console.log(crossLinkByIsoformMap);
-    console.log(glycoSiteByIsoformMap);
-    console.log(peptideByIsoformMap);
-    console.log(srmPeptideByIsoformMap);
-    console.log(matureForViewer);
+            var sequenceForIso1 = NXUtils.getSequenceForIsoform(isoSequences, 1);
+            var proPeptidesByIsoformMap = NXUtils.convertMappingsToIsoformMap(proPeptideMappings);
+            var matureByIsoformMap = NXUtils.convertMappingsToIsoformMap(matureProteinMappings);
+            var signalPeptideByIsoformMap = NXUtils.convertMappingsToIsoformMap(signalPeptideMappings);
+            var disulfideBondsByIsoformMap = NXUtils.convertMappingsToIsoformMap(disulfideBondsMappings);
+            var antibodyByIsoformMap = NXUtils.convertMappingsToIsoformMap(antibodyMappings);
+            var initMethByIsoformMap = NXUtils.convertMappingsToIsoformMap(initMethMappings);
+            var modifiedResidueByIsoformMap = NXUtils.convertMappingsToIsoformMap(modifiedResidueMappings);
+            var crossLinkByIsoformMap = NXUtils.convertMappingsToIsoformMap(crossLinkMappings);
+            var glycoSiteByIsoformMap = NXUtils.convertMappingsToIsoformMap(glycoSiteMappings);
+            var peptideByIsoformMap = NXUtils.convertMappingsToIsoformMap(peptideMappings);
+            var srmPeptideByIsoformMap = NXUtils.convertMappingsToIsoformMap(srmPeptideMappings);
 
-  });
-</script>
+            //feature viewer
+            var matureForViewer = NXViewerUtils.convertNXAnnotations(matureByIsoformMap, "mature-protein");
+            console.log(sequenceForIso1);
+            console.log(proPeptidesByIsoformMap);
+            console.log(matureByIsoformMap);
+            console.log(signalPeptideByIsoformMap);
+            console.log(disulfideBondsByIsoformMap);
+            console.log(antibodyByIsoformMap);
+            console.log(initMethByIsoformMap);
+            console.log(modifiedResidueByIsoformMap);
+            console.log(crossLinkByIsoformMap);
+            console.log(glycoSiteByIsoformMap);
+            console.log(peptideByIsoformMap);
+            console.log(srmPeptideByIsoformMap);
+            console.log(matureForViewer);
+
+        });
+    </script>
 </body>
+
 </html>
