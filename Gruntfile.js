@@ -36,10 +36,6 @@ module.exports = function (grunt) {
         jshint: {
             files: ['src/nextprot.js'], //would be great to do this: files: ['src/**/*.js', 'test/**/*.js'],
             options: {
-                curly: true,
-                eqeqeq: true,
-                eqnull: true,
-                browser: true,
                 globals: {
                     jQuery: true
                 }

@@ -40,7 +40,7 @@
     "load-grunt-tasks": "^0.6.0"
   },
   "dependencies": {
-    "bower": "x.x.x",
+    "bower": "^1.5.2",
     "grunt-cli": "x.x.x"
   },
   "scripts": {
