@@ -21,20 +21,20 @@
 
         function _changeParamOrAddParamByName(href, paramName, newVal) {
             var tmpRegex = new RegExp("(" + paramName + "=)[a-zA-Z0-9_]+", 'ig');
-            if (href.match(tmpRegex) != null) {
+            if (href.match(tmpRegex) !== null) {
                 return href.replace(tmpRegex, '$1' + newVal);
             }
-            return href += (((href.indexOf("?") != -1) ? "&" : "?") + paramName + "=" + newVal);
+            return href += (((href.indexOf("?") !== -1) ? "&" : "?") + paramName + "=" + newVal);
         }
 
         var _convertToTupleMap = function (data) {
             var publiMap = {};
             var xrefMap = {};
             data.entry.publications.forEach(function (p) {
-                publiMap[p.md5] = p
+                publiMap[p.md5] = p;
             });
             data.entry.xrefs.forEach(function (p) {
-                xrefMap[p.dbXrefId] = p
+                xrefMap[p.dbXrefId] = p;
             });
             //return data.entry.annotations;
             return {
@@ -76,13 +76,13 @@
 
 
         var _getEntry = function (entry, context) {
-            var entryName = normalizeEntry(entry || (_getURLParameter("nxentry") || 'NX_P01308'))
+            var entryName = normalizeEntry(entry || (_getURLParameter("nxentry") || 'NX_P01308'));
             var url = apiBaseUrl + "/entry/" + entryName;
             if (context) {
                 url += "/" + context;
             }
             return _getJSON(url);
-        }
+        };
 
         var _callPepX = function (seq, mode) {
             var url = apiBaseUrl + "/entries/search/peptide?peptide=" + seq + "&modeIL=" + mode;
@@ -149,9 +149,9 @@
             var sparqlPrefixes = "";
             result.map(function (p) {
                 sparqlPrefixes += (p + "\n");
-            })
+            });
             return sparqlPrefixes;
-        }
+        };
 
         // Keeps SPARQL prefixes in cache
         var sparqlPrefixPromise;
@@ -199,7 +199,7 @@
         };
 
 
-        // BEGIN NEEDS REVIEW ///////////////////////////////////////////////////////////////////////////////////////////////
+        // NEEEDS REVIEW ///////////////////////////////////////////////////////////////////////////////////////////////
         //TODO where is this needed?
         NextprotClient.prototype.getIsoformMapping = function (entry) {
             return _getEntry(entry, "isoform/mapping").then(function (data) {
@@ -222,7 +222,8 @@
             });
         };
 
-        // END NEEDS REVIEW ///////////////////////////////////////////////////////////////////////////////////////////////
+        // NEEEDS REVIEW ///////////////////////////////////////////////////////////////////////////////////////////////
+
 
         // BEGIN Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////
         NextprotClient.prototype.getPeptide = function (entry) {

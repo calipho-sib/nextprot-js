@@ -124,18 +124,18 @@ QUnit.test("SRM Peptide Json test", function (assert) {
         done9();
     });
 });
-/*
+
 QUnit.test("Mature protein Json test", function (assert) {
     var done10 = assert.async();
-    var promise10 = nx.getAnnotationsByCategory(null, "mature-protein");
+    var promise10 = nx.getAnnotationsByCategory("NX_P01308", "helix");
     promise10.then(function (data) {
-        assert.ok(data.length, 'should get a Mature protein Json filled');
-        if (data.length) {
-            assert.ok(data[0].targetingIsoformsMap, 'Expect a  isoform specificity exists');
-            //            assert.ok(data[0].cvTermName, 'cvTermName exists');
-            assert.ok(data[0].targetingIsoformsMap[Object.keys(data[0].targetingIsoformsMap)[0]].isoformName, 'Expect a isoformName to exist');
-            assert.ok(data[0].targetingIsoformsMap[Object.keys(data[0].targetingIsoformsMap)[0]].firstPosition, 'Expect a first position to exist');
-            assert.ok(data[0].targetingIsoformsMap[Object.keys(data[0].targetingIsoformsMap)[0]].lastPosition, 'Expect a last position to exist');
+        assert.ok(data.annot.length, 'should get a Mature protein Json filled');
+        if (data.annot.length) {
+            var firstData = data.annot[0];
+            assert.ok(firstData.targetingIsoformsMap, 'Expect a  isoform specificity exists');
+            assert.ok(firstData.targetingIsoformsMap[Object.keys(firstData.targetingIsoformsMap)[0]].isoformName, 'Expect a isoformName to exist');
+            assert.ok(firstData.targetingIsoformsMap[Object.keys(firstData.targetingIsoformsMap)[0]].firstPosition, 'Expect a first position to exist');
+            assert.ok(firstData.targetingIsoformsMap[Object.keys(firstData.targetingIsoformsMap)[0]].lastPosition, 'Expect a last position to exist');
         }
         //            assert.ok(data[0].uniqueName, 'iso unique name exists');
         //            assert.ok(data.cleavedRegionNames, 'cleaved region exist      ');
@@ -145,4 +145,4 @@ QUnit.test("Mature protein Json test", function (assert) {
         assert.equal(message, "failed to load mature protein");
         done10();
     });
-});*/
+});
