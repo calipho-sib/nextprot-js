@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "bower": "^1.5.2",
-    "grunt-cli": "x.x.x"
+    "grunt-cli": "^0.1.13"
   },
   "scripts": {
     "test": "grunt test --verbose --debug --web-security=no",
