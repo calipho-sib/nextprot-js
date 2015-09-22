@@ -49,15 +49,19 @@
 
             var sequenceForIso1 = NXUtils.getSequenceForIsoform(isoSequences, 1);
             var proPeptidesByIsoformMap = NXUtils.convertMappingsToIsoformMap(proPeptideMappings);
-            var matureByIsoformMap = NXUtils.convertMappingsToIsoformMap(matureProteinMappings);
             var signalPeptideByIsoformMap = NXUtils.convertMappingsToIsoformMap(signalPeptideMappings);
             var disulfideBondsByIsoformMap = NXUtils.convertMappingsToIsoformMap(disulfideBondsMappings);
-            var antibodyByIsoformMap = NXUtils.convertMappingsToIsoformMap(antibodyMappings);
-            var initMethByIsoformMap = NXUtils.convertMappingsToIsoformMap(initMethMappings);
+
+            console.log(modifiedResidueMappings);
             var modifiedResidueByIsoformMap = NXUtils.convertMappingsToIsoformMap(modifiedResidueMappings);
-            var crossLinkByIsoformMap = NXUtils.convertMappingsToIsoformMap(crossLinkMappings);
-            var glycoSiteByIsoformMap = NXUtils.convertMappingsToIsoformMap(glycoSiteMappings);
+
+            /*var matureByIsoformMap = NXUtils.convertMappingsToIsoformMap(matureProteinMappings);
+                        var initMethByIsoformMap = NXUtils.convertMappingsToIsoformMap(initMethMappings);
+            var antibodyByIsoformMap = NXUtils.convertMappingsToIsoformMap(antibodyMappings);
+
+var crossLinkByIsoformMap = NXUtils.convertMappingsToIsoformMap(crossLinkMappings);
             var peptideByIsoformMap = NXUtils.convertMappingsToIsoformMap(peptideMappings);
+            var glycoSiteByIsoformMap = NXUtils.convertMappingsToIsoformMap(glycoSiteMappings);
             var srmPeptideByIsoformMap = NXUtils.convertMappingsToIsoformMap(srmPeptideMappings);
 
             //feature viewer
@@ -74,7 +78,7 @@
             console.log(glycoSiteByIsoformMap);
             console.log(peptideByIsoformMap);
             console.log(srmPeptideByIsoformMap);
-            console.log(matureForViewer);
+            console.log(matureForViewer);*/
 
         });
     </script>
