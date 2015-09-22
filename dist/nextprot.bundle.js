@@ -13105,9 +13105,11 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             return sparqlPrefixes;
         }
 
-        var sparqlPrefix;
+        // Keeps SPARQL prefixes in cache
+        var sparqlPrefixPromise;
         NextprotClient.prototype.getSparqlPrefixes = function (sparql) {
-            return _getJSON(apiBaseUrl + "/sparql-prefixes.json").then(_transformPrefixesFunction);
+            sparqlPrefixPromise = sparqlPrefixPromise || _getJSON(apiBaseUrl + "/sparql-prefixes.json").then(_transformPrefixesFunction);
+            return sparqlPrefixPromise;
         };
 
         NextprotClient.prototype.executeSparql = function (sparql, includePrefixes) {
@@ -13117,7 +13119,6 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
                 return _getJSON(url);
             });
         };
-
 
         //TODO not a good name
         NextprotClient.prototype.getAccession = function (entry) {
@@ -13172,8 +13173,6 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
                 return data.entry;
             });
         };
-
-
 
 
         // BEGIN Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////

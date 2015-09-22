@@ -21,6 +21,14 @@
             console.log(data);
         }
     );
+
+    setTimeout(function () {
+        nx.executeSparql("SELECT * WHERE { ?subject ?predicate ?object .} limit 10", false).then(
+            function (data) {
+                console.log(data);
+            }
+        );
+    }, 2000)
 </script>
 
 </html>
