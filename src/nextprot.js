@@ -76,7 +76,7 @@
 
 
         var _getEntry = function (entry, context) {
-            var entryName = normalizeEntry(entry || this.getEntryName())
+            var entryName = normalizeEntry(entry || (_getURLParameter("nxentry") || 'NX_P01308'))
             var url = apiBaseUrl + "/entry/" + entryName;
             if (context) {
                 url += "/" + context;
@@ -169,31 +169,31 @@
         };
 
         NextprotClient.prototype.getEntryProperties = function (entry) {
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "accession").then(function (data) {
+            return _getEntry(entry, "accession").then(function (data) {
                 return data.entry.properties;
             });
         };
 
         NextprotClient.prototype.getProteinOverview = function (entry) {
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "overview").then(function (data) {
+            return _getEntry(entry, "overview").then(function (data) {
                 return data.entry.overview;
             });
         };
 
         NextprotClient.prototype.getProteinSequence = function (entry) {
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "isoform").then(function (data) {
+            return _getEntry(entry, "isoform").then(function (data) {
                 return data.entry.isoforms;
             });
         };
         /** USE THIS INSTEAD OF THE OTHERS for example getEntryPart(NX_1038042, "ptm") */
-        NextprotClient.prototype.getAnnotoationsByCategory = function (entry, category) {
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), category).then(function (data) {
+        NextprotClient.prototype.getAnnotationsByCategory = function (entry, category) {
+            return _getEntry(entry, category).then(function (data) {
                 return _convertToTupleMap(data);
             });
         };
 
         NextprotClient.prototype.getEntry = function (entry, category) {
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), category).then(function (data) {
+            return _getEntry(entry, category).then(function (data) {
                 return data.entry;
             });
         };
@@ -209,7 +209,7 @@
 
         //TODO This is extracting information from the first gene only!
         NextprotClient.prototype.getExons = function (entry) {
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "genomic-mapping").then(function (data) {
+            return _getEntry(entry, "genomic-mapping").then(function (data) {
                 return data.entry.genomicMappings[0].isoformMappings;
             });
         };
@@ -217,7 +217,7 @@
         //TODO not a good name if it return properties???????
         NextprotClient.prototype.getAccession = function (entry) {
             console.log("Use getEntryProperties instead");
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "accession").then(function (data) {
+            return _getEntry(entry, "accession").then(function (data) {
                 return data.entry.properties;
             });
         };
@@ -228,21 +228,21 @@
         // BEGIN Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////
         NextprotClient.prototype.getPeptide = function (entry) {
             console.warn("getPeptide is deprecated. use getAnnotoationsByCategory(entry, 'peptide-mapping') instead ");
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "peptide-mapping").then(function (data) {
+            return _getEntry(entry, "peptide-mapping").then(function (data) {
                 return data.entry.peptideMappings;
             });
         };
 
         NextprotClient.prototype.getSrmPeptide = function (entry) {
             console.warn("getSrmPeptide is deprecated. use getAnnotoationsByCategory(entry, 'srm-peptide-mapping') instead ");
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "srm-peptide-mapping").then(function (data) {
+            return _getEntry(entry, "srm-peptide-mapping").then(function (data) {
                 return data.entry.srmPeptideMappings;
             });
         };
 
         NextprotClient.prototype.getAntibody = function (entry) {
             //this is not deprecated yet
-            return _getEntry(normalizeEntry(entry || this.getEntryName()), "antibody").then(function (data) {
+            return _getEntry(entry, "antibody").then(function (data) {
                 return data.entry.antibodyMappings;
             });
         };

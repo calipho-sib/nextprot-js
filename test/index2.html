@@ -20,14 +20,14 @@
         var entry = "NX_P46976";
 
         Promise.all([nx.getProteinSequence(entry), //0
-                     nx.getAnnotoationsByCategory(entry, "propeptide"), //1
-                     nx.getAnnotoationsByCategory(entry, "mature-protein"), //2
-                     nx.getAnnotoationsByCategory(entry, "signal-peptide"), //3
-                     nx.getAnnotoationsByCategory(entry, "disulfide-bond"), //4
-                     nx.getAnnotoationsByCategory(entry, "modified-residue"), //5
-                     nx.getAnnotoationsByCategory(entry, "cross-link"), //6
-                     nx.getAnnotoationsByCategory(entry, "glycosylation-site"), //7
-                     nx.getAnnotoationsByCategory(entry, "initiator-methionine"), //8
+                     nx.getAnnotationsByCategory(entry, "propeptide"), //1
+                     nx.getAnnotationsByCategory(entry, "mature-protein"), //2
+                     nx.getAnnotationsByCategory(entry, "signal-peptide"), //3
+                     nx.getAnnotationsByCategory(entry, "disulfide-bond"), //4
+                     nx.getAnnotationsByCategory(entry, "modified-residue"), //5
+                     nx.getAnnotationsByCategory(entry, "cross-link"), //6
+                     nx.getAnnotationsByCategory(entry, "glycosylation-site"), //7
+                     nx.getAnnotationsByCategory(entry, "initiator-methionine"), //8
                      nx.getAntibody(entry), //9
                      nx.getPeptide(entry), //10
                      nx.getSrmPeptide(entry)]). //11
