@@ -14,14 +14,18 @@ module.exports = function (grunt) {
                     'bower_components/handlebars/handlebars.js',
                     'src/nextprot.js',
                     'src/nextprot-utils.js',
-                    'src/nextprot-templates.js',
-                    'dist/compiled-templates.js'],
+                    'src/nextprot-init-templates.js',
+                    'build/compiled-templates.js'],
                 dest: 'dist/nextprot.bundle.js'
             }
 
         },
         uglify: {
             options : {sourceMap : true},
+            basic: {
+                src: ['src/nextprot.js', 'src/nextprot-utils.js', 'src/nextprot-init-templates.js', 'build/compiled-templates.js'],
+                dest: 'dist/nextprot.min.js'
+            },
             all: {
                 src: 'dist/nextprot.bundle.js',
                 dest: 'dist/nextprot.bundle.js'
@@ -85,7 +89,7 @@ module.exports = function (grunt) {
         handlebars: {
             compile: {
                 src: 'templates/*.tmpl',
-                dest: 'dist/compiled-templates.js',
+                dest: 'build/compiled-templates.js',
                 options: {
                     namespace: "HBtemplates"
                 }
