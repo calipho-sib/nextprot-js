@@ -146,3 +146,67 @@ QUnit.test("Mature protein Json test", function (assert) {
         done10();
     });
 });
+
+
+QUnit.test("Should get SPARQL prefixes", function (assert) {
+    var done = assert.async();
+    var promise = nx.getSparqlPrefixes();
+    promise.then(function (data) {
+        assert.ok(data.length > 100, 'expect a length bigger than 100');
+        assert.ok(data.indexOf('PREFIX') !== -1, 'expect a prefix');
+        done();
+    }, function (message) {
+        assert.equal(message, "failed to get SPARQL prefixes");
+        done();
+    });
+});
+
+QUnit.test("Should execute a SPARQL query without prefixes", function (assert) {
+    var done = assert.async();
+    var promise = nx.executeSparql("SELECT DISTINCT * WHERE {  ?s ?p ?o } LIMIT 10", false);
+    promise.then(function (data) {
+        assert.equal(10, data.results.bindings.length, 'expect 10 values');
+        done();
+    }, function (message) {
+        assert.equal(message, "failed to load execute SPARQL");
+        done();
+    });
+});
+
+
+QUnit.test("Should execute a SPARQL with prefixes", function (assert) {
+    var done = assert.async();
+    var promise = nx.executeSparql("select ?entry where { ?entry :isoform ?iso. } limit 10", true);
+    promise.then(function (data) {
+        assert.equal(10, data.results.bindings.length, 'expect 10 values');
+        done();
+    }, function (message) {
+        assert.equal(message, "failed to load execute SPARQL");
+        done();
+    });
+});
+
+
+QUnit.test("Should execute a SPARQL with prefixes by default", function (assert) {
+    var done = assert.async();
+    var promise = nx.executeSparql("select ?entry where { ?entry :isoform ?iso. } limit 10");
+    promise.then(function (data) {
+        assert.equal(10, data.results.bindings.length, 'expect 10 values');
+        done();
+    }, function (message) {
+        assert.equal(message, "failed to load execute SPARQL");
+        done();
+    });
+});
+
+
+QUnit.test("Should fail to execute a SPARQL without prefixes", function (assert) {
+    var done = assert.async();
+    var promise = nx.executeSparql("select ?entry where { ?entry :isoform ?iso. } limit 10", false);
+    promise.then(function (data) {
+        done();
+    }, function (message) {
+        assert.ok(true, "failed as expected");
+        done();
+    });
+});

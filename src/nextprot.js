@@ -53,7 +53,7 @@
 
 
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
-        var apiBaseUrl = "https://api.nextprot.org";
+        var apiBaseUrl = "http://alpha-api.nextprot.org";
         if (environment !== 'pro') {
             apiBaseUrl = "http://" + environment + "-api.nextprot.org";
         }
@@ -155,14 +155,16 @@
 
         // Keeps SPARQL prefixes in cache
         var sparqlPrefixPromise;
-        NextprotClient.prototype.getSparqlPrefixes = function (sparql) {
+        NextprotClient.prototype.getSparqlPrefixes = function () {
             sparqlPrefixPromise = sparqlPrefixPromise || _getJSON(apiBaseUrl + "/sparql-prefixes").then(_transformPrefixesFunction);
             return sparqlPrefixPromise;
         };
 
         NextprotClient.prototype.executeSparql = function (sparql, includePrefixes) {
             return this.getSparqlPrefixes().then(function (sparqlPrefixes) {
-                var sparqlQuery = includePrefixes ? sparqlPrefixes + sparql : sparql; //add SPARQL prefixes if flag not set to false
+                
+                var incPrefs = (includePrefixes === undefined) ? true : includePrefixes;
+                var sparqlQuery = incPrefs ? sparqlPrefixes + sparql : sparql; //add SPARQL prefixes if flag not set to false
                 var url = sparqlEndpoint + sparqlFormat + "&query=" + encodeURIComponent(sparqlQuery);
                 return _getJSON(url);
             });

@@ -23,7 +23,7 @@
     );
 
     setTimeout(function () {
-        nx.executeSparql("SELECT * WHERE { ?subject ?predicate ?object .} limit 10", false).then(
+        nx.executeSparql("SELECT * WHERE { ?subject ?predicate ?object .} limit 10").then(
             function (data) {
                 console.log(data);
             }
