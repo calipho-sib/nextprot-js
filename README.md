@@ -42,3 +42,18 @@ Example to access the overview of a protein
 Some running examples: 
   * http://calipho-sib.github.io/nextprot-js/demo/secondary-structure.html?nxentry=NX_P01308
   * http://calipho-sib.github.io/nextprot-js/demo/overview?nxentry=NX_P01308
+
+
+## Development
+
+* grunt - concat and creates a bundle
+* grunt serve - runs app on web server
+* npm test - runs the tests !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+another way to run tests is to do grunt serve and access http://localhost:5000/test
+
+## Deployment 
+
+* grunt prod  -creates minified and bundled versions in dist folder
+* grunt bump - tags the repository (don't forget to push). The tag is used by bower
+* npm publish
