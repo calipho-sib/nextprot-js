@@ -17,20 +17,14 @@ module.exports = function (grunt) {
                     'src/nextprot-templates.js',
                     'dist/compiled-templates.js'],
                 dest: 'dist/nextprot.bundle.js'
-            },
-            extras: {
-                src: ['src/nextprot.js'],
-                dest: 'dist/nextprot.js'
             }
 
         },
         uglify: {
-            options: {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-            },
-            build: {
-                src: ['src/nextprot.js'],
-                dest: 'dist/nextprot.min.js'
+            options : {sourceMap : true},
+            all: {
+                src: 'dist/nextprot.bundle.js',
+                dest: 'dist/nextprot.bundle.js'
             }
         },
         jshint: {
@@ -111,9 +105,11 @@ module.exports = function (grunt) {
 
 
     // Default task(s).
-    grunt.registerTask('default', ['uglify', 'jshint']);
+    grunt.registerTask('default', ['concat']);
+
+    // Call this task for production
+    grunt.registerTask('prod', ['concat', 'uglify']);
     grunt.registerTask('test', ['qunit']);
-    grunt.registerTask('concating', ['concat']);
     grunt.registerTask('hbs', ['handlebars:compile']);
     grunt.registerTask('serve', ['connect:server', 'watch']);
 };
