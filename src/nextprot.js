@@ -256,14 +256,14 @@
 
         // BEGIN Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////
         NextprotClient.prototype.getPeptide = function (entry) {
-            console.warn("getPeptide is deprecated. use getAnnototionsByCategory(entry, 'peptide-mapping') instead ");
+            console.warn("getPeptide is deprecated. use getAnnotationsByCategory(entry, 'peptide-mapping') instead ");
             return _getEntry(entry, "peptide-mapping").then(function (data) {
                 return data.entry.peptideMappings;
             });
         };
 
         NextprotClient.prototype.getSrmPeptide = function (entry) {
-            console.warn("getSrmPeptide is deprecated. use getAnnototionsByCategory(entry, 'srm-peptide-mapping') instead ");
+            console.warn("getSrmPeptide is deprecated. use getAnnotationsByCategory(entry, 'srm-peptide-mapping') instead ");
             return _getEntry(entry, "srm-peptide-mapping").then(function (data) {
                 return data.entry.srmPeptideMappings;
             });
