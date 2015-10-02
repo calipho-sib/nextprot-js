@@ -4,7 +4,8 @@
     <title>neXtProt overview</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="index.css">
-    <script src="../dist/nextprot.bundle.js"></script>
+    <script src="../dist/nextprot-vendor.min.js"></script>
+    <script src="../dist/nextprot.js"></script>
 </head>
 
 <body class="container">
@@ -22,13 +23,6 @@
         }
     );
 
-    setTimeout(function () {
-        nx.executeSparql("SELECT * WHERE { ?subject ?predicate ?object .} limit 10").then(
-            function (data) {
-                console.log(data);
-            }
-        );
-    }, 2000)
 </script>
 
 </html>

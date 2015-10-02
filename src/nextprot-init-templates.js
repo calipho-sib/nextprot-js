@@ -27,26 +27,25 @@ $(function () {
                 });
             }
 
+
             var data = {
                 "entryName": overview.proteinNames[0].synonymName,
                 "recommendedProteinName": {
                     name: overview.recommendedProteinName.name,
                     EC: EC,
                     short: short,
-                    synonymName: overview.recommendedProteinName.synonymName
+                    synonymName: overview.proteinNames[0].synonyms ? NXUtils.getMainSynonym(overview.proteinNames[0].synonyms) : null
                 },
                 "alternativeProteinNames": overview.alternativeProteinNames.map(function (p) {
                     return {name: p.name, short: p.synonyms}
                 }),
-                "geneName": overview.geneNames.map(function (o) {
+                "geneName": overview.geneNames.map(function (gn) {
                     return {
-                        name: o.name,
-                        synonyms: o.synonyms ? o.synonyms.filter(function (p) {
-                            return p.category === "gene name"
+                        name: NXUtils.getRecommendedName(gn) || null,
+                        synonyms: gn.synonyms ? gn.synonyms.filter(function (gns) {
+                            return gns.category === "gene name"
                         }) : null,
-                        orf: o.synonyms ? o.synonyms.filter(function (p) {
-                            return p.category === "ORF"
-                        }) : null
+                        orf: NXUtils.getORFNames(gn) || null
                     }
                 }),
                 "cleavage": overview.cleavedRegionNames,
@@ -62,6 +61,7 @@ $(function () {
             };
 
 
+            console.log(data.recommendedProteinName.synonymName);
             var template = HBtemplates['templates/overviewProtein.tmpl'];
             var result = template(data);
             $("#nx-overview").append(result);

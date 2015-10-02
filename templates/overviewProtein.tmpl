@@ -16,8 +16,14 @@
     </div>
     {{/if}}
     <div id="gene-less" class="row">
+        {{#if geneName.[0].name}}
         <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Gene Name :</div>
-        <div class="col-md-6 col-xs-6">{{geneName.[0].name}}</div>
+        {{#geneName}}<div class="col-md-6 col-xs-6">{{name}}</div>{{/geneName}}
+        {{else}}
+        <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">ORF Name :</div>
+        <div class="col-md-6 col-xs-6">{{geneName.[0].orf.[0].name}}</div>
+        {{/if}}
+
     </div>
     {{#if family}}
     <div id="family-less" class="row">
@@ -54,9 +60,11 @@
         <div class="col-md-2 col-xs-3 text-uppercase" style="color: grey;">Gene</div>
         <div class="col-md-7 col-xs-6">
             <dl>
-                <dt>Recommended Name</dt>
                 {{#geneName}}
+                {{#if name}}
+                <dt>Recommended Name</dt>
                 <dd>{{name}}</dd>
+                {{/if}}
                 {{#if synonyms}}
                 <dt>Alternative Names</dt>
                 {{#synonyms}}

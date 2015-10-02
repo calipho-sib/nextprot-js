@@ -5,6 +5,37 @@ var NXUtils = {
         return isoname.endsWith("-" + isonumber)
     },
 
+
+    getORFNames: function (geneName) {
+        var names = [];
+        if (geneName.category === "ORF") {
+            names.push({name: geneName.name})
+        }
+
+        if (geneName.synonyms) {
+            geneName.synonyms.forEach(function (gns) {
+                if (gns.category === "ORF") {
+                    names.push({name: gns.name})
+                }
+
+            })
+        }
+        return names;
+    },
+    getRecommendedName: function (geneName) {
+        var name = "";
+        if (geneName.category === "gene name" && geneName.main === true) {
+            name = geneName.name;
+        }
+        return name;
+    },
+    getMainSynonym: function (sy) {
+        var name;
+        console.log(sy);
+        name = sy.sort(function (a, b) { return b.name.length - a.name.length;})[0].name;
+        return name;
+    },
+
     getSequenceForIsoform: function (isoSequences, isoformName) {
         var result = null;
         //TODO allow users to specify isoform name without NX_

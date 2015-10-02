@@ -8,27 +8,29 @@ module.exports = function (grunt) {
                 separator: ';\n'
             },
             basic: {
+                src: ['src/nextprot.js',
+                      'src/nextprot-utils.js',
+                      'src/nextprot-init-templates.js',
+                      'build/compiled-templates.js'],
+                dest: 'dist/nextprot.js'
+            },
+            vendor: {
                 src: ['vendor/js/es5-shim.min.js', //support for promises in IE lower than ie 9
-                    'vendor/js/promise-6.1.0.js', //support for promises in IE
-                    'bower_components/jquery/dist/jquery.js',
-                    'bower_components/handlebars/handlebars.js',
-                    'src/nextprot.js',
-                    'src/nextprot-utils.js',
-                    'src/nextprot-init-templates.js',
-                    'build/compiled-templates.js'],
-                dest: 'dist/nextprot.bundle.js'
+                      'vendor/js/promise-6.1.0.js', //support for promises in IE
+                      'bower_components/jquery/dist/jquery.js',
+                      'bower_components/handlebars/handlebars.js'],
+                dest: 'dist/nextprot-vendor.js'
             }
-
         },
         uglify: {
             options : {sourceMap : true},
             basic: {
-                src: ['src/nextprot.js', 'src/nextprot-utils.js', 'src/nextprot-init-templates.js', 'build/compiled-templates.js'],
+                src: ['dist/nextprot.js'],
                 dest: 'dist/nextprot.min.js'
             },
-            all: {
-                src: 'dist/nextprot.bundle.js',
-                dest: 'dist/nextprot.bundle.js'
+            vendor: {
+                src: 'dist/nextprot-vendor.js',
+                dest: 'dist/nextprot-vendor.js'
             }
         },
         jshint: {
