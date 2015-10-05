@@ -22,6 +22,22 @@ var NXUtils = {
         }
         return names;
     },
+    getSynonyms: function (syn) {
+        var synonyms = {};
+        if (syn) {
+            syn.forEach(function (s) {
+                if (synonyms.hasOwnProperty(s.qualifier)) {
+                    synonyms[s.qualifier].push(s.name);
+                }
+                else {
+                    synonyms[s.qualifier]=[s.name];
+                }
+                //if (s.qualifier === "EC") synonyms.EC.push(s.name);
+                //if (s.qualifier === "short") synonyms.short.push(s.name);
+            });
+        }
+        return synonyms;
+    },
     getRecommendedName: function (geneName) {
         var name = "";
         if (geneName.category === "gene name" && geneName.main === true) {
@@ -29,10 +45,33 @@ var NXUtils = {
         }
         return name;
     },
+    getAlternativeNames: function (altNames) {
+        var names = [];
+        if (altNames) {
+            altNames.forEach(function (an) {
+                var found = false;
+                var type = an.type === "name" ? "Alternative name" : an.type;
+                for (var elem in names) {
+                    if (names[elem].type === type) {
+                        names[elem].names.push({name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)});
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    names.push({type: type, names: [{name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)}]})
+                }
+            });
+        }
+        names.map(function(n){n.names.sort(function (a,b) {return a.name > b.name});});
+        names.forEach(function(n) {if (n.type === "Alternative name" && n.names.length > 1) {n.type = "Alternative names"}});
+        return names;
+    },
     getMainSynonym: function (sy) {
         var name;
         console.log(sy);
-        name = sy.sort(function (a, b) { return b.name.length - a.name.length;})[0].name;
+        name = sy.sort(function (a, b) {
+            return b.name.length - a.name.length;
+        })[0].name;
         return name;
     },
 

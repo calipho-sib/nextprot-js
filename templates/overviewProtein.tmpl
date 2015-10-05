@@ -1,24 +1,24 @@
 <div id="proteinTitle">
     <button id="extender" class="btn btn-default" style="float:right">Extend overview</button>
-    <h2>{{entryName}}</h2>
+    <h2>{{#geneName.[0]}}{{name}}{{/geneName.[0]}} → {{entryName}}</h2>
 </div>
 <div id="INFOS-LESS" style="display:block">
-    {{#if cleavage}}
-    <div id="cleavage-less" class="row">
-        <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Cleaved into :</div>
-        <div class="col-md-6 col-xs-6">{{#cleavage}}<span>{{synonymName}}, </span>{{/cleavage}}</div>
-    </div>
-    {{/if}}
     {{#if recommendedProteinName.synonymName}}
     <div id="synonym-less" class="row">
         <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Protein also known as :</div>
-        <div class="col-md-6 col-xs-6">{{recommendedProteinName.synonymName}}</div>
+        <div class="col-md-6 col-xs-6">{{#recommendedProteinName}}{{synonymName}} {{#others}} ; {{type}}{{#names}} {{name}}{{/names}}{{/others}}{{/recommendedProteinName}}</div>
+    </div>
+    {{/if}}
+    {{#if cleavage}}
+    <div id="cleavage-less" class="row">
+        <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Cleaved into :</div>
+        <div class="col-md-6 col-xs-6">{{#cleavage}}{{#names}}<span>{{name}}, </span>{{/names}}{{/cleavage}}</div>
     </div>
     {{/if}}
     <div id="gene-less" class="row">
         {{#if geneName.[0].name}}
         <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Gene Name :</div>
-        {{#geneName}}<div class="col-md-6 col-xs-6">{{name}}</div>{{/geneName}}
+        <div class="col-md-6 col-xs-6" >{{#geneName}}{{name}}{{#unless @last}}, {{/unless}}{{/geneName}}</div>
         {{else}}
         <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">ORF Name :</div>
         <div class="col-md-6 col-xs-6">{{geneName.[0].orf.[0].name}}</div>
@@ -39,20 +39,36 @@
             <dl>
                 <dt>Recommended Name</dt>
                 {{#recommendedProteinName}}
-                <dd>{{name}} {{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#short}}<em style="font-size:12px;">(short : {{this}}) </em>{{/short}}</dd>
+                <dd>{{name}} {{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<em style="font-size:12px;">(Short : {{#short}}{{this}}{{#unless @last}}, {{/unless}}{{/short}}) </em>{{/if}}</dd>
                 {{/recommendedProteinName}}
-                {{#if cleavage}}
-                <dt>Cleaved into the following {{cleavage.length}} chains</dt>
-                {{#cleavage}}
-                <dd>{{synonymName}}</dd>
-                {{/cleavage}}{{/if}}
                 {{#if alternativeProteinNames}}
-                <dt>Alternative Name</dt>
                 {{#alternativeProteinNames}}
+                <dt>{{type}}</dt>
+                {{#names}}
                 <dd> {{name}}
-                    {{#if short}}<em style="font-size:12px;">(short : {{short.[0].synonymName}}) </em>{{/if}}
+                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<em style="font-size:12px;">(Short : {{#short}}{{this}}{{#unless @last}}, {{/unless}}{{/short}}) </em>{{/if}}{{/synonyms}}
                 </dd>
-                {{/alternativeProteinNames}}{{/if}}
+                {{/names}}
+                {{/alternativeProteinNames}}
+                {{/if}}
+                {{#if functionalRegionNames}}
+                {{#functionalRegionNames}}
+                <dt>Include the following functional regions</dt>
+                {{#names}}
+                <dd> {{name}}
+                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<em style="font-size:12px;">(Alternative name{{plural full}} : {{#full}}{{this}}{{#unless @last}}, {{/unless}}{{/full}}) </em>{{/if}}{{/synonyms}}
+                </dd>
+                {{/names}}
+                {{/functionalRegionNames}}
+                {{/if}}
+                {{#if cleavage}}
+                {{#cleavage}}
+                <dt>Cleaved into the following {{names.length}} chains</dt>
+                {{#names}}
+                <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<em style="font-size:12px;">(Alternative name{{plural full}} : {{#full}}{{this}}{{#unless @last}}, {{/unless}}{{/full}}) </em>{{/if}}{{/synonyms}}</dd>
+                {{/names}}
+                {{/cleavage}}
+                {{/if}}
             </dl>
         </div>
     </div>

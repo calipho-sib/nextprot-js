@@ -16,6 +16,9 @@ $(function () {
                         return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
                 }
             });
+            Handlebars.registerHelper('plural', function (array, options) {     
+                return array.length > 1 ? "s" : "";
+            });
 
             var EC = [];
             var short = [];
@@ -27,18 +30,18 @@ $(function () {
                 });
             }
 
-
             var data = {
                 "entryName": overview.proteinNames[0].synonymName,
                 "recommendedProteinName": {
                     name: overview.recommendedProteinName.name,
                     EC: EC,
                     short: short,
-                    synonymName: overview.proteinNames[0].synonyms ? NXUtils.getMainSynonym(overview.proteinNames[0].synonyms) : null
+                    synonymName: overview.proteinNames[0].synonyms ? NXUtils.getMainSynonym(overview.proteinNames[0].synonyms) : null,
+                    others: NXUtils.getAlternativeNames(overview.alternativeProteinNames).filter(function(t) {
+                        return t.type !== "EC" && t.type !== "full" && t.type !== "Alternative names" && t.type !== "Alternative name"
+                    })
                 },
-                "alternativeProteinNames": overview.alternativeProteinNames.map(function (p) {
-                    return {name: p.name, short: p.synonyms}
-                }),
+                "alternativeProteinNames": NXUtils.getAlternativeNames(overview.alternativeProteinNames),
                 "geneName": overview.geneNames.map(function (gn) {
                     return {
                         name: NXUtils.getRecommendedName(gn) || null,
@@ -48,7 +51,8 @@ $(function () {
                         orf: NXUtils.getORFNames(gn) || null
                     }
                 }),
-                "cleavage": overview.cleavedRegionNames,
+                "cleavage": NXUtils.getAlternativeNames(overview.cleavedRegionNames),
+                "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
                 "family": overview.families,
                 "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),
                 "integDate": overview.history.formattedNextprotIntegrationDate,
@@ -62,6 +66,8 @@ $(function () {
 
 
             console.log(data.recommendedProteinName.synonymName);
+                console.log("test other");
+                console.log(data.functionalRegionNames);
             var template = HBtemplates['templates/overviewProtein.tmpl'];
             var result = template(data);
             $("#nx-overview").append(result);
