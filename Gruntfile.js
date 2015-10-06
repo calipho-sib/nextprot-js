@@ -8,7 +8,7 @@ module.exports = function (grunt) {
                 separator: ';\n'
             },
             basic: {
-                src: ['src/nextprot.js',
+                src: ['src/nextprot-core.js',
                       'src/nextprot-utils.js',
                       'src/nextprot-init-templates.js',
                       'build/compiled-templates.js'],

@@ -127,7 +127,7 @@ QUnit.test("SRM Peptide Json test", function (assert) {
 
 QUnit.test("Mature protein Json test", function (assert) {
     var done10 = assert.async();
-    var promise10 = nx.getAnnotationsByCategory("NX_P01308", "helix");
+    var promise10 = nx.getAnnotationsByCategory("NX_P01308", "mature-protein");
     promise10.then(function (data) {
         assert.ok(data.annot.length, 'should get a Mature protein Json filled');
         if (data.annot.length) {
