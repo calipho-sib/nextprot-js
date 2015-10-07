@@ -14,10 +14,10 @@
     "api"
   ],
   "author": "Calipho Team",
-  "license": "GNU GPL v2",
+  "license": "GPL-2.0",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "grunt": "x.x.x",
+    "grunt": "^0.4.5",
     "grunt-bower-concat": "^0.4.0",
     "grunt-bower-task": "^0.4.0",
     "grunt-bump": "^0.3.0",
