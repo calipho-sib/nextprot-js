@@ -54,14 +54,13 @@ QUnit.test("Overview Json test", function (assert) {
             assert.ok(data.history.formattedNextprotUpdateDate, 'Expect a update date to exist');
             assert.ok(data.history.uniprotVersion, 'Expect a version to exist');
         }
-        //            assert.ok(data.cleavedRegionNames, 'cleaved region exist');
-        //            assert.ok(data.bioPhyChemProps.length, 'biofichemprops exist');
         done6();
     }, function (error) {
         assert.notOk("failed to load protein overview");
         done6();
     });
 });
+
 
 // SEQUENCE JSON TEST
 QUnit.test("Sequence Json test", function (assert) {
@@ -78,6 +77,7 @@ QUnit.test("Sequence Json test", function (assert) {
         //            assert.ok(data.bioPhyChemProps.length, 'biofichemprops exist');
         done7();
     }, function (error) {
+        console.log(error);
         assert.notOk("failed to load protein sequence");
         done7();
     });
