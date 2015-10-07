@@ -1,9 +1,7 @@
 A javascript library that communicates directly with the nextprot (www.nextprot.org) REST api (https://api.nextprot.org). The api is freely available and can be used by anyone to create awsome apps :)
 Either you are an expert or a novice go ahead and try out the javascript library and don't hesitate to ask us questions if you have some troubles. We will appreciate your feedback.
 
-Here is an example of the secondary structure of a protein using [pviz]|(https://github.com/Genentech/pviz) software
-
-!['secondary structure'](./assets/secondary-structure.png)
+In this [example](https://cdn.rawgit.com/calipho-sib/nextprot-viewers/v0.1.0/sequence/app/index.html?nxentry=NX_P01308&inputOption=true) you can see what we can achieve with this library.
 
 ##Installation 
 ```
