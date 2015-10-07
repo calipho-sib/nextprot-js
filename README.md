@@ -48,12 +48,13 @@ Some running examples:
 
 * grunt - concat and creates a bundle
 * grunt serve - runs app on web server
-* npm test - runs the tests !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-another way to run tests is to do grunt serve and access http://localhost:5000/test
 
 ## Deployment 
 
-* grunt prod  -creates minified and bundled versions in dist folder
+* grunt prod - creates minified and bundled versions in dist folder
+* npm test - runs the tests before releasing ! (test runs against production version)
+another way to run tests is to do grunt serve and access http://localhost:5000/test
+
 * grunt bump - tags the repository (don't forget to push). The tag is used by bower
 * npm publish

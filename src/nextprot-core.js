@@ -156,34 +156,7 @@
         // Keeps SPARQL prefixes in cache
         var sparqlPrefixPromise;
         NextprotClient.prototype.getSparqlPrefixes = function () {
-            sparqlPrefixPromise = sparqlPrefixPromise || _getJSON(apiBaseUrl + "/sparql-prefixes").then(_transformPrefixesFunction, 
-                                                                                                        function (){ 
-            //assures backward compatibility with old API
-                return "PREFIX :<http://nextprot.org/rdf#> "+
-            "PREFIX annotation:<http://nextprot.org/rdf/annotation/> "+
-            "PREFIX context:<http://nextprot.org/rdf/context/> "+
-            "PREFIX cv:<http://nextprot.org/rdf/terminology/> "+
-            "PREFIX db:<http://nextprot.org/rdf/db/> "+
-            "PREFIX dc:<http://purl.org/dc/elements/1.1/> "+
-            "PREFIX dcterms:<http://purl.org/dc/terms/> "+
-            "PREFIX entry:<http://nextprot.org/rdf/entry/> "+
-            "PREFIX evidence:<http://nextprot.org/rdf/evidence/> "+
-            "PREFIX foaf:<http://xmlns.com/foaf/0.1/> "+
-            "PREFIX gene:<http://nextprot.org/rdf/gene/> "+
-            "PREFIX identifier:<http://nextprot.org/rdf/identifier/> "+
-            "PREFIX isoform:<http://nextprot.org/rdf/isoform/> "+
-            "PREFIX mo:<http://purl.org/ontology/mo/> "+
-            "PREFIX ov:<http://open.vocab.org/terms/> "+
-            "PREFIX owl:<http://www.w3.org/2002/07/owl#> "+
-            "PREFIX publication:<http://nextprot.org/rdf/publication/> "+
-            "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
-            "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "+
-            "PREFIX sim:<http://purl.org/ontology/similarity/> "+
-            "PREFIX source:<http://nextprot.org/rdf/source/> "+
-            "PREFIX xref:<http://nextprot.org/rdf/xref/> "+
-            "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#> ";
-                
-            });
+            sparqlPrefixPromise = sparqlPrefixPromise || _getJSON(apiBaseUrl + "/sparql-prefixes").then(_transformPrefixesFunction);
             return sparqlPrefixPromise;
         };
 
@@ -227,43 +200,36 @@
             });
         };
 
+        NextprotClient.prototype.getEntryProperties = function (entry) {
+            return _getEntry(entry, "accession").then(function (data) {
+                return data.entry.properties;
+            });
+        };
 
-        // NEEEDS REVIEW ///////////////////////////////////////////////////////////////////////////////////////////////
-        //TODO where is this needed?
+
+        /*  Special method to retrieve isoforms mapping on the master sequence (should not be used by public)  */
         NextprotClient.prototype.getIsoformMapping = function (entry) {
             return _getEntry(entry, "isoform/mapping").then(function (data) {
                 return data;
             });
         };
 
-        //TODO This is extracting information from the first gene only!
-        NextprotClient.prototype.getExons = function (entry) {
+        NextprotClient.prototype.getGenomicMappings = function (entry) {
             return _getEntry(entry, "genomic-mapping").then(function (data) {
-                return data.entry.genomicMappings[0].isoformMappings;
+                return data.entry.genomicMappings;
             });
         };
-
-        //TODO not a good name if it return properties???????
-        NextprotClient.prototype.getAccession = function (entry) {
-            console.log("Use getEntryProperties instead");
-            return _getEntry(entry, "accession").then(function (data) {
-                return data.entry.properties;
-            });
-        };
-
-        // NEEEDS REVIEW ///////////////////////////////////////////////////////////////////////////////////////////////
-
 
         // BEGIN Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////
         NextprotClient.prototype.getPeptide = function (entry) {
-            console.warn("getPeptide is deprecated. use getAnnototionsByCategory(entry, 'peptide-mapping') instead ");
+            console.warn("getPeptide is deprecated. use getAnnotationsByCategory(entry, 'peptide-mapping') instead ");
             return _getEntry(entry, "peptide-mapping").then(function (data) {
                 return data.entry.peptideMappings;
             });
         };
 
         NextprotClient.prototype.getSrmPeptide = function (entry) {
-            console.warn("getSrmPeptide is deprecated. use getAnnototionsByCategory(entry, 'srm-peptide-mapping') instead ");
+            console.warn("getSrmPeptide is deprecated. use getAnnotationsByCategory(entry, 'srm-peptide-mapping') instead ");
             return _getEntry(entry, "srm-peptide-mapping").then(function (data) {
                 return data.entry.srmPeptideMappings;
             });

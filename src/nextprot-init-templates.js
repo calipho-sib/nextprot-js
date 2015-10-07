@@ -116,7 +116,7 @@ $(function () {
 
             if (nxInputOption === "true") {
                 addEntrySelection();
-                nx.getAccession().then(function (data) {
+                nx.getEntryProperties().then(function (data) {
                     $(function () {
                         $("#inputOptionDiv").append("<div class=\"alert alert-success entry-alert\" role=\"alert\" style=\"display:none\">You successfully load the entry !</div>");
                         $(".entry-alert").fadeIn("slow");

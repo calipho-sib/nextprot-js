@@ -1,6 +1,6 @@
 {
   "name": "nextprot-js",
-  "main": "dist/nextprot.min.js",
+  "main": "dist/nextprot.js",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -12,9 +12,11 @@
   "dependencies": {
     "jquery": "~2.1.4",
     "handlebars": "3.0.3",
-    "bootstrap": "~3.3.5"
+    "bootstrap": "~3.3.5",
+    "qunit": "1.19.0"
   },
   "resolutions": {
-    "handlebars": "3.0.3"
+    "handlebars": "3.0.3",
+    "qunit": "1.19.0"
   }
 }
