@@ -1,6 +1,6 @@
 <div id="proteinTitle">
     <button id="extender" class="btn btn-default" style="float:right">Extend overview</button>
-    <h2>{{#geneName.[0]}}{{name}}{{/geneName.[0]}} → {{entryName}}</h2>
+    <h3>{{#geneName.[0]}}{{name}}{{/geneName.[0]}} → {{entryName}} {{#recommendedProteinName}}{{#if EC}}  [{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}}{{/recommendedProteinName}}</h3>
 </div>
 <div id="INFOS-LESS" style="display:block">
     {{#if recommendedProteinName.synonymName}}
@@ -34,19 +34,25 @@
 </div>
 <div id="INFOS-FULL" style="display:none">
     <div id="protein-full" class="row">
-        <div class="col-md-2 col-xs-3 text-uppercase" style="color: grey;">Protein</div>
-        <div class="col-md-7 col-xs-6">
+        <div class="col-md-1 col-xs-2 text-uppercase" style="color: grey;">Protein</div>
+        <div class="col-md-9 col-xs-8">
             <dl>
                 <dt>Recommended Name</dt>
                 {{#recommendedProteinName}}
-                <dd>{{name}} {{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<em style="font-size:12px;">(Short : {{#short}}{{this}}{{#unless @last}}, {{/unless}}{{/short}}) </em>{{/if}}</dd>
+                <dd>{{name}} {{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}}, {{/unless}}{{/short}}</span>{{/if}}</dd>
                 {{/recommendedProteinName}}
+                <!--{{#recommendedProteinName2}}-->
+                <!--<dt>Recommended Name</dt>-->
+                <!--{{#names}}-->
+                <!--<dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}}, {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}</dd>-->
+                <!--{{/names}}-->
+                <!--{{/recommendedProteinName2}}-->
                 {{#if alternativeProteinNames}}
                 {{#alternativeProteinNames}}
                 <dt>{{type}}</dt>
                 {{#names}}
                 <dd> {{name}}
-                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<em style="font-size:12px;">(Short : {{#short}}{{this}}{{#unless @last}}, {{/unless}}{{/short}}) </em>{{/if}}{{/synonyms}}
+                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}}, {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}
                 </dd>
                 {{/names}}
                 {{/alternativeProteinNames}}
@@ -56,7 +62,7 @@
                 <dt>Include the following functional regions</dt>
                 {{#names}}
                 <dd> {{name}}
-                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<em style="font-size:12px;">(Alternative name{{plural full}} : {{#full}}{{this}}{{#unless @last}}, {{/unless}}{{/full}}) </em>{{/if}}{{/synonyms}}
+                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<span style="font-size:12px;"><span style="color:grey">Alternative name{{plural full}}:</span> {{#full}}{{this}}{{#unless @last}}, {{/unless}}{{/full}}</span>{{/if}}{{/synonyms}}
                 </dd>
                 {{/names}}
                 {{/functionalRegionNames}}
@@ -65,7 +71,7 @@
                 {{#cleavage}}
                 <dt>Cleaved into the following {{names.length}} chains</dt>
                 {{#names}}
-                <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<em style="font-size:12px;">(Alternative name{{plural full}} : {{#full}}{{this}}{{#unless @last}}, {{/unless}}{{/full}}) </em>{{/if}}{{/synonyms}}</dd>
+                <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<span style="font-size:12px;"><span style="color:grey">Alternative name{{plural full}}:</span> {{#full}}{{this}}{{#unless @last}}, {{/unless}}{{/full}}</span>{{/if}}{{/synonyms}}</dd>
                 {{/names}}
                 {{/cleavage}}
                 {{/if}}
@@ -73,8 +79,8 @@
         </div>
     </div>
     <div id="gene-full" class="row">
-        <div class="col-md-2 col-xs-3 text-uppercase" style="color: grey;">Gene</div>
-        <div class="col-md-7 col-xs-6">
+        <div class="col-md-1 col-xs-2 text-uppercase" style="color: grey;">Gene</div>
+        <div class="col-md-9 col-xs-8">
             <dl>
                 {{#geneName}}
                 {{#if name}}
@@ -99,8 +105,8 @@
     </div>
     {{#if family}}
     <div id="family-full" class="row">
-        <div class="col-md-2 col-xs-3 text-uppercase" style="color: grey;">Family</div>
-        <div class="col-md-7 col-xs-6">
+        <div class="col-md-1 col-xs-2 text-uppercase" style="color: grey;">Family</div>
+        <div class="col-md-9 col-xs-8">
             <dl>
                 <dt>Family</dt>
                 {{#family}}
@@ -111,8 +117,8 @@
     </div>
     {{/if}}
     <div id="History-full" class="row">
-        <div class="col-md-2 col-xs-3 text-uppercase" style="color: grey;">History</div>
-        <div class="col-md-7 col-xs-6">
+        <div class="col-md-1 col-xs-2 text-uppercase" style="color: grey;">History</div>
+        <div class="col-md-9 col-xs-8">
             <dl>
                 <dt>neXtProt</dt>
                 <dd>Integrated {{integDate}}</dd>

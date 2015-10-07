@@ -16,7 +16,7 @@ $(function () {
                         return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
                 }
             });
-            Handlebars.registerHelper('plural', function (array, options) {     
+            Handlebars.registerHelper('plural', function (array, options) {
                 return array.length > 1 ? "s" : "";
             });
 
@@ -41,6 +41,7 @@ $(function () {
                         return t.type !== "EC" && t.type !== "full" && t.type !== "Alternative names" && t.type !== "Alternative name"
                     })
                 },
+                //"recommendedProteinName2": NXUtils.getAlternativeNames([overview.recommendedProteinName]),
                 "alternativeProteinNames": NXUtils.getAlternativeNames(overview.alternativeProteinNames),
                 "geneName": overview.geneNames.map(function (gn) {
                     return {
@@ -68,6 +69,8 @@ $(function () {
             console.log(data.recommendedProteinName.synonymName);
                 console.log("test other");
                 console.log(data.functionalRegionNames);
+                console.log(data.alternativeProteinNames);
+                console.log(data.recommendedProteinName2);
             var template = HBtemplates['templates/overviewProtein.tmpl'];
             var result = template(data);
             $("#nx-overview").append(result);
