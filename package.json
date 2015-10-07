@@ -14,7 +14,7 @@
     "api"
   ],
   "author": "Calipho Team",
-  "license": "GNU GPL v2",
+  "license": "GPL-2.0",
   "readmeFilename": "README.md",
   "devDependencies": {
     "grunt": "x.x.x",
@@ -37,6 +37,13 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-hustler": "0.11.2",
     "grunt-serve": "^0.1.6",
+    "grunt-karma": "^0.12.1",
+    "jasmine-core": "^2.3.4",
+    "karma": "~0.13",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-jasmine": "^0.3.5",
+    "karma-phantomjs-launcher": "~0.1",
     "load-grunt-tasks": "^0.6.0",
     "qunitjs": "^1.19.0"
   },
@@ -45,7 +52,7 @@
     "grunt-cli": "x.x.x"
   },
   "scripts": {
-    "test": "grunt test --verbose --debug --web-security=no",
+    "test": "grunt karma:continuous",
     "dist": "grunt && grunt concating"
   }
 }

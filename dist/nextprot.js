@@ -653,9 +653,6 @@ $(function () {
             };
 
 
-            console.log(data.recommendedProteinName.synonymName);
-                console.log("test other");
-                console.log(data.functionalRegionNames);
             var template = HBtemplates['templates/overviewProtein.tmpl'];
             var result = template(data);
             $("#nx-overview").append(result);

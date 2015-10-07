@@ -9,21 +9,21 @@ module.exports = function (grunt) {
             },
             basic: {
                 src: ['src/nextprot-core.js',
-                      'src/nextprot-utils.js',
-                      'src/nextprot-init-templates.js',
-                      'build/compiled-templates.js'],
+                    'src/nextprot-utils.js',
+                    'src/nextprot-init-templates.js',
+                    'build/compiled-templates.js'],
                 dest: 'dist/nextprot.js'
             },
             vendor: {
                 src: ['vendor/js/es5-shim.min.js', //support for promises in IE lower than ie 9
-                      'vendor/js/promise-6.1.0.js', //support for promises in IE
-                      'bower_components/jquery/dist/jquery.js',
-                      'bower_components/handlebars/handlebars.js'],
+                    'vendor/js/promise-6.1.0.js', //support for promises in IE
+                    'bower_components/jquery/dist/jquery.js',
+                    'bower_components/handlebars/handlebars.js'],
                 dest: 'dist/nextprot-vendor.js'
             }
         },
         uglify: {
-            options : {sourceMap : true},
+            options: { sourceMap: true },
             basic: {
                 src: ['dist/nextprot.js'],
                 dest: 'dist/nextprot.min.js'
@@ -96,18 +96,31 @@ module.exports = function (grunt) {
                     namespace: "HBtemplates"
                 }
             }
+        },
+        karma: {
+            options: {
+                configFile: 'karma.conf.js'
+            },
+            unit: {
+                singleRun: true,
+                browsers: ['Chrome']
+            },
+            //continuous integration mode: run tests once in PhantomJS browser.
+            continuous: {
+                singleRun: true,
+                browsers: ['PhantomJS']
+            }
         }
+
     });
 
     // Load the plugin that provides the "uglify" task.
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-handlebars');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
 
     // Default task(s).

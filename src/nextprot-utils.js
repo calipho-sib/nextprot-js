@@ -5,7 +5,6 @@ var NXUtils = {
         return isoname.endsWith("-" + isonumber)
     },
 
-
     getORFNames: function (geneName) {
         var names = [];
         if (geneName.category === "ORF") {
