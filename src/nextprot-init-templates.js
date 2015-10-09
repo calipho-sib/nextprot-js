@@ -29,6 +29,8 @@ $(function () {
                     if (p.qualifier === "short") short.push(p.name);
                 });
             }
+            var recommendedProteinSynonyms = getSynonyms(overview.recommendedProteinName.synonyms);
+
 
             var data = {
                 "entryName": overview.proteinNames[0].synonymName,

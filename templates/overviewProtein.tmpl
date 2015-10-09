@@ -41,12 +41,6 @@
                 {{#recommendedProteinName}}
                 <dd>{{name}} {{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}}, {{/unless}}{{/short}}</span>{{/if}}</dd>
                 {{/recommendedProteinName}}
-                <!--{{#recommendedProteinName2}}-->
-                <!--<dt>Recommended Name</dt>-->
-                <!--{{#names}}-->
-                <!--<dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}}, {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}</dd>-->
-                <!--{{/names}}-->
-                <!--{{/recommendedProteinName2}}-->
                 {{#if alternativeProteinNames}}
                 {{#alternativeProteinNames}}
                 <dt>{{type}}</dt>
