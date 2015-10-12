@@ -29,16 +29,21 @@ $(function () {
                     if (p.qualifier === "short") short.push(p.name);
                 });
             }
-            var recommendedProteinSynonyms = getSynonyms(overview.recommendedProteinName.synonyms);
+
+            var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
+            console.log("test short !");
+            console.log(recommendedProteinSynonyms.short);
 
 
             var data = {
                 "entryName": overview.proteinNames[0].synonymName,
                 "recommendedProteinName": {
+                    synonyms: recommendedProteinSynonyms,
                     name: overview.recommendedProteinName.name,
                     EC: EC,
                     short: short,
-                    synonymName: overview.proteinNames[0].synonyms ? NXUtils.getMainSynonym(overview.proteinNames[0].synonyms) : null,
+                    mainSynonymName: overview.proteinNames[0].synonyms ? NXUtils.getMainSynonym(overview.proteinNames[0].synonyms) : null,
+                    mainShortName: recommendedProteinSynonyms.short ? NXUtils.getMainShort(recommendedProteinSynonyms.short) : null,
                     others: NXUtils.getAlternativeNames(overview.alternativeProteinNames).filter(function(t) {
                         return t.type !== "EC" && t.type !== "full" && t.type !== "Alternative names" && t.type !== "Alternative name"
                     })

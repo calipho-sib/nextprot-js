@@ -72,6 +72,18 @@ var NXUtils = {
         name = sy.sort(function (a, b) {
             return b.name.length - a.name.length;
         })[0].name;
+        console.log(name);
+        return name;
+    },
+    getMainShort: function (sh) {
+        var shortList = [];
+        var name;
+        console.log(sh);
+        shortList = sh.sort(function (a, b) {
+            return a.length - b.length;
+        });
+        name = shortList[0].charAt(0) === "h" ? shortList[1] ? shortList[1] : shortList[0] : shortList[0];
+        console.log(name);
         return name;
     },
 
