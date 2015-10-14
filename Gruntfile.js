@@ -48,7 +48,8 @@ module.exports = function (grunt) {
                     console: true,
                     urls: [
                         'http://localhost:5000/test/index.html'
-                    ]
+                    ],
+                    '--ignore-ssl-errors': true
                 }
             }
         },
