@@ -1,4 +1,4 @@
-#Nextprot-js
+#neXtProt-js
 
 [![Build Status](https://travis-ci.org/calipho-sib/nextprot-js.svg?branch=develop)](https://travis-ci.org/calipho-sib/nextprot-js)
 
