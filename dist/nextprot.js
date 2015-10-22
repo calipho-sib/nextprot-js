@@ -366,9 +366,11 @@ var NXUtils = {
         return result;
     },
     getLinkForFeature: function (accession, description, type) {
-        if (type === "peptide") {
-            var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
-            return "<a href='" + url + "'>" + description + "</a>";
+        if (type === "Peptide" || type === "SRM Peptide") {
+            if (description) {
+                var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
+                return "<a href='" + url + "'>" + description + "</a>";
+            }
         } else if (type === "antibody") {
             var url = accession;
             return "<a href='" + url + "'>" + description + "</a>";
@@ -380,6 +382,44 @@ var NXUtils = {
             return "<a href='" + url + "'>" + description + "</a>";
         } else if (description) return description;
         else return "";
+    },
+    getDescription: function (elem, category) {
+        if (category === "Peptide" || category === "SRM Peptide") {
+            for (var ev in elem.evidences) {
+                if (elem.evidences[ev].resourceDb === "PeptideAtlas" || elem.evidences[ev].resourceDb === "SRMAtlas") {
+                    return elem.evidences[ev].resourceAccession;
+                }
+            }
+            return "";
+        }
+        else return elem.description;
+    },
+    getEvidenceCodeName: function (elem, category) {
+        if (category === "Peptide") {
+            return "EXP";
+        }
+        else return elem.evidenceCodeName;
+    },
+    getAssignedBy: function (elem) {
+        if (elem === "Uniprot") {
+            return "UniprotKB";
+        }
+        if (elem.startsWith("MD") || elem.startsWith("PM")) {
+            return "neXtProt";
+        }
+        else return elem;
+    },
+    getProteotypicity: function (elem) {
+        if (elem) {
+            console.log("there is properties");
+            var proteo = true;
+            elem.forEach(function(p) {
+                console.log("there is properties");
+                if (p.name === "is proteotypic" && p.value === "N") proteo=false;
+            });
+            return proteo;
+        }
+        else return true;
     },
     convertMappingsToIsoformMap: function (featMappings, category, group) {
         var mappings = jQuery.extend([], featMappings);
@@ -395,9 +435,10 @@ var NXUtils = {
                     if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
                         var start = mapping.targetingIsoformsMap[name].firstPosition,
                             end = mapping.targetingIsoformsMap[name].lastPosition,
-                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, mapping.description),
-                            description = mapping.description,
+                            description = NXUtils.getDescription(mapping,category),
+                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, description, category),
                             quality = mapping.qualityQualifier !== "GOLD" ? mapping.qualityQualifier.toLowerCase() : "",
+                            proteotypic = NXUtils.getProteotypicity(mapping.properties),
                             source = mapping.evidences.map(function (d) {
                                 var pub = null;
                                 var xref = null;
@@ -409,8 +450,8 @@ var NXUtils = {
                                         xref = featMappings.xrefs[d.resourceId];
                                     }
                                     return {
-                                        evidenceCodeName: d.evidenceCodeName,
-                                        assignedBy: d.assignedBy,
+                                        evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
+                                        assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                         resourceDb: d.resourceDb,
                                         externalDb: d.resourceDb !== "UniProt",
                                         publicationMD5: d.publicationMD5,
@@ -442,8 +483,8 @@ var NXUtils = {
                                         } : null
                                     }
                                 } else return {
-                                    evidenceCodeName: d.evidenceCodeName,
-                                    assignedBy: d.assignedBy,
+                                    evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
+                                    assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                     publicationMD5: d.publicationMD5,
                                     title: "",
                                     authors: [],
@@ -477,6 +518,7 @@ var NXUtils = {
                             id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString(),
                             description: description,
                             quality: quality,
+                            proteotypicity: proteotypic,
                             category: category,
                             group: group,
                             link: link,
