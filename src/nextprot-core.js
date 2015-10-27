@@ -162,7 +162,7 @@
 
         NextprotClient.prototype.executeSparql = function (sparql, includePrefixes) {
             return this.getSparqlPrefixes().then(function (sparqlPrefixes) {
-                
+
                 var incPrefs = (includePrefixes === undefined) ? true : includePrefixes;
                 var sparqlQuery = incPrefs ? sparqlPrefixes + sparql : sparql; //add SPARQL prefixes if flag not set to false
                 var url = sparqlEndpoint + sparqlFormat + "&query=" + encodeURIComponent(sparqlQuery);

@@ -8,7 +8,15 @@
         <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Protein also known as :</div>
         <div class="col-md-6 col-xs-6">{{#recommendedProteinName}}{{mainSynonymName}} {{#others}} ; {{type}}{{#names}} {{name}}{{/names}}{{/others}}{{/recommendedProteinName}}</div>
     </div>
+    {{else}}
+    {{#if recommendedProteinName.others}}
+    <div id="synonym-other-less" class="row">
+        <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Protein also known as :</div>
+        <div class="col-md-6 col-xs-6">{{#recommendedProteinName}}{{#others}} {{type}}{{#names}} {{name}}{{/names}}{{#unless @last}}; {{/unless}}{{/others}}{{/recommendedProteinName}}</div>
+    </div>
     {{/if}}
+    {{/if}}
+
     {{#if cleavage}}
     <div id="cleavage-less" class="row">
         <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Cleaved into :</div>
@@ -25,10 +33,10 @@
         {{/if}}
 
     </div>
-    {{#if family}}
+    {{#if families}}
     <div id="family-less" class="row">
         <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Family Name :</div>
-        <div class="col-md-6 col-xs-6">{{#family}}<span>{{{link_to "term"}}}</span>{{/family}}</div>
+        <div class="col-md-6 col-xs-6">{{#families}}<span>{{#if superfamily}}{{#superfamily}}{{{link_to "term"}}} >> {{/superfamily}}{{/if}}{{#if family}}{{#family}} {{{link_to "term"}}} {{/family}}{{/if}}{{#if subfamily}}{{#subfamily}} >> {{{link_to "term"}}} {{/subfamily}}{{/if}}</span>{{/families}}</div>
     </div>
     {{/if}}
 </div>
@@ -97,15 +105,31 @@
             </dl>
         </div>
     </div>
-    {{#if family}}
+    {{#if families}}
     <div id="family-full" class="row">
         <div class="col-md-1 col-xs-2 text-uppercase" style="color: grey;">Family</div>
         <div class="col-md-9 col-xs-8">
             <dl>
-                <dt>Family</dt>
+                {{#families}}
+                {{#if superfamily}}
+                {{#superfamily}}
+                <dt>Superfamily</dt>
+                <dd>{{{link_to "term"}}}</dd>
+                {{/superfamily}}
+                {{/if}}
+                {{#if family}}
                 {{#family}}
+                <dt>Family</dt>
                 <dd>{{{link_to "term"}}}</dd>
                 {{/family}}
+                {{/if}}
+                {{#if subfamily}}
+                {{#subfamily}}
+                <dt>Subfamily</dt>
+                <dd>{{{link_to "term"}}}</dd>
+                {{/subfamily}}
+                {{/if}}
+                {{/families}}
             </dl>
         </div>
     </div>

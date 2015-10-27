@@ -61,7 +61,7 @@ $(function () {
                 }),
                 "cleavage": NXUtils.getAlternativeNames(overview.cleavedRegionNames),
                 "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
-                "family": overview.families,
+                "families": overview.families.map(function(f){return NXUtils.getFamily(f,{})}),
                 "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),
                 "integDate": overview.history.formattedNextprotIntegrationDate,
                 "lastUpdate": overview.history.formattedNextprotUpdateDate,
@@ -71,7 +71,8 @@ $(function () {
                 "seqVersion": overview.history.sequenceVersion,
                 "accessionNumber": nxEntryName
             };
-
+            console.log("others");
+            console.log(data.recommendedProteinName.others);
 
             console.log(data.recommendedProteinName.synonymName);
                 console.log("test other");

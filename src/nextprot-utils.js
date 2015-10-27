@@ -68,10 +68,12 @@ var NXUtils = {
     },
     getMainSynonym: function (sy) {
         var name;
-        console.log(sy);
-        name = sy.sort(function (a, b) {
-            return b.name.length - a.name.length;
-        })[0].name;
+        var syProtNames= sy.filter(function(a) {return a.qualifier === "full"});
+        if (syProtNames.length) {
+            name = syProtNames.sort(function (a, b) {
+                return b.name.length - a.name.length;
+            })[0].name;
+        }
         console.log(name);
         return name;
     },
@@ -86,7 +88,20 @@ var NXUtils = {
         console.log(name);
         return name;
     },
-
+    getFamily: function (f,family) {
+        f.level === "Superfamily" ? family["superfamily"]= {name:f.name, accession:f.accession} : "";
+        f.level === "Family" ? family["family"]= {name:f.name, accession:f.accession} : "";
+        f.level === "Subfamily" ? family["subfamily"]= {name:f.name, accession:f.accession} : "";
+        console.log("before boucle if");
+        console.log(f);
+        if (f.parent) {
+            console.log("enter boucle if");
+            NXUtils.getFamily(f.parent,family);
+        }
+        console.log("FAMILY");
+        console.log(family);
+        return family;
+    },
     getSequenceForIsoform: function (isoSequences, isoformName) {
         var result = null;
         //TODO allow users to specify isoform name without NX_
@@ -167,7 +182,7 @@ var NXUtils = {
     convertMappingsToIsoformMap: function (featMappings, category, group) {
         var mappings = jQuery.extend([], featMappings);
         var publiActive = false;
-        if (!(featMappings instanceof Array)) {
+        if (featMappings.hasOwnProperty("annot")) {
             publiActive = true;
             mappings = jQuery.extend([], featMappings.annot);
         }
@@ -324,6 +339,9 @@ var NXUtils = {
             }
         });
         for (var iso in result) {
+            result[iso].sort(function (a, b) {
+                return b.length - a.length;
+            });
             result[iso].sort(function (a, b) {
                 return a.start - b.start;
             })
