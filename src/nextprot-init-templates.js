@@ -48,7 +48,6 @@ $(function () {
                         return t.type !== "EC" && t.type !== "full" && t.type !== "Alternative names" && t.type !== "Alternative name"
                     })
                 },
-                //"recommendedProteinName2": NXUtils.getAlternativeNames([overview.recommendedProteinName]),
                 "alternativeProteinNames": NXUtils.getAlternativeNames(overview.alternativeProteinNames),
                 "geneName": overview.geneNames.map(function (gn) {
                     return {
@@ -60,6 +59,7 @@ $(function () {
                     }
                 }),
                 "cleavage": NXUtils.getAlternativeNames(overview.cleavedRegionNames),
+                "isoforms": overview.isoformNames ? overview.isoformNames.length > 1 ? overview.isoformNames.sort(function(a,b){return a.name > b.name}) : null : null,
                 "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
                 "families": overview.families.map(function(f){return NXUtils.getFamily(f,{})}),
                 "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),

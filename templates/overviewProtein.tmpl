@@ -77,6 +77,12 @@
                 {{/names}}
                 {{/cleavage}}
                 {{/if}}
+                {{#if isoforms}}
+                <dt>Spliced into the following {{isoforms.length}} isoforms</dt>
+                {{#isoforms}}
+                <dd>{{name}} {{#if synonyms}}<span style="font-size:0.9em;color:grey"> Alternative name: </span>{{#synonyms}} {{name}}{{/synonyms}}{{/if}}</dd>
+                {{/isoforms}}
+                {{/if}}
             </dl>
         </div>
     </div>
