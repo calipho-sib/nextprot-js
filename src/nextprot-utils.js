@@ -172,7 +172,6 @@ var NXUtils = {
             console.log("there is properties");
             var proteo = true;
             elem.forEach(function(p) {
-                console.log("there is properties");
                 if (p.name === "is proteotypic" && p.value === "N") proteo=false;
             });
             return proteo;
