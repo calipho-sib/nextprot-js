@@ -31,8 +31,6 @@ $(function () {
             }
 
             var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
-            console.log("test short !");
-            console.log(recommendedProteinSynonyms.short);
 
 
             var data = {
@@ -71,14 +69,7 @@ $(function () {
                 "seqVersion": overview.history.sequenceVersion,
                 "accessionNumber": nxEntryName
             };
-            console.log("others");
-            console.log(data.recommendedProteinName.others);
 
-            console.log(data.recommendedProteinName.synonymName);
-                console.log("test other");
-                console.log(data.functionalRegionNames);
-                console.log(data.alternativeProteinNames);
-                console.log(data.recommendedProteinName2);
             var template = HBtemplates['templates/overviewProtein.tmpl'];
             var result = template(data);
             $("#nx-overview").append(result);

@@ -74,32 +74,24 @@ var NXUtils = {
                 return b.name.length - a.name.length;
             })[0].name;
         }
-        console.log(name);
         return name;
     },
     getMainShort: function (sh) {
         var shortList = [];
         var name;
-        console.log(sh);
         shortList = sh.sort(function (a, b) {
             return a.length - b.length;
         });
         name = shortList[0].charAt(0) === "h" ? shortList[1] ? shortList[1] : shortList[0] : shortList[0];
-        console.log(name);
         return name;
     },
     getFamily: function (f,family) {
         f.level === "Superfamily" ? family["superfamily"]= {name:f.name, accession:f.accession} : "";
         f.level === "Family" ? family["family"]= {name:f.name, accession:f.accession} : "";
         f.level === "Subfamily" ? family["subfamily"]= {name:f.name, accession:f.accession} : "";
-        console.log("before boucle if");
-        console.log(f);
         if (f.parent) {
-            console.log("enter boucle if");
             NXUtils.getFamily(f.parent,family);
         }
-        console.log("FAMILY");
-        console.log(family);
         return family;
     },
     getSequenceForIsoform: function (isoSequences, isoformName) {
@@ -111,7 +103,6 @@ var NXUtils = {
             isoSequences.forEach(function (d) {
 
                 if (d.uniqueName.endsWith("-" + isoformName)) {
-                    //console.log("returning" + d.sequence);
                     result = d.sequence;
                 }
             });
@@ -169,7 +160,6 @@ var NXUtils = {
     },
     getProteotypicity: function (elem) {
         if (elem) {
-            console.log("there is properties");
             var proteo = true;
             elem.forEach(function(p) {
                 if (p.name === "is proteotypic" && p.value === "N") proteo=false;
