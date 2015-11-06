@@ -5,6 +5,103 @@ var NXUtils = {
         return isoname.endsWith("-" + isonumber)
     },
 
+
+    getORFNames: function (geneName) {
+        var names = [];
+        if (geneName.category === "ORF") {
+            names.push({name: geneName.name})
+        }
+
+        if (geneName.synonyms) {
+            geneName.synonyms.forEach(function (gns) {
+                if (gns.category === "ORF") {
+                    names.push({name: gns.name})
+                }
+
+            })
+        }
+        return names;
+    },
+    getSynonyms: function (syn) {
+        var synonyms = {};
+        if (syn) {
+            syn.forEach(function (s) {
+                if (synonyms.hasOwnProperty(s.qualifier)) {
+                    synonyms[s.qualifier].push(s.name);
+                }
+                else {
+                    synonyms[s.qualifier]=[s.name];
+                }
+                //if (s.qualifier === "EC") synonyms.EC.push(s.name);
+                //if (s.qualifier === "short") synonyms.short.push(s.name);
+            });
+        }
+        return synonyms;
+    },
+    getRecommendedName: function (geneName) {
+        var name = "";
+        if (geneName.category === "gene name" && geneName.main === true) {
+            name = geneName.name;
+        }
+        return name;
+    },
+    getAlternativeNames: function (altNames) {
+        var names = [];
+        if (altNames) {
+            altNames.forEach(function (an) {
+                var found = false;
+                var type = an.type === "name" ? "Alternative name" : an.type;
+                for (var elem in names) {
+                    if (names[elem].type === type) {
+                        names[elem].names.push({name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)});
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    names.push({type: type, names: [{name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)}]})
+                }
+            });
+        }
+        names.map(function(n){n.names.sort(function (a,b) {return a.name > b.name});});
+        names.forEach(function(n) {if (n.type === "Alternative name" && n.names.length > 1) {n.type = "Alternative names"}});
+        return names;
+    },
+    getMainSynonym: function (sy) {
+        var name;
+        var syProtNames= sy.filter(function(a) {return a.qualifier === "full"});
+        if (syProtNames.length) {
+            name = syProtNames.sort(function (a, b) {
+                return b.name.length - a.name.length;
+            })[0].name;
+        }
+        console.log(name);
+        return name;
+    },
+    getMainShort: function (sh) {
+        var shortList = [];
+        var name;
+        console.log(sh);
+        shortList = sh.sort(function (a, b) {
+            return a.length - b.length;
+        });
+        name = shortList[0].charAt(0) === "h" ? shortList[1] ? shortList[1] : shortList[0] : shortList[0];
+        console.log(name);
+        return name;
+    },
+    getFamily: function (f,family) {
+        f.level === "Superfamily" ? family["superfamily"]= {name:f.name, accession:f.accession} : "";
+        f.level === "Family" ? family["family"]= {name:f.name, accession:f.accession} : "";
+        f.level === "Subfamily" ? family["subfamily"]= {name:f.name, accession:f.accession} : "";
+        console.log("before boucle if");
+        console.log(f);
+        if (f.parent) {
+            console.log("enter boucle if");
+            NXUtils.getFamily(f.parent,family);
+        }
+        console.log("FAMILY");
+        console.log(family);
+        return family;
+    },
     getSequenceForIsoform: function (isoSequences, isoformName) {
         var result = null;
         //TODO allow users to specify isoform name without NX_
@@ -27,9 +124,11 @@ var NXUtils = {
         return result;
     },
     getLinkForFeature: function (accession, description, type) {
-        if (type === "peptide") {
-            var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
-            return "<a href='" + url + "'>" + description + "</a>";
+        if (type === "Peptide" || type === "SRM Peptide") {
+            if (description) {
+                var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
+                return "<a href='" + url + "'>" + description + "</a>";
+            }
         } else if (type === "antibody") {
             var url = accession;
             return "<a href='" + url + "'>" + description + "</a>";
@@ -42,10 +141,48 @@ var NXUtils = {
         } else if (description) return description;
         else return "";
     },
+    getDescription: function (elem, category) {
+        if (category === "Peptide" || category === "SRM Peptide") {
+            for (var ev in elem.evidences) {
+                if (elem.evidences[ev].resourceDb === "PeptideAtlas" || elem.evidences[ev].resourceDb === "SRMAtlas") {
+                    return elem.evidences[ev].resourceAccession;
+                }
+            }
+            return "";
+        }
+        else return elem.description;
+    },
+    getEvidenceCodeName: function (elem, category) {
+        if (category === "Peptide") {
+            return "EXP";
+        }
+        else return elem.evidenceCodeName;
+    },
+    getAssignedBy: function (elem) {
+        if (elem === "Uniprot") {
+            return "UniprotKB";
+        }
+        if (elem.startsWith("MD") || elem.startsWith("PM")) {
+            return "neXtProt";
+        }
+        else return elem;
+    },
+    getProteotypicity: function (elem) {
+        if (elem) {
+            console.log("there is properties");
+            var proteo = true;
+            elem.forEach(function(p) {
+                console.log("there is properties");
+                if (p.name === "is proteotypic" && p.value === "N") proteo=false;
+            });
+            return proteo;
+        }
+        else return true;
+    },
     convertMappingsToIsoformMap: function (featMappings, category, group) {
         var mappings = jQuery.extend([], featMappings);
         var publiActive = false;
-        if (!(featMappings instanceof Array)) {
+        if (featMappings.hasOwnProperty("annot")) {
             publiActive = true;
             mappings = jQuery.extend([], featMappings.annot);
         }
@@ -56,9 +193,10 @@ var NXUtils = {
                     if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
                         var start = mapping.targetingIsoformsMap[name].firstPosition,
                             end = mapping.targetingIsoformsMap[name].lastPosition,
-                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, mapping.description),
-                            description = mapping.description,
+                            description = NXUtils.getDescription(mapping,category),
+                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, description, category),
                             quality = mapping.qualityQualifier !== "GOLD" ? mapping.qualityQualifier.toLowerCase() : "",
+                            proteotypic = NXUtils.getProteotypicity(mapping.properties),
                             source = mapping.evidences.map(function (d) {
                                 var pub = null;
                                 var xref = null;
@@ -70,8 +208,8 @@ var NXUtils = {
                                         xref = featMappings.xrefs[d.resourceId];
                                     }
                                     return {
-                                        evidenceCodeName: d.evidenceCodeName,
-                                        assignedBy: d.assignedBy,
+                                        evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
+                                        assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                         resourceDb: d.resourceDb,
                                         externalDb: d.resourceDb !== "UniProt",
                                         publicationMD5: d.publicationMD5,
@@ -103,8 +241,8 @@ var NXUtils = {
                                         } : null
                                     }
                                 } else return {
-                                    evidenceCodeName: d.evidenceCodeName,
-                                    assignedBy: d.assignedBy,
+                                    evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
+                                    assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                     publicationMD5: d.publicationMD5,
                                     title: "",
                                     authors: [],
@@ -138,6 +276,7 @@ var NXUtils = {
                             id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString(),
                             description: description,
                             quality: quality,
+                            proteotypicity: proteotypic,
                             category: category,
                             group: group,
                             link: link,
@@ -200,6 +339,9 @@ var NXUtils = {
             }
         });
         for (var iso in result) {
+            result[iso].sort(function (a, b) {
+                return b.length - a.length;
+            });
             result[iso].sort(function (a, b) {
                 return a.start - b.start;
             })

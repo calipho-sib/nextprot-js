@@ -16,6 +16,9 @@ $(function () {
                         return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
                 }
             });
+            Handlebars.registerHelper('plural', function (array, options) {
+                return array.length > 1 ? "s" : "";
+            });
 
             var EC = [];
             var short = [];
@@ -27,30 +30,38 @@ $(function () {
                 });
             }
 
+            var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
+            console.log("test short !");
+            console.log(recommendedProteinSynonyms.short);
+
+
             var data = {
                 "entryName": overview.proteinNames[0].synonymName,
                 "recommendedProteinName": {
+                    synonyms: recommendedProteinSynonyms,
                     name: overview.recommendedProteinName.name,
                     EC: EC,
                     short: short,
-                    synonymName: overview.recommendedProteinName.synonymName
+                    mainSynonymName: overview.proteinNames[0].synonyms ? NXUtils.getMainSynonym(overview.proteinNames[0].synonyms) : null,
+                    mainShortName: recommendedProteinSynonyms.short ? NXUtils.getMainShort(recommendedProteinSynonyms.short) : null,
+                    others: NXUtils.getAlternativeNames(overview.alternativeProteinNames).filter(function(t) {
+                        return t.type !== "EC" && t.type !== "full" && t.type !== "Alternative names" && t.type !== "Alternative name"
+                    })
                 },
-                "alternativeProteinNames": overview.alternativeProteinNames.map(function (p) {
-                    return {name: p.name, short: p.synonyms}
-                }),
-                "geneName": overview.geneNames.map(function (o) {
+                "alternativeProteinNames": NXUtils.getAlternativeNames(overview.alternativeProteinNames),
+                "geneName": overview.geneNames.map(function (gn) {
                     return {
-                        name: o.name,
-                        synonyms: o.synonyms ? o.synonyms.filter(function (p) {
-                            return p.category === "gene name"
+                        name: NXUtils.getRecommendedName(gn) || null,
+                        synonyms: gn.synonyms ? gn.synonyms.filter(function (gns) {
+                            return gns.category === "gene name"
                         }) : null,
-                        orf: o.synonyms ? o.synonyms.filter(function (p) {
-                            return p.category === "ORF"
-                        }) : null
+                        orf: NXUtils.getORFNames(gn) || null
                     }
                 }),
-                "cleavage": overview.cleavedRegionNames,
-                "family": overview.families,
+                "cleavage": NXUtils.getAlternativeNames(overview.cleavedRegionNames),
+                "isoforms": overview.isoformNames ? overview.isoformNames.length > 1 ? overview.isoformNames.sort(function(a,b){return a.name > b.name}) : null : null,
+                "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
+                "families": overview.families.map(function(f){return NXUtils.getFamily(f,{})}),
                 "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),
                 "integDate": overview.history.formattedNextprotIntegrationDate,
                 "lastUpdate": overview.history.formattedNextprotUpdateDate,
@@ -60,8 +71,14 @@ $(function () {
                 "seqVersion": overview.history.sequenceVersion,
                 "accessionNumber": nxEntryName
             };
+            console.log("others");
+            console.log(data.recommendedProteinName.others);
 
-
+            console.log(data.recommendedProteinName.synonymName);
+                console.log("test other");
+                console.log(data.functionalRegionNames);
+                console.log(data.alternativeProteinNames);
+                console.log(data.recommendedProteinName2);
             var template = HBtemplates['templates/overviewProtein.tmpl'];
             var result = template(data);
             $("#nx-overview").append(result);

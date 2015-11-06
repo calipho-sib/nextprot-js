@@ -8,6 +8,7 @@
  *
  * Date: 2015-09-01T15:00Z
  */
+console.log("banana");
 
 (function( global ) {
 

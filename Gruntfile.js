@@ -9,30 +9,28 @@ module.exports = function (grunt) {
             },
             basic: {
                 src: ['src/nextprot-core.js',
-                      'src/nextprot-utils.js',
-                      'src/nextprot-init-templates.js',
-                      'build/compiled-templates.js'],
+                    'src/nextprot-utils.js',
+                    'src/nextprot-init-templates.js',
+                    'build/compiled-templates.js'],
                 dest: 'dist/nextprot.js'
             },
-            bundle: {
+            vendor: {
                 src: ['vendor/js/es5-shim.min.js', //support for promises in IE lower than ie 9
-                      'vendor/js/promise-6.1.0.js', //support for promises in IE
-                      'bower_components/jquery/dist/jquery.js',
-                      'bower_components/handlebars/handlebars.js',
-                      'dist/nextprot.js'],
-                dest: 'dist/nextprot.bundle.js'
+                    'vendor/js/promise-6.1.0.js', //support for promises in IE
+                    'bower_components/jquery/dist/jquery.js',
+                    'bower_components/handlebars/handlebars.js'],
+                dest: 'dist/nextprot-vendor.js'
             }
-
         },
         uglify: {
-            options : {sourceMap : true},
+            options: {sourceMap: true},
             basic: {
                 src: ['dist/nextprot.js'],
                 dest: 'dist/nextprot.min.js'
             },
-            all: {
-                src: 'dist/nextprot.bundle.js',
-                dest: 'dist/nextprot.bundle.js'
+            vendor: {
+                src: 'dist/nextprot-vendor.js',
+                dest: 'dist/nextprot-vendor.js'
             }
         },
         jshint: {
@@ -44,10 +42,15 @@ module.exports = function (grunt) {
             }
         },
         qunit: {
-            all: 'test/index.html',
-            options: {
-                timeout: 80000,
-                console: true
+            all: {
+                options: {
+                    timeout: 80000,
+                    console: true,
+                    urls: [
+                        'http://localhost:5000/test/index.html'
+                    ],
+                    '--ignore-ssl-errors': true
+                }
             }
         },
         bump: {
@@ -82,7 +85,7 @@ module.exports = function (grunt) {
                 options: {
                     livereload: true
                 },
-                files: ['build/*js', 'src/*.js'],
+                files: ['src/*.js', 'build/compiled-templates.js'],
                 tasks: 'concat'
             },
             handlebars: {
@@ -117,7 +120,7 @@ module.exports = function (grunt) {
 
     // Call this task for production
     grunt.registerTask('prod', ['concat', 'uglify']);
-    grunt.registerTask('test', ['qunit']);
+    grunt.registerTask('test', ['connect:server', 'qunit']);
     grunt.registerTask('hbs', ['handlebars:compile']);
     grunt.registerTask('serve', ['connect:server', 'watch']);
 };

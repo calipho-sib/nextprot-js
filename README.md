@@ -1,4 +1,9 @@
-A Javascript SDK that speaks with the neXtprot (www.nextprot.org) api (https://api.nextprot.org) and SPARQL endpoint. These resources are freely available and can be used by anyone to create awsome apps.
+A Javascript SDK that speaks with the neXtprot (www.nextprot.org) api (https://api.nextprot.org) and SPARQL endpoint. These resources are freely available and can be used by anyone to create awesome apps.
+=======
+#neXtProt-js
+
+[![Build Status](https://travis-ci.org/calipho-sib/nextprot-js.svg?branch=develop)](https://travis-ci.org/calipho-sib/nextprot-js)
+s
 Either you are an expert or a novice go ahead and try out the javascript library and don't hesitate to ask us questions if you have some troubles. We will appreciate your feedback.
 
 In this [example](https://cdn.rawgit.com/calipho-sib/nextprot-viewers/v0.1.0/sequence/app/index.html?nxentry=NX_P01308&inputOption=true) you can see what we can achieve with this library.
