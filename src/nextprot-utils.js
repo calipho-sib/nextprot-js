@@ -5,6 +5,16 @@ var NXUtils = {
         return isoname.endsWith("-" + isonumber)
     },
 
+    sortIsoformNames: function(a,b){
+        if (parseInt(a.name.replace("Iso", "").replace(" ", ""))) {
+            var first = parseInt(a.name.replace("Iso", "").replace(" ", ""));
+            var second = parseInt(b.name.replace("Iso", "").replace(" ", ""));
+            if(first > second) return 1;
+            if(first < second) return -1;
+            return 0;
+        }
+        else return a.name > b.name;
+    },
 
     getORFNames: function (geneName) {
         var names = [];

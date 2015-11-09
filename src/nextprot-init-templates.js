@@ -33,6 +33,11 @@ $(function () {
             var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
 
 
+            //var names = overview.isoformNames.map(function (o){return {name : o.name}});
+
+            var isonames = overview.isoformNames;
+            var isonamesSorted = isonames.sort(NXUtils.sortIsoformNames);
+
             var data = {
                 "entryName": overview.proteinNames[0].synonymName,
                 "recommendedProteinName": {
@@ -57,7 +62,7 @@ $(function () {
                     }
                 }),
                 "cleavage": NXUtils.getAlternativeNames(overview.cleavedRegionNames),
-                "isoforms": overview.isoformNames ? overview.isoformNames.length > 1 ? overview.isoformNames.sort(function(a,b){return a.name > b.name}) : null : null,
+                "isoforms": isonamesSorted,
                 "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
                 "families": overview.families.map(function(f){return NXUtils.getFamily(f,{})}),
                 "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),

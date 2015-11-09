@@ -262,6 +262,16 @@ var NXUtils = {
         return isoname.endsWith("-" + isonumber)
     },
 
+    sortIsoformNames: function(a,b){
+        if (parseInt(a.name.replace("Iso", "").replace(" ", ""))) {
+            var first = parseInt(a.name.replace("Iso", "").replace(" ", ""));
+            var second = parseInt(b.name.replace("Iso", "").replace(" ", ""));
+            if(first > second) return 1;
+            if(first < second) return -1;
+            return 0;
+        }
+        else return a.name > b.name;
+    },
 
     getORFNames: function (geneName) {
         var names = [];
@@ -682,6 +692,11 @@ $(function () {
             var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
 
 
+            //var names = overview.isoformNames.map(function (o){return {name : o.name}});
+
+            var isonames = overview.isoformNames;
+            var isonamesSorted = isonames.sort(NXUtils.sortIsoformNames);
+
             var data = {
                 "entryName": overview.proteinNames[0].synonymName,
                 "recommendedProteinName": {
@@ -706,7 +721,7 @@ $(function () {
                     }
                 }),
                 "cleavage": NXUtils.getAlternativeNames(overview.cleavedRegionNames),
-                "isoforms": overview.isoformNames ? overview.isoformNames.length > 1 ? overview.isoformNames.sort(function(a,b){return a.name > b.name}) : null : null,
+                "isoforms": isonamesSorted,
                 "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
                 "families": overview.families.map(function(f){return NXUtils.getFamily(f,{})}),
                 "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),
