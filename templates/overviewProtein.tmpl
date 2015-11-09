@@ -146,12 +146,15 @@
             <dl>
                 <dt>neXtProt</dt>
                 <dd>Integrated {{integDate}}</dd>
-                <dd>Last Updated {{lastUpdate}}</dd>
+                <dd>Last updated {{lastUpdate}}</dd>
                 <dt>UniProtKB</dt>
+                <dd>Integrated {{UniprotIntegDate}}</dd>
+                <dd>Last updated {{UniprotLastUpdate}}</dd>
                 <dd>Entry version {{version}}</dd>
-                <dd>Integration Date {{UniprotIntegDate}}</dd>
-                <dd>Last Update {{UniProtLastUpdate}}</dd>
                 <dd>Sequence version {{seqVersion}}</dd>
+                {{#if lastSeqUpdate}}
+                <dd>Last sequence update {{lastSeqUpdate}}</dd>
+                {{/if}}
                 <dd>{{#accessionNumber}}{{{link_to "history"}}}{{/accessionNumber}}</dd>
             </dl>
         </div>

@@ -63,10 +63,11 @@ $(function () {
                 "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),
                 "integDate": overview.history.formattedNextprotIntegrationDate,
                 "lastUpdate": overview.history.formattedNextprotUpdateDate,
-                "version": overview.history.uniprotVersion,
                 "UniprotIntegDate": overview.history.formattedUniprotIntegrationDate,
                 "UniprotLastUpdate": overview.history.formattedUniprotUpdateDate,
+                "version": overview.history.uniprotVersion,
                 "seqVersion": overview.history.sequenceVersion,
+                "lastSeqUpdate": overview.history.lastSequenceUpdate,
                 "accessionNumber": nxEntryName
             };
 

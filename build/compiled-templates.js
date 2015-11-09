@@ -412,6 +412,12 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + ((stack1 = (helpers.link_to || (depth0 && depth0.link_to) || helpers.helperMissing).call(depth0,"term",{"name":"link_to","hash":{},"data":data})) != null ? stack1 : "")
     + "</dd>\n";
 },"86":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "                <dd>Last sequence update "
+    + this.escapeExpression(((helper = (helper = helpers.lastSeqUpdate || (depth0 != null ? depth0.lastSeqUpdate : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"lastSeqUpdate","hash":{},"data":data}) : helper)))
+    + "</dd>\n";
+},"88":function(depth0,helpers,partials,data) {
     var stack1;
 
   return ((stack1 = (helpers.link_to || (depth0 && depth0.link_to) || helpers.helperMissing).call(depth0,"history",{"name":"link_to","hash":{},"data":data})) != null ? stack1 : "");
@@ -449,18 +455,20 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.families : depth0),{"name":"if","hash":{},"fn":this.program(75, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    <div id=\"History-full\" class=\"row\">\n        <div class=\"col-md-1 col-xs-2 text-uppercase\" style=\"color: grey;\">History</div>\n        <div class=\"col-md-9 col-xs-8\">\n            <dl>\n                <dt>neXtProt</dt>\n                <dd>Integrated "
     + alias4(((helper = (helper = helpers.integDate || (depth0 != null ? depth0.integDate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(depth0,{"name":"integDate","hash":{},"data":data}) : helper)))
-    + "</dd>\n                <dd>Last Updated "
+    + "</dd>\n                <dd>Last updated "
     + alias4(((helper = (helper = helpers.lastUpdate || (depth0 != null ? depth0.lastUpdate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(depth0,{"name":"lastUpdate","hash":{},"data":data}) : helper)))
-    + "</dd>\n                <dt>UniProtKB</dt>\n                <dd>Entry version "
-    + alias4(((helper = (helper = helpers.version || (depth0 != null ? depth0.version : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(depth0,{"name":"version","hash":{},"data":data}) : helper)))
-    + "</dd>\n                <dd>Integration Date "
+    + "</dd>\n                <dt>UniProtKB</dt>\n                <dd>Integrated "
     + alias4(((helper = (helper = helpers.UniprotIntegDate || (depth0 != null ? depth0.UniprotIntegDate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(depth0,{"name":"UniprotIntegDate","hash":{},"data":data}) : helper)))
-    + "</dd>\n                <dd>Last Update "
-    + alias4(((helper = (helper = helpers.UniProtLastUpdate || (depth0 != null ? depth0.UniProtLastUpdate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(depth0,{"name":"UniProtLastUpdate","hash":{},"data":data}) : helper)))
+    + "</dd>\n                <dd>Last updated "
+    + alias4(((helper = (helper = helpers.UniprotLastUpdate || (depth0 != null ? depth0.UniprotLastUpdate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(depth0,{"name":"UniprotLastUpdate","hash":{},"data":data}) : helper)))
+    + "</dd>\n                <dd>Entry version "
+    + alias4(((helper = (helper = helpers.version || (depth0 != null ? depth0.version : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(depth0,{"name":"version","hash":{},"data":data}) : helper)))
     + "</dd>\n                <dd>Sequence version "
     + alias4(((helper = (helper = helpers.seqVersion || (depth0 != null ? depth0.seqVersion : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(depth0,{"name":"seqVersion","hash":{},"data":data}) : helper)))
-    + "</dd>\n                <dd>";
-  stack1 = ((helper = (helper = helpers.accessionNumber || (depth0 != null ? depth0.accessionNumber : depth0)) != null ? helper : alias2),(options={"name":"accessionNumber","hash":{},"fn":this.program(86, data, 0),"inverse":this.noop,"data":data}),(typeof helper === alias3 ? helper.call(depth0,options) : helper));
+    + "</dd>\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.lastSeqUpdate : depth0),{"name":"if","hash":{},"fn":this.program(86, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "                <dd>";
+  stack1 = ((helper = (helper = helpers.accessionNumber || (depth0 != null ? depth0.accessionNumber : depth0)) != null ? helper : alias2),(options={"name":"accessionNumber","hash":{},"fn":this.program(88, data, 0),"inverse":this.noop,"data":data}),(typeof helper === alias3 ? helper.call(depth0,options) : helper));
   if (!helpers.accessionNumber) { stack1 = alias1.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
   return buffer + "</dd>\n            </dl>\n        </div>\n    </div>\n</div>\n<p style=\"margin:10px 10px;\">Entry whose protein(s) existence is based on "
