@@ -597,9 +597,11 @@ var NXUtils = {
         });
         for (var iso in result) {
             result[iso].sort(function (a, b) {
-                return b.length - a.length;
-            });
-            result[iso].sort(function (a, b) {
+                if (a.start === b.start) {
+                    if (a.length === b.length) return b.id > a.id;
+                    else return b.length - a.length;
+                }
+                if (a.end === null) return 1;
                 return a.start - b.start;
             })
         }
