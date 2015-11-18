@@ -30,6 +30,7 @@ var NXUtils = {
 
             })
         }
+        if (names.length) names.sort(function(a,b){return a.name.toLowerCase() > b.name.toLowerCase()});
         return names;
     },
     getSynonyms: function (syn) {
