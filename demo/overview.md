@@ -14,13 +14,17 @@ This is the format shown by default. Displayed, in order, from top to bottom, ar
 #### Protein also known as:
 The full alternative protein name for the entry.
 - If the entry has multiple full alternative names, the longest is displayed.  
-- If the entry has an INN name or CD antigen, they are displayed respectively preceded by "International Nonproprietary Name" or "CD antigen".   
+- If the entry has an INN name or CD antigen, they are displayed respectively preceded by "International Nonproprietary Name" or "CD antigen".
+
 #### Cleaved into: 
-All full protein chain names for the entry in alphanumerical order.   
+All full protein chain names for the entry in alphanumerical order.
+
 #### Gene name:
-All primary gene names for the entry in alphanumerical order.   
+All primary gene names for the entry in alphanumerical order.
+
 #### Family name:
 All family names displayed hierarchichal order (Superfamily > Family > Subfamily).   
+
 #### Protein existence.
 
 
@@ -34,7 +38,8 @@ The extended overview format displays all protein, gene, family names, as well a
 These are listed in the following order:
 - **Full**. All entries have a full recommended protein name.
 - **EC**. Multiple recommended EC names are listed in alphanumerical order. Example: [NX_Q86X52](http://www.nextprot.org/db/entry/NX_Q86X52)
-- **Short**. Multiple recommended short names are listed in alphanumerical order. Example: [NX_P18510](http://www.nextprot.org/db/entry/NX_P18510)    
+- **Short**. Multiple recommended short names are listed in alphanumerical order. Example: [NX_P18510](http://www.nextprot.org/db/entry/NX_P18510)
+
 ##### Alternative names
 These are listed in the following order:
 - **Full**. Multiple alternative full names are listed in alphanumerical order. Example: [NX_P20333](http://www.nextprot.org/db/entry/NX_P20333/) 
@@ -42,15 +47,18 @@ These are listed in the following order:
 - **Short**. Multiple alternative short name are listed in alphamerical order. Example: [NX_P20333](http://www.nextprot.org/db/entry/NX_P20333/) 
 - **CD antigen name**. Example: [NX_P06213](http://www.nextprot.org/db/entry/NX_P06213)
 - **International Nonproprietary Name** (INN) name. Example: [NX_P20333](http://www.nextprot.org/db/entry/NX_P06213)
-- Allergen. Example: [NX_P02538](http://www.nextprot.org/db/entry/NX_P02538)    
+- Allergen. Example: [NX_P02538](http://www.nextprot.org/db/entry/NX_P02538)
+
 ##### Chain names
 These are listed in the same order as protein names:
 - **Recommended names** (in order): Full, EC, short.
-- **Alternative names** (in order): Full, EC, short, CD antigen, INN, allergen. Examples: [NX_P06213](http://www.nextprot.org/db/entry/NX_P06213) [NX_P51659](http://www.nextprot.org/db/entry/NX_P51659)     
+- **Alternative names** (in order): Full, EC, short, CD antigen, INN, allergen. Examples: [NX_P06213](http://www.nextprot.org/db/entry/NX_P06213) [NX_P51659](http://www.nextprot.org/db/entry/NX_P51659)
+
 ##### Functional regions. 
 These are listed in the same order as protein names:
 - **Recommended names** (in order): Full, EC, short.
-- **Alternative names** (in order): Full, EC, short, CD antigen, INN, allergen. Examples: [NX_P26439](http://www.nextprot.org/db/entry/NX_P26439/) [NX_O60513](http://www.nextprot.org/db/entry/NX_O60513/)     
+- **Alternative names** (in order): Full, EC, short, CD antigen, INN, allergen. Examples: [NX_P26439](http://www.nextprot.org/db/entry/NX_P26439/) [NX_O60513](http://www.nextprot.org/db/entry/NX_O60513/)
+
 ##### Isoform names
 These are listed in the following order: 
 - **Recommended names**. Multiple isoform names are listed in alphanumerical order. Example: [NX_P26439](http://www.nextprot.org/db/entry/NX_P26439/) 
@@ -71,7 +79,8 @@ Family names are listed in the following order:
 ### History
 ##### neXtProt (in order):
 - Date entry was integrated.
-- Date entry was last updated.    
+- Date entry was last updated.
+
 ##### UniProtKB (in order):
 - Date entry was integrated.
 - Date entry was last updated.
