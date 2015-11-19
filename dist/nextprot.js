@@ -698,7 +698,7 @@ $(function () {
             //var names = overview.isoformNames.map(function (o){return {name : o.name}});
 
             var isonames = overview.isoformNames;
-            var isonamesSorted = isonames.sort(NXUtils.sortIsoformNames);
+            var isonamesSorted = isonames ? isonames.sort(NXUtils.sortIsoformNames) : null;
 
             var data = {
                 "entryName": overview.proteinNames[0].synonymName,
