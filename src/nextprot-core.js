@@ -102,8 +102,6 @@
             }
         };
 
-
-
         //////////////// BEGIN Setters ////////////////////////////////////////////////////////////////////////
 
         /** By default it is set to https://api.nextprot.org */
@@ -111,7 +109,6 @@
             apiBaseUrl = _apiBaseUrl;
             sparqlEndpoint = apiBaseUrl + "/sparql";
         };
-
         /** By default it is set to https://api.nextprot.org/sparql */
         NextprotClient.prototype.setSparqlEndpoint = function (_sparqlEndpoint) {
             sparqlEndpoint = _sparqlEndpoint;
@@ -122,6 +119,9 @@
         //Gets the entry set in the parameter
         NextprotClient.prototype.getEnvironment = function () {
             return _getURLParameter("env") || 'pro'; //By default returns the insulin
+        };
+        NextprotClient.prototype.getApiBaseUrl = function () {
+            return apiBaseUrl;
         };
 
         //Gets the entry set in the parameter
