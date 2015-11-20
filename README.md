@@ -30,21 +30,18 @@ With external dependencies (jQuery, Handlebars(optionnal) ) :
 Create the client and access the information you need (see the list of methods in here: https://api.nextprot.org)
 
 Example to access the sequence
-```
- var Nextprot = window.Nextprot;
+```javascript
  var applicationName = 'demo app'; //please provide a name for your application
  var clientInfo='calipho group at sib'; //please provide some information about you
-  var nx = new Nextprot.Client(applicationName, clientInfo);
+ var nx = new Nextprot.Client(applicationName, clientInfo);
 
  nx.getProteinSequence('NX_P01308').then(function (sequence){
- console.log(sequence);
+  console.log(sequence);
  }
 ```
 
 Example to access the overview of a protein
-```
- var Nextprot = window.Nextprot;
-  var nx = new Nextprot.Client();
+```javascript
 
   nx.getProteinOverview('NX_P01308').then(function(overview) {
     $("#entryName").text(overview.proteinNames[0].synonymName);
@@ -54,6 +51,14 @@ Example to access the overview of a protein
 
 ```
 
+Example to run a query against nextprot SPARQL
+```javascript
+ var query ='SELECT ?pe count(?entry) as ?cnt WHERE {?entry :existence ?pe} group by ?pe order by desc(?cnt)';
+//Execute the sparql and print result
+nx.executeSparql(query).then(function (result){
+ console.log(result);
+});
+```
 A running example : 
   * http://calipho-sib.github.io/nextprot-js/demo/index.html?nxentry=NX_P01308
 
