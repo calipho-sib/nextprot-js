@@ -20,7 +20,7 @@ Without external dependencies :
 ```javascript
 <script src="https://cdn.rawgit.com/calipho-sib/nextprot-js/v0.0.51/dist/nextprot.min.js"></script>
 ```
-With external dependencies (jQuery, Handlebars(optionnal) :
+With external dependencies (jQuery, Handlebars(optionnal) ) :
 ```javascript
 <script src="https://cdn.rawgit.com/calipho-sib/nextprot-js/v0.0.51/dist/nextprot.bundle.js"></script>
 ```
