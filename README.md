@@ -1,5 +1,4 @@
 # neXtProt-js
-=======
 
 A Javascript SDK that speaks with the neXtprot (www.nextprot.org) api (https://api.nextprot.org) and SPARQL endpoint. These resources are freely available and can be used by anyone to create awesome apps.
 
