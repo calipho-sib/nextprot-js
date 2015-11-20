@@ -32,14 +32,11 @@ $(function () {
 
             var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
 
-
-            //var names = overview.isoformNames.map(function (o){return {name : o.name}});
-
             var isonames = overview.isoformNames;
             var isonamesSorted = isonames ? isonames.sort(NXUtils.sortIsoformNames) : null;
 
             var data = {
-                "entryName": overview.proteinNames[0].synonymName,
+                "entryName": overview.recommendedProteinName.name,
                 "recommendedProteinName": {
                     synonyms: recommendedProteinSynonyms,
                     name: overview.recommendedProteinName.name,
@@ -100,7 +97,7 @@ $(function () {
 
     };
 
-    if ($("#nx-overview")) { // laad the overview if it exists
+    if ($("#nx-overview").length > 0) { // laad the overview if it exists
         var Nextprot = window.Nextprot;
         var nx = new Nextprot.Client("neXtprot overview loader", "Calipho Group");
         var nxEntryName = nx.getEntryName();
@@ -136,10 +133,9 @@ $(function () {
             }
 
         });
-    }
-
-    if(nx.getEnvironment() !== 'pro'){
-        $("body").append("<span style='position: absolute; top: 0; left: 0; border: 0; color: darkred; margin: 20px; font-weight: bold'>" + nx.getEnvironment().toUpperCase() + " API</span>");
+        if(nx.getEnvironment() !== 'pro'){
+            $("body").append("<span style='position: absolute; top: 0; left: 0; border: 0; color: darkred; margin: 20px; font-weight: bold'>" + nx.getEnvironment().toUpperCase() + " API</span>");
+        }
     }
 
 });
