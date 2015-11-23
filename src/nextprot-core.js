@@ -187,6 +187,11 @@
                 return data.entry.isoforms;
             });
         };
+        NextprotClient.prototype.getXrefs = function (entry) {
+            return _getEntry(entry, "xref").then(function (data) {
+                return data.entry.xrefs;
+            });
+        };
         /** USE THIS INSTEAD OF THE OTHERS for example getEntryPart(NX_1038042, "ptm") */
         NextprotClient.prototype.getAnnotationsByCategory = function (entry, category) {
             return _getEntry(entry, category).then(function (data) {
