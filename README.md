@@ -55,12 +55,15 @@ Example to access the overview of a protein
 
 Example to run a query against nextprot SPARQL
 ```javascript
-var query ='SELECT ?pe count(?entry) as ?cnt ' +
-            'WHERE {?entry :existence ?pe} group by ?pe order by desc(?cnt)';
-//Execute the sparql and print result
-nx.executeSparql(query).then(function (result){
- console.log(result);
-});
+   var query = 'SELECT ?pe count(?entry) as ?cnt ' +
+        'WHERE {?entry :existence ?pe} group by ?pe order by desc(?cnt)';
+
+    //Execute the sparql and print result
+    nx.executeSparql(query).then(function (data) {
+        data.results.bindings.forEach(function (o) {
+            console.log(o.pe.value, ": ", o.cnt.value);
+        });
+    });
 ```
 A running example : 
   * http://calipho-sib.github.io/nextprot-js/demo/index.html?nxentry=NX_P01308
