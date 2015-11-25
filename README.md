@@ -28,7 +28,7 @@ With external dependencies (jQuery, Handlebars(optionnal) ) :
 
 ##Usage
 Create the nextprot client  
-```
+```javascript
  var applicationName = 'demo app'; //please provide a name for your application
  var clientInfo='calipho group at sib'; //please provide some information about you
  var nx = new Nextprot.Client(applicationName, clientInfo);
