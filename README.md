@@ -27,14 +27,16 @@ With external dependencies (jQuery, Handlebars(optionnal) ) :
 
 
 ##Usage
-Create the client and access the information you need (see the list of methods in here: https://api.nextprot.org)
-
-Example to access the sequence
-```javascript
+Create the nextprot client  
+```
  var applicationName = 'demo app'; //please provide a name for your application
  var clientInfo='calipho group at sib'; //please provide some information about you
  var nx = new Nextprot.Client(applicationName, clientInfo);
+```
 
+Request the protein part of interest (see the list of methods in here: https://api.nextprot.org)
+Example to access the sequence
+```javascript
  nx.getProteinSequence('NX_P01308').then(function (sequence){
   console.log(sequence);
  }
