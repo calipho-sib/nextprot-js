@@ -27,7 +27,8 @@ bower install nextprot
 ```
 
 ##Usage
-Create the nextprot client  
+Create the nextprot client giving some info about your application and who you are.
+This information is not compulsary and you do not need to register, but it helps us maintain a good quality of the service.
 ```javascript
  var applicationName = 'demo app'; //please provide a name for your application
  var clientInfo='calipho group at sib'; //please provide some information about you
