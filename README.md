@@ -10,6 +10,7 @@ Either you are an expert or a novice go ahead and try out the javascript library
 In this [example](https://cdn.rawgit.com/calipho-sib/nextprot-viewers/v0.1.0/sequence/app/index.html?nxentry=NX_P01308&inputOption=true) you can see what we can achieve with this library.
 
 ## Installation 
+If you are familiarized with bower
 ```
 bower install nextprot
 ```
