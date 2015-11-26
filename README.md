@@ -59,9 +59,9 @@ Example to run a query against nextprot SPARQL
         'WHERE {?entry :existence ?pe} group by ?pe order by desc(?cnt)';
 
     //Execute the sparql and print result
-    nx.executeSparql(query).then(function (data) {
-        data.results.bindings.forEach(function (o) {
-            console.log(o.pe.value, ": ", o.cnt.value);
+    nx.executeSparql(query).then(function (response) {
+        response.results.bindings.forEach(function (data) {
+            console.log(data.pe.value, ": ", data.cnt.value);
         });
     });
 ```
