@@ -20,6 +20,11 @@ module.exports = function (grunt) {
                     'bower_components/jquery/dist/jquery.js',
                     'bower_components/handlebars/handlebars.js'],
                 dest: 'dist/nextprot-vendor.js'
+            },
+            bundle: {
+                src: ['dist/nextprot.js',
+                    'dist/nextprot-vendor.js'],
+                dest: 'dist/nextprot.bundle.js'
             }
         },
         uglify: {
@@ -31,6 +36,10 @@ module.exports = function (grunt) {
             vendor: {
                 src: 'dist/nextprot-vendor.js',
                 dest: 'dist/nextprot-vendor.js'
+            },
+            bundle: {
+                src: 'dist/nextprot.bundle.js',
+                dest: 'dist/nextprot.bundle.js'
             }
         },
         jshint: {
