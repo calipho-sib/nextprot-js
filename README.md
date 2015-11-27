@@ -102,21 +102,24 @@ and finally use the example of SPARQL queries to draw a chart:
                                   'WHERE {?entry :existence ?pe} ' + 
                                   'group by ?pe order by desc(?cnt)';
    
-    //Execute the sparql and retrieve result
-    nx.executeSparql(proteinsByExistenceLevel).then(function (response){
+     //Execute the sparql and print result
+  nx.executeSparql(query).then(function (response) {
       var seriesData = [];
-      response.results.bindings.map(function (data) {
-          //transform results into an array of {name, value} according to this documentation: http://jsfiddle.net/gh/get/jquery/1.9.1/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/pie-legend/
-          seriesData.push({name : data.pe.value,  y : parseInt(data.cnt.value)}); 
+      response.results.bindings.forEach(function (data) {
+          var pe = data.pe.value.replace("http://nextprot.org/rdf#" , "");
+          var cnt = parseInt(data.cnt.value);
+          seriesData.push({name : pe, y: cnt});
       });
-        //Draw the plot
+      
+      //Draw the plot
       $('#container').highcharts({
           chart: { type: 'pie'},
           title: { text: 'Protein Entry Levels'},
           plotOptions: { pie: { dataLabels: {enabled: false}, showInLegend: true }},
           series: [{name: 'neXtProt entries count',data: seriesData }]
       });
-    });
+  });
+  
 </script>
 ```
 
