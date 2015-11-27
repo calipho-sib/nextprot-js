@@ -1,4 +1,4 @@
-# neXtProt-js
+# nextprot-js
 
 A Javascript SDK that speaks with the neXtprot (www.nextprot.org) api (https://api.nextprot.org) and SPARQL endpoint. These resources are freely available and can be used by anyone to create awesome apps.
 
@@ -30,9 +30,11 @@ bower install nextprot
 Create the nextprot client giving some info about your application and who you are.
 This information is not compulsary and you do not need to register, but it helps us maintain a good quality of the service.
 ```javascript
+<script type="text/javascript">
  var applicationName = 'demo app'; //please provide a name for your application
  var clientInfo='calipho group at sib'; //please provide some information about you
  var nx = new Nextprot.Client(applicationName, clientInfo);
+<script>
 ```
 
 ### Request API data
