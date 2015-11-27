@@ -57,9 +57,10 @@ nx.getProteinOverview('NX_P01308').then(function(overview) {
 });
 
 ```
-### Request SPARQL data
+### Execute SPARQL queries 
 
-Example to run a query against nextprot SPARQL
+This SPARQL groups proteins by their existence level.
+
 ```javascript
  var query = 'SELECT ?pe count(?entry) as ?cnt ' +
       'WHERE {?entry :existence ?pe} group by ?pe order by desc(?cnt)';
