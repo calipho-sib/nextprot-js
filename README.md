@@ -86,14 +86,19 @@ Create a div where you will plot the chart:
 </body>
 ```
 and finally use the example of SPARQL queries to draw a chart:
-```
- //Execute the sparql and retrieve result
+```javascript
+  <script type="text/javascript">
+      var nx = new Nextprot.Client('demo app', 'calipho group');
+      var proteinsByExistenceLevel ='SELECT ?pe count(?entry) as ?cnt ' + 
+                                    'WHERE {?entry :existence ?pe} ' + 
+                                    'group by ?pe order by desc(?cnt)';
+     
+      //Execute the sparql and retrieve result
       nx.executeSparql(proteinsByExistenceLevel).then(function (result){
         var seriesData = [];
         result.results.bindings.map(function (data) {
           seriesData.push([data.pe.value, parseInt(data.cnt.value)]); //gets number of entries
         });
-        
           //Draw the plot
         $('#plot').highcharts({
             chart: { type: 'pie'},
@@ -101,8 +106,8 @@ and finally use the example of SPARQL queries to draw a chart:
             plotOptions: { pie: { dataLabels: {enabled: false}, showInLegend: true }},
             series: [{name: 'neXtProt entries count',data: seriesData }]
         });
-          
       });
+  </script>
 ```
 
 See the full code: https://github.com/ddtxra/protein-existence-levels/blob/gh-pages/index.html
