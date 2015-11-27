@@ -26,7 +26,7 @@ If you are in a bower environment
 bower install nextprot
 ```
 
-##Usage
+## Usage
 Create the nextprot client giving some info about your application and who you are.
 This information is not compulsary and you do not need to register, but it helps us maintain a good quality of the service.
 ```javascript
@@ -34,6 +34,8 @@ This information is not compulsary and you do not need to register, but it helps
  var clientInfo='calipho group at sib'; //please provide some information about you
  var nx = new Nextprot.Client(applicationName, clientInfo);
 ```
+
+### Request API data
 
 Request the protein part of interest (see the list of methods in here: https://api.nextprot.org)
 Example to access the sequence
@@ -53,6 +55,7 @@ Example to access the overview of a protein
   });
 
 ```
+### Request SPARQL data
 
 Example to run a query against nextprot SPARQL
 ```javascript
