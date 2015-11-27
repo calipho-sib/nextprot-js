@@ -88,7 +88,7 @@ For example use [Highcharts](http://www.highcharts.com/demo):
 Create a div where you will plot the chart:
 ```html
 <body>
- <div id="plot" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+ <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 </body>
 ```
 and finally use the example of SPARQL queries to draw a chart:
@@ -103,10 +103,10 @@ and finally use the example of SPARQL queries to draw a chart:
     nx.executeSparql(proteinsByExistenceLevel).then(function (result){
       var seriesData = [];
       result.results.bindings.map(function (data) {
-        seriesData.push([data.pe.value, parseInt(data.cnt.value)]); //gets number of entries
+          seriesData.push({name : data.pe.value,  y : parseInt(data.cnt.value)});
       });
         //Draw the plot
-      $('#plot').highcharts({
+      $('#container').highcharts({
           chart: { type: 'pie'},
           title: { text: 'Protein Entry Levels'},
           plotOptions: { pie: { dataLabels: {enabled: false}, showInLegend: true }},
