@@ -116,8 +116,9 @@ And voila you should get a fancy pie chart:
   <img src="assets/pie.png" width="200px"/>
  </a>
 
-See the full code: https://github.com/ddtxra/protein-existence-levels/blob/gh-pages/index.html
-And the running example: https://search.nextprot.org/entry/NX_P24298/gh/ddtxra/protein-existence-levels
+See the full source code here: https://github.com/ddtxra/protein-existence-levels/blob/gh-pages/index.html
+
+See a running example: https://search.nextprot.org/entry/NX_P24298/gh/ddtxra/protein-existence-levels
 
 ## Development
 
