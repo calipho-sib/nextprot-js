@@ -44,8 +44,8 @@ This information is not compulsary and you do not need to register, but it helps
 Request the protein part of interest (see the list of methods in here: https://api.nextprot.org)
 Example to access the sequence
 ```javascript
-nx.getProteinSequence('NX_P01308').then(function (sequence){
-    console.log(sequence);
+nx.getProteinSequence('NX_P01308').then(function (isoforms){
+    console.log(isoforms[0].sequence);
 });
 ```
 
