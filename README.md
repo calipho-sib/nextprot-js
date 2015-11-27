@@ -69,9 +69,12 @@ This SPARQL groups proteins by their existence level.
   nx.executeSparql(query).then(function (response) {
       console.log(JSON.stringify(response, null, 2)); //pretty-prints the response
       response.results.bindings.forEach(function (data) {
-          console.log(data.pe.value, ": ", data.cnt.value);
+          var pe = data.pe.value.replace("http://nextprot.org/rdf#" , "");
+          var cnt = parseInt(data.cnt.value);
+          console.log(pe, ": ", cnt);
       });
   });
+  
 ```
 
 ## Combine with external libraries
