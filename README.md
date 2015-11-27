@@ -61,7 +61,7 @@ Example to run a query against nextprot SPARQL
 
     //Execute the sparql and print result
     nx.executeSparql(query).then(function (response) {
-        console.log(response);
+        console.log(JSON.stringify(response, null, 2)); //pretty-prints the response
         response.results.bindings.forEach(function (data) {
             console.log(data.pe.value, ": ", data.cnt.value);
         });
