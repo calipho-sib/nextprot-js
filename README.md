@@ -67,9 +67,46 @@ Example to run a query against nextprot SPARQL
         });
     });
 ```
-A running example : 
-  * http://calipho-sib.github.io/nextprot-js/demo/index.html?nxentry=NX_P01308
 
+## Combine with external libraries
+
+If combined with a chart library, you can create awsome charts without very much effort.
+For example add HighCharts:
+
+```html
+<head>
+<script src="https://cdn.rawgit.com/calipho-sib/nextprot-js/v0.0.54/dist/nextprot.bundle.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+</head>
+```
+Create a div where you will plot the chart:
+```html
+<body>
+ <div id="plot" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</body>
+```
+and finally use the example of SPARQL queries to draw a chart:
+```
+ //Execute the sparql and retrieve result
+      nx.executeSparql(proteinsByExistenceLevel).then(function (result){
+        var seriesData = [];
+        result.results.bindings.map(function (data) {
+          seriesData.push([data.pe.value, parseInt(data.cnt.value)]); //gets number of entries
+        });
+        
+          //Draw the plot
+        $('#plot').highcharts({
+            chart: { type: 'pie'},
+            title: { text: 'Protein Entry Levels'},
+            plotOptions: { pie: { dataLabels: {enabled: false}, showInLegend: true }},
+            series: [{name: 'neXtProt entries count',data: seriesData }]
+        });
+          
+      });
+```
+
+See the full code: https://github.com/ddtxra/protein-existence-levels/blob/gh-pages/index.html
+And the running example: https://search.nextprot.org/entry/NX_P24298/gh/ddtxra/protein-existence-levels
 
 ## Development
 
