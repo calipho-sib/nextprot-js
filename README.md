@@ -110,7 +110,7 @@ and finally use the example of SPARQL queries to draw a chart:
 </script>
 ```
 
-And voila you should get a fancy pie chart:
+And voila you should get a fancy pie chart representing the different protein existence levels:
 
  <a href="https://search.nextprot.org/entry/NX_P24298/gh/ddtxra/protein-existence-levels">
   <img src="assets/pie.png" width="200px"/>
