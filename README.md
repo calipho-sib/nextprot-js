@@ -36,7 +36,7 @@ This information is not compulsary and you do not need to register, but it helps
  var clientInfo='calipho group at sib'; //please provide some information about you
  var nx = new Nextprot.Client(applicationName, clientInfo);
 
-<script>
+</script>
 ```
 
 ### Request API data
