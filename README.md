@@ -100,10 +100,11 @@ and finally use the example of SPARQL queries to draw a chart:
                                   'group by ?pe order by desc(?cnt)';
    
     //Execute the sparql and retrieve result
-    nx.executeSparql(proteinsByExistenceLevel).then(function (result){
+    nx.executeSparql(proteinsByExistenceLevel).then(function (response){
       var seriesData = [];
-      result.results.bindings.map(function (data) {
-          seriesData.push({name : data.pe.value,  y : parseInt(data.cnt.value)});
+      response.results.bindings.map(function (data) {
+          //transform results into an array of {name, value} according to this documentation: http://jsfiddle.net/gh/get/jquery/1.9.1/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/pie-legend/
+          seriesData.push({name : data.pe.value,  y : parseInt(data.cnt.value)}); 
       });
         //Draw the plot
       $('#container').highcharts({
