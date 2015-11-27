@@ -111,7 +111,10 @@ and finally use the example of SPARQL queries to draw a chart:
 ```
 
 And voila you should get a fancy pie chart:
-<img src="assets/pie.png"/ width="200px">
+
+<a href="https://search.nextprot.org/entry/NX_P24298/gh/ddtxra/protein-existence-levels">
+ <img src="assets/pie.png" width="200px" align="left"/>
+</a>
 
 See the full code: https://github.com/ddtxra/protein-existence-levels/blob/gh-pages/index.html
 And the running example: https://search.nextprot.org/entry/NX_P24298/gh/ddtxra/protein-existence-levels
