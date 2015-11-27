@@ -76,8 +76,8 @@ This SPARQL groups proteins by their existence level.
 
 ## Combine with external libraries
 
-If combined with a chart library, you can create awsome charts without very much effort.
-For example add [Highcharts](http://www.highcharts.com/demo)
+If combined with a chart library, you can create great charts without  much effort.
+For example use [Highcharts](http://www.highcharts.com/demo):
 
 ```html
 <head>
