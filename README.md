@@ -56,16 +56,16 @@ Example to access the overview of a protein
 
 Example to run a query against nextprot SPARQL
 ```javascript
-   var query = 'SELECT ?pe count(?entry) as ?cnt ' +
-        'WHERE {?entry :existence ?pe} group by ?pe order by desc(?cnt)';
+ var query = 'SELECT ?pe count(?entry) as ?cnt ' +
+      'WHERE {?entry :existence ?pe} group by ?pe order by desc(?cnt)';
 
-    //Execute the sparql and print result
-    nx.executeSparql(query).then(function (response) {
-        console.log(JSON.stringify(response, null, 2)); //pretty-prints the response
-        response.results.bindings.forEach(function (data) {
-            console.log(data.pe.value, ": ", data.cnt.value);
-        });
-    });
+  //Execute the sparql and print result
+  nx.executeSparql(query).then(function (response) {
+      console.log(JSON.stringify(response, null, 2)); //pretty-prints the response
+      response.results.bindings.forEach(function (data) {
+          console.log(data.pe.value, ": ", data.cnt.value);
+      });
+  });
 ```
 
 ## Combine with external libraries
@@ -87,27 +87,27 @@ Create a div where you will plot the chart:
 ```
 and finally use the example of SPARQL queries to draw a chart:
 ```javascript
-  <script type="text/javascript">
-      var nx = new Nextprot.Client('demo app', 'calipho group');
-      var proteinsByExistenceLevel ='SELECT ?pe count(?entry) as ?cnt ' + 
-                                    'WHERE {?entry :existence ?pe} ' + 
-                                    'group by ?pe order by desc(?cnt)';
-     
-      //Execute the sparql and retrieve result
-      nx.executeSparql(proteinsByExistenceLevel).then(function (result){
-        var seriesData = [];
-        result.results.bindings.map(function (data) {
-          seriesData.push([data.pe.value, parseInt(data.cnt.value)]); //gets number of entries
-        });
-          //Draw the plot
-        $('#plot').highcharts({
-            chart: { type: 'pie'},
-            title: { text: 'Protein Entry Levels'},
-            plotOptions: { pie: { dataLabels: {enabled: false}, showInLegend: true }},
-            series: [{name: 'neXtProt entries count',data: seriesData }]
-        });
+<script type="text/javascript">
+    var nx = new Nextprot.Client('demo app', 'calipho group');
+    var proteinsByExistenceLevel ='SELECT ?pe count(?entry) as ?cnt ' + 
+                                  'WHERE {?entry :existence ?pe} ' + 
+                                  'group by ?pe order by desc(?cnt)';
+   
+    //Execute the sparql and retrieve result
+    nx.executeSparql(proteinsByExistenceLevel).then(function (result){
+      var seriesData = [];
+      result.results.bindings.map(function (data) {
+        seriesData.push([data.pe.value, parseInt(data.cnt.value)]); //gets number of entries
       });
-  </script>
+        //Draw the plot
+      $('#plot').highcharts({
+          chart: { type: 'pie'},
+          title: { text: 'Protein Entry Levels'},
+          plotOptions: { pie: { dataLabels: {enabled: false}, showInLegend: true }},
+          series: [{name: 'neXtProt entries count',data: seriesData }]
+      });
+    });
+</script>
 ```
 
 And voila you should get a fancy pie chart:
