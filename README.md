@@ -71,7 +71,7 @@ Example to run a query against nextprot SPARQL
 ## Combine with external libraries
 
 If combined with a chart library, you can create awsome charts without very much effort.
-For example add HighCharts:
+For example add HighCharts, see a full list of demo here:http://www.highcharts.com/demo
 
 ```html
 <head>
