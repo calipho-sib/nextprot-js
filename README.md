@@ -44,19 +44,17 @@ This information is not compulsary and you do not need to register, but it helps
 Request the protein part of interest (see the list of methods in here: https://api.nextprot.org)
 Example to access the sequence
 ```javascript
- nx.getProteinSequence('NX_P01308').then(function (sequence){
-  console.log(sequence);
- }
+nx.getProteinSequence('NX_P01308').then(function (sequence){
+    console.log(sequence);
+});
 ```
 
 Example to access the overview of a protein
 ```javascript
 
-  nx.getProteinOverview('NX_P01308').then(function(overview) {
-    $("#entryName").text(overview.proteinNames[0].synonymName);
-    $("#geneName").text(overview.geneNames[0].synonymName);
-    $("#proteinEvidence").text(overview.history.proteinExistence);
-  });
+nx.getProteinOverview('NX_P01308').then(function(overview) {
+ console.log(JSON.stringify(overview, null, 2)); //pretty-prints the overview
+});
 
 ```
 ### Request SPARQL data
