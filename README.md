@@ -17,7 +17,7 @@ Without external dependencies :
 ```javascript
 <script src="https://cdn.rawgit.com/calipho-sib/nextprot-js/v0.0.54/dist/nextprot.min.js"></script>
 ```
-With external dependencies (jQuery, Handlebars(optionnal) ) :
+With external dependencies (jQuery, Handlebars, Promises ) :
 ```javascript
 <script src="https://cdn.rawgit.com/calipho-sib/nextprot-js/v0.0.54/dist/nextprot.bundle.js"></script>
 ```
