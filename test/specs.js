@@ -17,31 +17,6 @@ QUnit.test("should get a nextprot valid id again", function (assert) {
     assert.ok(isNeXtProt(nx.getEntryName()), "Expect a neXtProt ID again");
 });
 
-
-/*QUnit.test("should do a jquery API call", function (assert) {
-    $.ajax({
-        type: "GET",
-        url: 'https://api.nextprot.org/entry/NX_P46976/isoform.json',
-        async: false
-    }).then(function (data) {
-        assert.ok(data.entry.isoforms.length, "should get a sequence length");
-    });
-});
-
-QUnit.test("API calls test", function (assert) {
-    assert.expect(1);
-    var done1 = assert.async();
-    //var done2 = assert.async();
-    //var done3 = assert.async();
-    //var done4 = assert.async();
-    //var done5 = assert.async();
-    nx.getProteinOverview().then(function (data) {
-        assert.ok(data.proteinNames, 'Overview Json filled');
-        done1();
-    });
-
-});*/
-
 // OVERVIEW JSON TEST
 QUnit.test("Overview Json test", function (assert) {
     var done6 = assert.async();
@@ -213,5 +188,3 @@ QUnit.test("Should fail to execute a SPARQL without prefixes", function (assert)
         done();
     });
 });
-
-

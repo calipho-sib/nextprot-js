@@ -1,4 +1,4 @@
-# neXtProt-js
+# nextprot-js
 
 A Javascript SDK that speaks with the neXtprot (www.nextprot.org) api (https://api.nextprot.org) and SPARQL endpoint. These resources are freely available and can be used by anyone to create awesome apps.
 
@@ -7,67 +7,131 @@ A Javascript SDK that speaks with the neXtprot (www.nextprot.org) api (https://a
 
 Either you are an expert or a novice go ahead and try out the javascript library and don't hesitate to ask us questions if you have some troubles. We will appreciate your feedback.
 
-In this [example](https://cdn.rawgit.com/calipho-sib/nextprot-viewers/v0.1.0/sequence/app/index.html?nxentry=NX_P01308&inputOption=true) you can see what we can achieve with this library.
+In this [example](https://search.nextprot.org/entry/NX_P01308/view/peptides) you can see what we can achieve with this library.
 
 ## Installation 
+
+Include nextprot script (specify the version and use CDN)
+
+Without external dependencies :
+```javascript
+<script src="https://cdn.rawgit.com/calipho-sib/nextprot-js/v0.0.54/dist/nextprot.min.js"></script>
+```
+With external dependencies (jQuery, Handlebars, Promises ) :
+```javascript
+<script src="https://cdn.rawgit.com/calipho-sib/nextprot-js/v0.0.54/dist/nextprot.bundle.js"></script>
+```
+If you are in a bower environment
 ```
 bower install nextprot
 ```
 
-##### Or include the nextprot script via CDN (specify release version)
-
-Without external dependencies :
+## Usage
+Create the nextprot client giving some info about your application and who you are.
+This information is not compulsary and you do not need to register, but it helps us maintain a good quality of the service.
 ```javascript
-<script src="https://cdn.rawgit.com/calipho-sib/nextprot-js/v0.0.51/dist/nextprot.min.js"></script>
-```
-With external dependencies (jQuery, Handlebars(optionnal) ) :
-```javascript
-<script src="https://cdn.rawgit.com/calipho-sib/nextprot-js/v0.0.51/dist/nextprot.bundle.js"></script>
-```
+<script type="text/javascript">
 
-
-##Usage
-Create the nextprot client  
-```javascript
  var applicationName = 'demo app'; //please provide a name for your application
  var clientInfo='calipho group at sib'; //please provide some information about you
  var nx = new Nextprot.Client(applicationName, clientInfo);
+
+</script>
 ```
+
+### Request API data
 
 Request the protein part of interest (see the list of methods in here: https://api.nextprot.org)
 Example to access the sequence
 ```javascript
- nx.getProteinSequence('NX_P01308').then(function (sequence){
-  console.log(sequence);
- }
+nx.getProteinSequence('NX_P01308').then(function (isoforms){
+    console.log(isoforms[0].sequence);
+});
 ```
 
 Example to access the overview of a protein
 ```javascript
 
-  nx.getProteinOverview('NX_P01308').then(function(overview) {
-    $("#entryName").text(overview.proteinNames[0].synonymName);
-    $("#geneName").text(overview.geneNames[0].synonymName);
-    $("#proteinEvidence").text(overview.history.proteinExistence);
-  });
+nx.getProteinOverview('NX_P01308').then(function(overview) {
+ console.log(JSON.stringify(overview, null, 2)); //pretty-prints the overview
+});
 
 ```
+### Execute SPARQL queries 
 
-Example to run a query against nextprot SPARQL
+This SPARQL groups proteins by their existence level.
+
 ```javascript
-   var query = 'SELECT ?pe count(?entry) as ?cnt ' +
-        'WHERE {?entry :existence ?pe} group by ?pe order by desc(?cnt)';
+ var query = 'SELECT ?pe count(?entry) as ?cnt ' +
+      'WHERE {?entry :existence ?pe} group by ?pe order by desc(?cnt)';
 
-    //Execute the sparql and print result
-    nx.executeSparql(query).then(function (data) {
-        data.results.bindings.forEach(function (o) {
-            console.log(o.pe.value, ": ", o.cnt.value);
-        });
-    });
+  //Execute the sparql and print result
+  nx.executeSparql(query).then(function (response) {
+      console.log(JSON.stringify(response, null, 2)); //pretty-prints the response
+      response.results.bindings.forEach(function (data) {
+          var pe = data.pe.value.replace("http://nextprot.org/rdf#" , "");
+          var cnt = parseInt(data.cnt.value);
+          console.log(pe, ": ", cnt);
+      });
+  });
+  
 ```
-A running example : 
-  * http://calipho-sib.github.io/nextprot-js/demo/index.html?nxentry=NX_P01308
 
+## Combine with external libraries
+
+If combined with a chart library, you can create great charts without  much effort.
+For example use [Highcharts](http://www.highcharts.com/demo):
+
+```html
+<head>
+<script src="https://cdn.rawgit.com/calipho-sib/nextprot-js/v0.0.54/dist/nextprot.bundle.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+</head>
+```
+Create a div where you will plot the chart:
+```html
+<body>
+ <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</body>
+```
+and finally use the example of SPARQL queries to draw a chart:
+```javascript
+<script type="text/javascript">
+    var nx = new Nextprot.Client('demo app', 'calipho group');
+    var proteinsByExistenceLevel ='SELECT ?pe count(?entry) as ?cnt ' + 
+                                  'WHERE {?entry :existence ?pe} ' + 
+                                  'group by ?pe order by desc(?cnt)';
+   
+     //Execute the sparql and print result
+  nx.executeSparql(query).then(function (response) {
+      var seriesData = [];
+      response.results.bindings.forEach(function (data) {
+          var pe = data.pe.value.replace("http://nextprot.org/rdf#" , "");
+          var cnt = parseInt(data.cnt.value);
+          seriesData.push({name : pe, y: cnt});
+      });
+      
+      //Draw the plot
+      $('#container').highcharts({
+          chart: { type: 'pie'},
+          title: { text: 'Protein Entry Levels'},
+          plotOptions: { pie: { dataLabels: {enabled: false}, showInLegend: true }},
+          series: [{name: 'neXtProt entries count',data: seriesData }]
+      });
+  });
+  
+</script>
+```
+
+And voila you should get a fancy pie chart representing the different protein existence levels:
+
+ <a href="https://search.nextprot.org/entry/NX_P24298/gh/ddtxra/protein-existence-levels">
+  <img src="assets/pie.png" width="200px"/>
+ </a>
+
+See the full source code here: https://github.com/ddtxra/protein-existence-levels/blob/gh-pages/index.html
+
+See a running example: https://search.nextprot.org/entry/NX_P24298/gh/ddtxra/protein-existence-levels
 
 ## Development
 
