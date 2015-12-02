@@ -17,39 +17,15 @@ QUnit.test("should get a nextprot valid id again", function (assert) {
     assert.ok(isNeXtProt(nx.getEntryName()), "Expect a neXtProt ID again");
 });
 
-
-/*QUnit.test("should do a jquery API call", function (assert) {
-    $.ajax({
-        type: "GET",
-        url: 'https://api.nextprot.org/entry/NX_P46976/isoform.json',
-        async: false
-    }).then(function (data) {
-        assert.ok(data.entry.isoforms.length, "should get a sequence length");
-    });
-});
-
-QUnit.test("API calls test", function (assert) {
-    assert.expect(1);
-    var done1 = assert.async();
-    //var done2 = assert.async();
-    //var done3 = assert.async();
-    //var done4 = assert.async();
-    //var done5 = assert.async();
-    nx.getProteinOverview().then(function (data) {
-        assert.ok(data.proteinNames, 'Overview Json filled');
-        done1();
-    });
-
-});*/
-
 // OVERVIEW JSON TEST
 QUnit.test("Overview Json test", function (assert) {
     var done6 = assert.async();
     var promise6 = nx.getProteinOverview();
     promise6.then(function (data) {
         assert.ok(data.proteinNames, 'should get a Overview Json filled');
+        console.log(data.proteinNames);
         if (data.proteinNames) {
-            assert.ok(data.proteinNames[0].synonymName, 'Expect a protein name to exist');
+            assert.ok(data.proteinNames[0].name, 'Expect a protein name to exist');
             assert.ok(data.history.formattedNextprotIntegrationDate, 'Expect a integration date to exist');
             assert.ok(data.history.formattedNextprotUpdateDate, 'Expect a update date to exist');
             assert.ok(data.history.uniprotVersion, 'Expect a version to exist');
@@ -86,12 +62,14 @@ QUnit.test("Sequence Json test", function (assert) {
 //PEPTIDE JSON TEST
 QUnit.test("Peptide Json test", function (assert) {
     var done8 = assert.async();
-    var promise8 = nx.getPeptide();
+    var promise8 = nx.getAnnotationsByCategory("NX_P01308","peptide-mapping");
     promise8.then(function (data) {
+        var data = data.annot;
+        console.log(data);
         assert.ok(data, 'should get a Peptide Json filled');
         if (data) {
-            assert.ok(data[0].peptideUniqueName, 'Expect a peptide unique name to exist');
-            assert.ok(data[0].isoformSpecificity[Object.keys(data[0].isoformSpecificity)[0]].positions.length, 'Expect a peptide positions to exist');
+            assert.ok(data[0].uniqueName, 'Expect a peptide unique name to exist');
+            assert.ok(data[0].targetingIsoformsMap[Object.keys(data[0].targetingIsoformsMap)[0]].firstPosition, 'Expect a peptide positions to exist');
             assert.ok(data[0].evidences.length, 'Expect a peptide positions to exist');
         }
         //            assert.ok(data[0].uniqueName, 'iso unique name exists');
@@ -106,13 +84,13 @@ QUnit.test("Peptide Json test", function (assert) {
 
 QUnit.test("SRM Peptide Json test", function (assert) {
     var done9 = assert.async();
-    var promise9 = nx.getSrmPeptide();
+    var promise9 = nx.getAnnotationsByCategory("NX_P01308","srm-peptide-mapping");
     promise9.then(function (data) {
-        console.log(data);
+        var data = data.annot;
         assert.ok(data, 'should get a Srm peptide Json filled');
         if (data) {
-            assert.ok(data[0].peptideUniqueName, 'Expect a peptide unique name to exist');
-            assert.ok(data[0].isoformSpecificity[Object.keys(data[0].isoformSpecificity)[0]].positions.length, 'Expect a peptide positions to exist');
+            assert.ok(data[0].uniqueName, 'Expect a peptide unique name to exist');
+            assert.ok(data[0].targetingIsoformsMap[Object.keys(data[0].targetingIsoformsMap)[0]].firstPosition, 'Expect a peptide positions to exist');
             assert.ok(data[0].evidences.length, 'Expect a peptide positions to exist');
         }
         //            assert.ok(data[0].uniqueName, 'iso unique name exists');
@@ -210,5 +188,3 @@ QUnit.test("Should fail to execute a SPARQL without prefixes", function (assert)
         done();
     });
 });
-
-
