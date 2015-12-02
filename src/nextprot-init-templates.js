@@ -1,7 +1,6 @@
 $(function () {
 
     var loadOverview = function (overview, nxEntryName) {
-
         if ($("#nx-overview").length > 0) {
             Handlebars.registerHelper('link_to', function (type, options) {
                 switch (type) {
@@ -28,13 +27,14 @@ $(function () {
                     if (p.qualifier === "EC") EC.push(p.name);
                     if (p.qualifier === "short") short.push(p.name);
                 });
+                if (EC.length) EC.sort(NXUtils.sortByAlphabet);
+                if (short.length) short.sort(NXUtils.sortByAlphabet);
             }
 
             var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
 
             var isonames = overview.isoformNames;
-            var isonamesSorted = isonames ? isonames.sort(NXUtils.sortIsoformNames) : null;
-
+            
             var data = {
                 "entryName": overview.recommendedProteinName.name,
                 "recommendedProteinName": {
@@ -49,7 +49,7 @@ $(function () {
                     })
                 },
                 "alternativeProteinNames": NXUtils.getAlternativeNames(overview.alternativeProteinNames),
-                "geneName": overview.geneNames.map(function (gn) {
+                "geneName": overview.geneNames ? overview.geneNames.map(function (gn) {
                     return {
                         name: NXUtils.getRecommendedName(gn) || null,
                         synonyms: gn.synonyms ? gn.synonyms.filter(function (gns) {
@@ -57,12 +57,12 @@ $(function () {
                         }) : null,
                         orf: NXUtils.getORFNames(gn) || null
                     }
-                }),
+                }).sort(NXUtils.sortByAlphabet) : null,
                 "cleavage": NXUtils.getAlternativeNames(overview.cleavedRegionNames),
-                "isoforms": isonamesSorted,
+                "isoforms": NXUtils.getIsoforms(isonames),
                 "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
                 "families": overview.families.map(function(f){return NXUtils.getFamily(f,{})}),
-                "proteineEvidence": overview.history.proteinExistence.split('_').join(' ').toLowerCase(),
+                "proteineEvidence": NXUtils.getProteinExistence(overview.history.proteinExistence),
                 "integDate": overview.history.formattedNextprotIntegrationDate,
                 "lastUpdate": overview.history.formattedNextprotUpdateDate,
                 "UniprotIntegDate": overview.history.formattedUniprotIntegrationDate,
@@ -72,6 +72,7 @@ $(function () {
                 "lastSeqUpdate": overview.history.lastSequenceUpdate,
                 "accessionNumber": nxEntryName
             };
+                
 
             var template = HBtemplates['templates/overviewProtein.tmpl'];
             var result = template(data);

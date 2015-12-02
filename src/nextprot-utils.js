@@ -4,18 +4,17 @@ var NXUtils = {
     checkIsoformMatch: function (isoname, isonumber) {
         return isoname.endsWith("-" + isonumber)
     },
-
-    sortIsoformNames: function(a,b){
-        if (parseInt(a.name.replace("Iso", "").replace(" ", ""))) {
-            var first = parseInt(a.name.replace("Iso", "").replace(" ", ""));
-            var second = parseInt(b.name.replace("Iso", "").replace(" ", ""));
-            if(first > second) return 1;
-            if(first < second) return -1;
-            return 0;
+    getIsoforms: function(isoforms){
+        if (isoforms && isoforms.length > 1 ) {
+            isoforms.sort(NXUtils.sortIsoformNames);
+            isoforms.forEach(function(iso){
+                console.log(iso);
+                if (iso.synonyms && iso.synonyms.length > 1) iso.synonyms.sort(NXUtils.sortByAlphabet);
+            })
+            return isoforms;
         }
-        else return a.name > b.name;
+        else return null;
     },
-
     getORFNames: function (geneName) {
         var names = [];
         if (geneName.category === "ORF") {
@@ -27,10 +26,9 @@ var NXUtils = {
                 if (gns.category === "ORF") {
                     names.push({name: gns.name})
                 }
-
             })
         }
-        if (names.length) names.sort(function(a,b){return a.name.toLowerCase() > b.name.toLowerCase()});
+        if (names.length) names.sort(NXUtils.sortByAlphabet);
         return names;
     },
     getSynonyms: function (syn) {
@@ -43,11 +41,41 @@ var NXUtils = {
                 else {
                     synonyms[s.qualifier]=[s.name];
                 }
-                //if (s.qualifier === "EC") synonyms.EC.push(s.name);
-                //if (s.qualifier === "short") synonyms.short.push(s.name);
             });
         }
+        for (var qualifier in synonyms) {
+            synonyms[qualifier].sort(NXUtils.sortByAlphabet);
+        }
         return synonyms;
+    },
+    sortSynonyms: function(a,b){
+        var a = a;
+        var b = b;
+        if (typeof a !== "string") {
+            var a = a.name;
+            var b = b.name;
+        }
+        if (a.length === b.length) {
+            return a.toLowerCase() > b.toLowerCase()
+        }
+        return b.toLowerCase().length - a.toLowerCase().length;
+    },
+    sortIsoformNames: function(a,b){
+        if (parseInt(a.name.replace("Iso", "").replace(" ", ""))) {
+            var first = parseInt(a.name.replace("Iso", "").replace(" ", ""));
+            var second = parseInt(b.name.replace("Iso", "").replace(" ", ""));
+            if(first > second) return 1;
+            if(first < second) return -1;
+            return 0;
+        }
+        else return a.name > b.name;
+    },
+    sortByAlphabet: function(a,b) {
+        var a = typeof a === "string" ? a : a.name ? a.name : null;        
+        var b = typeof b === "string" ? b : b.name ? b.name : null;        
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
     },
     getRecommendedName: function (geneName) {
         var name = "";
@@ -73,27 +101,27 @@ var NXUtils = {
                 }
             });
         }
-        names.map(function(n){n.names.sort(function (a,b) {return a.name > b.name});});
+        names.map(function(n){n.names.sort(NXUtils.sortByAlphabet)});
         names.forEach(function(n) {if (n.type === "Alternative name" && n.names.length > 1) {n.type = "Alternative names"}});
         return names;
     },
     getMainSynonym: function (sy) {
-        var name;
+        var mainName;
         var syProtNames= sy.filter(function(a) {return a.qualifier === "full"});
         if (syProtNames.length) {
-            name = syProtNames.sort(function (a, b) {
+            var name = syProtNames.sort(function (a, b) {
                 return b.name.length - a.name.length;
-            })[0].name;
+            })[0];
+            mainName = {
+                name: name.name,
+                synonym: name.synonyms ? name.synonyms.sort(NXUtils.sortByAlphabet)[0].name : null
+            }
         }
-        return name;
+        return mainName;
     },
     getMainShort: function (sh) {
-        var shortList = [];
         var name;
-        shortList = sh.sort(function (a, b) {
-            return a.length - b.length;
-        });
-        name = shortList[0].charAt(0) === "h" ? shortList[1] ? shortList[1] : shortList[0] : shortList[0];
+        name = sh[sh.length-1].charAt(0) === "h" ? sh[sh.length-2] ? sh[sh.length-2] : sh[sh.length-1] : sh[sh.length-1];
         return name;
     },
     getFamily: function (f,family) {
@@ -104,6 +132,22 @@ var NXUtils = {
             NXUtils.getFamily(f.parent,family);
         }
         return family;
+    },
+    getProteinExistence: function(term){
+        var existence = term.split('_').join(' ').toLowerCase();
+        mainSentence = "Entry whose protein(s) existence is ";
+        based = "based on ";
+        switch(existence) {
+            case "uncertain":
+                return mainSentence + existence;
+                break;
+            case "inferred from homology":
+                return mainSentence + existence;
+                break;
+            default:
+                return mainSentence + based + existence;
+                break;
+        }
     },
     getSequenceForIsoform: function (isoSequences, isoformName) {
         var result = null;
