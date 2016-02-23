@@ -447,3 +447,9 @@ var NXViewerUtils = {
         return result;
     }
 };
+if ( typeof module === "object" && typeof module.exports === "object" ) {
+    module.exports = {
+        NXUtils: NXUtils,
+        NXViewerUtils : NXViewerUtils
+    }
+}
