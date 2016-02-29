@@ -98,7 +98,7 @@ and finally use the example of SPARQL queries to draw a chart:
 ```javascript
 <script type="text/javascript">
     var nx = new Nextprot.Client('demo app', 'calipho group');
-    var proteinsByExistenceLevel ='SELECT ?pe count(?entry) as ?cnt ' + 
+    var query ='SELECT ?pe count(?entry) as ?cnt ' + 
                                   'WHERE {?entry :existence ?pe} ' + 
                                   'group by ?pe order by desc(?cnt)';
    
