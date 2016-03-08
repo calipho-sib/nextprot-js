@@ -12,13 +12,13 @@ dd{
     {{#if recommendedProteinName.mainSynonymName}}
     <div id="synonym-less" class="row">
         <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Protein also known as :</div>
-        <div class="col-md-9 col-xs-9">{{#recommendedProteinName}}{{#mainSynonymName}}{{name}}{{#if synonym}} ({{synonym}}) {{/if}}{{/mainSynonymName}} {{#others}} ; {{type}}{{#names}} {{name}}{{/names}}{{/others}}{{/recommendedProteinName}}</div>
+        <div class="col-md-9 col-xs-9">{{#recommendedProteinName}}{{#mainSynonymName}}{{name}}{{#if synonym}} ({{synonym}}) {{/if}}{{/mainSynonymName}} {{#if others}} ; {{/if}}{{#others}}{{type}}{{plural names}}:{{#names}} {{name}}{{#unless @last}},{{/unless}}{{/names}}{{#unless @last}}; {{/unless}}{{/others}}{{/recommendedProteinName}}</div>
     </div>
     {{else}}
     {{#if recommendedProteinName.others}}
     <div id="synonym-other-less" class="row">
         <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Protein also known as :</div>
-        <div class="col-md-9 col-xs-9">{{#recommendedProteinName}}{{#others}} {{type}}{{#names}} {{name}}{{/names}}{{#unless @last}}; {{/unless}}{{/others}}{{/recommendedProteinName}}</div>
+        <div class="col-md-9 col-xs-9">{{#recommendedProteinName}}{{#others}} {{type}}{{plural names}}:{{#names}}{{name}}{{#unless @last}},{{/unless}}{{/names}}{{#unless @last}}; {{/unless}}{{/others}}{{/recommendedProteinName}}</div>
     </div>
     {{/if}}
     {{/if}}
@@ -32,21 +32,21 @@ dd{
     <div id="gene-less" class="row">
         {{#if geneName}}
             {{#if geneName.[0].name}}
-            <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Gene Name :</div>
+            <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Gene name :</div>
             <div class="col-md-6 col-xs-6" >{{#geneName}}{{name}}{{#unless @last}}; {{/unless}}{{/geneName}}</div>
             {{else}}
-            <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">ORF Name :</div>
+            <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">ORF name :</div>
             <div class="col-md-6 col-xs-6">{{geneName.[0].orf.[0].name}}</div>
             {{/if}}
          {{else}}
-            <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Gene Name :</div>
+            <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Gene name :</div>
             <div class="col-md-6 col-xs-6" >None assigned yet</div>
          {{/if}}
 
     </div>
     {{#if families}}
     <div id="family-less" class="row">
-        <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Family Name :</div>
+        <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Family name :</div>
         <div class="col-md-6 col-xs-6">{{#families}}<span>{{#superfamily}}{{{link_to "term"}}}{{/superfamily}}{{#if family}}{{#if superfamily}} >> {{/if}}{{#family}} {{{link_to "term"}}} {{/family}}{{/if}}{{#if subfamily}}{{#if family}} >> {{/if}}{{#subfamily}}{{{link_to "term"}}} {{/subfamily}}{{/if}}</span>{{/families}}</div>
     </div>
     {{/if}}
@@ -56,16 +56,16 @@ dd{
         <div class="col-md-1 col-xs-2 text-uppercase" style="color: grey;">Protein</div>
         <div class="col-md-9 col-xs-8">
             <dl>
-                <dt>Recommended Name</dt>
+                <dt>Recommended name</dt>
                 {{#recommendedProteinName}}
-                <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} ; {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}</dd>
+                <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} , {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}</dd>
                 {{/recommendedProteinName}}
                 {{#if alternativeProteinNames}}
                 {{#alternativeProteinNames}}
-                <dt>{{type}}</dt>
+                <dt>{{type}}{{plural names}}</dt>
                 {{#names}}
                 <dd> {{name}}
-                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} ; {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}
+                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} , {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}
                 </dd>
                 {{/names}}
                 {{/alternativeProteinNames}}
@@ -104,24 +104,27 @@ dd{
                 {{#if geneName}}
                 {{#geneName}}
                 {{#if name}}
-                <dt>Recommended Name</dt>
+                <dt>Recommended name</dt>
                 <dd>{{name}}</dd>
                 {{/if}}
                 {{#if synonyms}}
-                <dt>Alternative Names</dt>
+                <dt>Alternative name{{plural synonyms}}</dt>
                 {{#synonyms}}
                 <dd> {{name}}</dd>
                 {{/synonyms}}
                 {{/if}}
                 {{#if orf}}
-                <dt>ORF names</dt>
+                <dt>ORF name{{plural orf}}</dt>
                 {{#orf}}
                 <dd> {{name}}</dd>
                 {{/orf}}
                 {{/if}}
+                {{#unless @last}}
+                <br>
+                {{/unless}}
                 {{/geneName}}
                 {{else}}
-                <dt>Recommended Name</dt>
+                <dt>Recommended name</dt>
                 <dd>None assigned yet</dd>
                 {{/if}}
             </dl>

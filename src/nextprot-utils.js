@@ -89,7 +89,7 @@ var NXUtils = {
         if (altNames) {
             altNames.forEach(function (an) {
                 var found = false;
-                var type = an.type === "name" ? "Alternative name" : an.type;
+                var type = an.type === "name" ? "Alternative name" : an.type === "International Nonproprietary Names" ? "International Nonproprietary Name" : an.type === "allergen" ? "Allergen" : an.type;
                 for (var elem in names) {
                     if (names[elem].type === type) {
                         names[elem].names.push({name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)});
@@ -102,7 +102,7 @@ var NXUtils = {
             });
         }
         names.map(function(n){n.names.sort(NXUtils.sortByAlphabet)});
-        names.forEach(function(n) {if (n.type === "Alternative name" && n.names.length > 1) {n.type = "Alternative names"}});
+//        names.forEach(function(n) {if (n.type === "Alternative name" && n.names.length > 1) {n.type = "Alternative names"}});
         return names;
     },
     getMainSynonym: function (sy) {
