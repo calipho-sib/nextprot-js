@@ -531,5 +531,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   if (stack1 != null) { buffer += stack1; }
   return buffer + "</dd>\n            </dl>\n        </div>\n    </div>\n</div>\n<p style=\"margin:10px 10px;\">"
     + alias3(((helper = (helper = helpers.proteineEvidence || (depth0 != null ? depth0.proteineEvidence : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"proteineEvidence","hash":{},"data":data}) : helper)))
+    + ". "
+    + alias3(((helper = (helper = helpers.proteineEvidenceCaution || (depth0 != null ? depth0.proteineEvidenceCaution : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"proteineEvidenceCaution","hash":{},"data":data}) : helper)))
     + "</p>";
 },"useData":true});

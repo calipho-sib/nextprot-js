@@ -334,8 +334,8 @@ var NXUtils = {
         else return a.name > b.name;
     },
     sortByAlphabet: function(a,b) {
-        var a = typeof a === "string" ? a : a.name ? a.name : null;        
-        var b = typeof b === "string" ? b : b.name ? b.name : null;        
+        var a = typeof a === "string" ? a.toLowerCase() : a.name ? a.name.toLowerCase() : null;        
+        var b = typeof b === "string" ? b.toLowerCase() : b.name ? b.name.toLowerCase() : null;        
         if (a < b) return -1;
         if (a > b) return 1;
         return 0;
@@ -377,7 +377,7 @@ var NXUtils = {
             })[0];
             mainName = {
                 name: name.name,
-                synonym: name.synonyms ? name.synonyms.sort(NXUtils.sortByAlphabet)[0].name : null
+                synonym: name.synonyms && name.synonyms.length > 0 ? name.synonyms.sort(NXUtils.sortByAlphabet)[0].name : null
             }
         }
         return mainName;
@@ -772,7 +772,7 @@ $(function () {
                         name: NXUtils.getRecommendedName(gn) || null,
                         synonyms: gn.synonyms ? gn.synonyms.filter(function (gns) {
                             return gns.category === "gene name"
-                        }) : null,
+                        }).sort(NXUtils.sortByAlphabet) : null,
                         orf: NXUtils.getORFNames(gn) || null
                     }
                 }).sort(NXUtils.sortByAlphabet) : null,
@@ -780,7 +780,8 @@ $(function () {
                 "isoforms": NXUtils.getIsoforms(isonames),
                 "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
                 "families": overview.families.map(function(f){return NXUtils.getFamily(f,{})}),
-                "proteineEvidence": NXUtils.getProteinExistence(overview.history.proteinExistence),
+                "proteineEvidence": NXUtils.getProteinExistence(overview.proteinExistence),
+                "proteineEvidenceCaution": overview.proteinExistenceInfo,
                 "integDate": overview.history.formattedNextprotIntegrationDate,
                 "lastUpdate": overview.history.formattedNextprotUpdateDate,
                 "UniprotIntegDate": overview.history.formattedUniprotIntegrationDate,
@@ -1391,5 +1392,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   if (stack1 != null) { buffer += stack1; }
   return buffer + "</dd>\n            </dl>\n        </div>\n    </div>\n</div>\n<p style=\"margin:10px 10px;\">"
     + alias3(((helper = (helper = helpers.proteineEvidence || (depth0 != null ? depth0.proteineEvidence : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"proteineEvidence","hash":{},"data":data}) : helper)))
+    + ". "
+    + alias3(((helper = (helper = helpers.proteineEvidenceCaution || (depth0 != null ? depth0.proteineEvidenceCaution : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"proteineEvidenceCaution","hash":{},"data":data}) : helper)))
     + "</p>";
 },"useData":true});

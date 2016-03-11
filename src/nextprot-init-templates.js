@@ -54,7 +54,7 @@ $(function () {
                         name: NXUtils.getRecommendedName(gn) || null,
                         synonyms: gn.synonyms ? gn.synonyms.filter(function (gns) {
                             return gns.category === "gene name"
-                        }) : null,
+                        }).sort(NXUtils.sortByAlphabet) : null,
                         orf: NXUtils.getORFNames(gn) || null
                     }
                 }).sort(NXUtils.sortByAlphabet) : null,
@@ -62,7 +62,8 @@ $(function () {
                 "isoforms": NXUtils.getIsoforms(isonames),
                 "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
                 "families": overview.families.map(function(f){return NXUtils.getFamily(f,{})}),
-                "proteineEvidence": NXUtils.getProteinExistence(overview.history.proteinExistence),
+                "proteineEvidence": NXUtils.getProteinExistence(overview.proteinExistence),
+                "proteineEvidenceCaution": overview.proteinExistenceInfo,
                 "integDate": overview.history.formattedNextprotIntegrationDate,
                 "lastUpdate": overview.history.formattedNextprotUpdateDate,
                 "UniprotIntegDate": overview.history.formattedUniprotIntegrationDate,

@@ -71,8 +71,8 @@ var NXUtils = {
         else return a.name > b.name;
     },
     sortByAlphabet: function(a,b) {
-        var a = typeof a === "string" ? a : a.name ? a.name : null;        
-        var b = typeof b === "string" ? b : b.name ? b.name : null;        
+        var a = typeof a === "string" ? a.toLowerCase() : a.name ? a.name.toLowerCase() : null;        
+        var b = typeof b === "string" ? b.toLowerCase() : b.name ? b.name.toLowerCase() : null;        
         if (a < b) return -1;
         if (a > b) return 1;
         return 0;
@@ -114,7 +114,7 @@ var NXUtils = {
             })[0];
             mainName = {
                 name: name.name,
-                synonym: name.synonyms ? name.synonyms.sort(NXUtils.sortByAlphabet)[0].name : null
+                synonym: name.synonyms && name.synonyms.length > 0 ? name.synonyms.sort(NXUtils.sortByAlphabet)[0].name : null
             }
         }
         return mainName;
