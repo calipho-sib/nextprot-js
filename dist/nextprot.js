@@ -355,18 +355,35 @@ var NXUtils = {
                 var type = an.type === "name" ? "Alternative name" : an.type === "International Nonproprietary Names" ? "International Nonproprietary Name" : an.type === "allergen" ? "Allergen" : an.type;
                 for (var elem in names) {
                     if (names[elem].type === type) {
-                        names[elem].names.push({name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)});
+                        names[elem].names.push({name: an.name, synonyms: NXUtils.getSynonyms(NXUtils.mergeArraysOfObjects(an.clazz,an.synonyms, an.otherRecommendedEntityNames))});
                         found = true;
                     }
                 }
                 if (!found) {
-                    names.push({type: type, names: [{name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)}]})
+                    names.push({type: type, names: [{name: an.name, synonyms: NXUtils.getSynonyms(NXUtils.mergeArraysOfObjects(an.clazz,an.synonyms, an.otherRecommendedEntityNames))}]})
                 }
             });
         }
         names.map(function(n){n.names.sort(NXUtils.sortByAlphabet)});
 //        names.forEach(function(n) {if (n.type === "Alternative name" && n.names.length > 1) {n.type = "Alternative names"}});
         return names;
+    },
+    mergeArraysOfObjects: function(type,arr1,arr2){
+        if (!(arr2 && arr2.length> 0)) return arr1;
+        else if (!(arr1 && arr1.length> 0)) return arr2;
+        var arr3 = [];
+        for(var i in arr1){
+           var shared = false;
+           for (var j in arr2)
+               if (arr2[j].name == arr1[i].name) {
+                   shared = true;
+                   break;
+               }
+           if(!shared) arr3.push(arr1[i])
+        }
+        console.log(arr3);
+        arr3 = arr3.concat(arr2);
+        return arr3;
     },
     getMainSynonym: function (sy) {
         var mainName;
@@ -733,6 +750,8 @@ $(function () {
                         return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
                 }
             });
+            console.log("overview");
+            console.log(overview);
             Handlebars.registerHelper('plural', function (array, options) {
                 return array.length > 1 ? "s" : "";
             });
@@ -742,11 +761,15 @@ $(function () {
 
             if (overview.recommendedProteinName.synonyms) {
                 overview.recommendedProteinName.synonyms.forEach(function (p) {
-                    if (p.qualifier === "EC") EC.push(p.name);
                     if (p.qualifier === "short") short.push(p.name);
                 });
-                if (EC.length) EC.sort(NXUtils.sortByAlphabet);
                 if (short.length) short.sort(NXUtils.sortByAlphabet);
+            }
+            if (overview.recommendedProteinName.otherRecommendedEntityNames) {
+                overview.recommendedProteinName.otherRecommendedEntityNames.forEach(function (p) {
+                    if (p.qualifier === "EC") EC.push(p.name);
+                });
+                if (EC.length) EC.sort(NXUtils.sortByAlphabet);
             }
 
             var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
@@ -791,7 +814,7 @@ $(function () {
                 "lastSeqUpdate": overview.history.lastSequenceUpdate,
                 "accessionNumber": nxEntryName
             };
-                
+            console.log(data);
 
             var template = HBtemplates['templates/overviewProtein.tmpl'];
             var result = template(data);
@@ -1097,7 +1120,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   return buffer + " ] ";
 },"57":function(depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
-  "<span style=\"font-size:12px;\"><span style=\"color:grey\">Short: </span> ";
+  "<span><span style=\"color:grey\">Short: </span> ";
   stack1 = ((helper = (helper = helpers['short'] || (depth0 != null ? depth0['short'] : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"short","hash":{},"fn":this.program(58, data, 0),"inverse":this.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0,options) : helper));
   if (!helpers['short']) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
@@ -1143,9 +1166,13 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"66":function(depth0,helpers,partials,data) {
-    var stack1, helper, options, buffer = 
-  "                <dt>Include the following functional regions</dt>\n";
-  stack1 = ((helper = (helper = helpers.names || (depth0 != null ? depth0.names : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"names","hash":{},"fn":this.program(67, data, 0),"inverse":this.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0,options) : helper));
+    var stack1, helper, options, alias1=this.escapeExpression, alias2=helpers.helperMissing, buffer = 
+  "                <dt>Include the following "
+    + alias1(this.lambda(((stack1 = (depth0 != null ? depth0.names : depth0)) != null ? stack1.length : stack1), depth0))
+    + " functional region"
+    + alias1((helpers.plural || (depth0 && depth0.plural) || alias2).call(depth0,(depth0 != null ? depth0.names : depth0),{"name":"plural","hash":{},"data":data}))
+    + "</dt>\n";
+  stack1 = ((helper = (helper = helpers.names || (depth0 != null ? depth0.names : depth0)) != null ? helper : alias2),(options={"name":"names","hash":{},"fn":this.program(67, data, 0),"inverse":this.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0,options) : helper));
   if (!helpers.names) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
   return buffer;
@@ -1166,7 +1193,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.full : depth0),{"name":"if","hash":{},"fn":this.program(69, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"69":function(depth0,helpers,partials,data) {
     var stack1, helper, options, alias1=helpers.helperMissing, buffer = 
-  "<span style=\"font-size:12px;\"><span style=\"color:grey\">Alternative name"
+  "<span><span style=\"color:grey\">Alternative name"
     + this.escapeExpression((helpers.plural || (depth0 && depth0.plural) || alias1).call(depth0,(depth0 != null ? depth0.full : depth0),{"name":"plural","hash":{},"data":data}))
     + ":</span> ";
   stack1 = ((helper = (helper = helpers.full || (depth0 != null ? depth0.full : depth0)) != null ? helper : alias1),(options={"name":"full","hash":{},"fn":this.program(70, data, 0),"inverse":this.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0,options) : helper));
@@ -1186,11 +1213,13 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"73":function(depth0,helpers,partials,data) {
-    var stack1, helper, options, buffer = 
+    var stack1, helper, options, alias1=this.escapeExpression, alias2=helpers.helperMissing, buffer = 
   "                <dt>Cleaved into the following "
-    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.names : depth0)) != null ? stack1.length : stack1), depth0))
-    + " chains</dt>\n";
-  stack1 = ((helper = (helper = helpers.names || (depth0 != null ? depth0.names : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"names","hash":{},"fn":this.program(74, data, 0),"inverse":this.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0,options) : helper));
+    + alias1(this.lambda(((stack1 = (depth0 != null ? depth0.names : depth0)) != null ? stack1.length : stack1), depth0))
+    + " chain"
+    + alias1((helpers.plural || (depth0 && depth0.plural) || alias2).call(depth0,(depth0 != null ? depth0.names : depth0),{"name":"plural","hash":{},"data":data}))
+    + "</dt>\n";
+  stack1 = ((helper = (helper = helpers.names || (depth0 != null ? depth0.names : depth0)) != null ? helper : alias2),(options={"name":"names","hash":{},"fn":this.program(74, data, 0),"inverse":this.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0,options) : helper));
   if (!helpers.names) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
   return buffer;
@@ -1204,11 +1233,13 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   if (stack1 != null) { buffer += stack1; }
   return buffer + "</dd>\n";
 },"76":function(depth0,helpers,partials,data) {
-    var stack1, helper, options, buffer = 
+    var stack1, helper, options, alias1=this.escapeExpression, alias2=helpers.helperMissing, buffer = 
   "                <dt>Spliced into the following "
-    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.isoforms : depth0)) != null ? stack1.length : stack1), depth0))
-    + " isoforms</dt>\n";
-  stack1 = ((helper = (helper = helpers.isoforms || (depth0 != null ? depth0.isoforms : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"isoforms","hash":{},"fn":this.program(77, data, 0),"inverse":this.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0,options) : helper));
+    + alias1(this.lambda(((stack1 = (depth0 != null ? depth0.isoforms : depth0)) != null ? stack1.length : stack1), depth0))
+    + " isoform"
+    + alias1((helpers.plural || (depth0 && depth0.plural) || alias2).call(depth0,(depth0 != null ? depth0.isoforms : depth0),{"name":"plural","hash":{},"data":data}))
+    + "</dt>\n";
+  stack1 = ((helper = (helper = helpers.isoforms || (depth0 != null ? depth0.isoforms : depth0)) != null ? helper : alias2),(options={"name":"isoforms","hash":{},"fn":this.program(77, data, 0),"inverse":this.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0,options) : helper));
   if (!helpers.isoforms) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
   return buffer;
@@ -1222,7 +1253,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + "</dd>\n";
 },"78":function(depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
-  "<span style=\"font-size:0.9em;color:grey\"> Alternative name: </span>";
+  "<span style=\"color:grey\"> Alternative name: </span>";
   stack1 = ((helper = (helper = helpers.synonyms || (depth0 != null ? depth0.synonyms : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"synonyms","hash":{},"fn":this.program(79, data, 0),"inverse":this.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0,options) : helper));
   if (!helpers.synonyms) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }

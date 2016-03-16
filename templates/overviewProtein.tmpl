@@ -58,40 +58,40 @@ dd{
             <dl>
                 <dt>Recommended name</dt>
                 {{#recommendedProteinName}}
-                <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} , {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}</dd>
+                <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} , {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}</dd>
                 {{/recommendedProteinName}}
                 {{#if alternativeProteinNames}}
                 {{#alternativeProteinNames}}
                 <dt>{{type}}{{plural names}}</dt>
                 {{#names}}
                 <dd> {{name}}
-                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span style="font-size:12px;"><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} , {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}
+                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} , {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}
                 </dd>
                 {{/names}}
                 {{/alternativeProteinNames}}
                 {{/if}}
                 {{#if functionalRegionNames}}
                 {{#functionalRegionNames}}
-                <dt>Include the following functional regions</dt>
+                <dt>Include the following {{names.length}} functional region{{plural names}}</dt>
                 {{#names}}
                 <dd> {{name}}
-                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<span style="font-size:12px;"><span style="color:grey">Alternative name{{plural full}}:</span> {{#full}}{{this}}{{#unless @last}} ; {{/unless}}{{/full}}</span>{{/if}}{{/synonyms}}
+                    {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<span><span style="color:grey">Alternative name{{plural full}}:</span> {{#full}}{{this}}{{#unless @last}} ; {{/unless}}{{/full}}</span>{{/if}}{{/synonyms}}
                 </dd>
                 {{/names}}
                 {{/functionalRegionNames}}
                 {{/if}}
                 {{#if cleavage}}
                 {{#cleavage}}
-                <dt>Cleaved into the following {{names.length}} chains</dt>
+                <dt>Cleaved into the following {{names.length}} chain{{plural names}}</dt>
                 {{#names}}
-                <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<span style="font-size:12px;"><span style="color:grey">Alternative name{{plural full}}:</span> {{#full}}{{this}}{{#unless @last}} ; {{/unless}}{{/full}}</span>{{/if}}{{/synonyms}}</dd>
+                <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<span><span style="color:grey">Alternative name{{plural full}}:</span> {{#full}}{{this}}{{#unless @last}} ; {{/unless}}{{/full}}</span>{{/if}}{{/synonyms}}</dd>
                 {{/names}}
                 {{/cleavage}}
                 {{/if}}
                 {{#if isoforms}}
-                <dt>Spliced into the following {{isoforms.length}} isoforms</dt>
+                <dt>Spliced into the following {{isoforms.length}} isoform{{plural isoforms}}</dt>
                 {{#isoforms}}
-                <dd>{{name}} {{#if synonyms}}<span style="font-size:0.9em;color:grey"> Alternative name: </span>{{#synonyms}}{{name}}{{#unless @last}} ; {{/unless}}{{/synonyms}}{{/if}}</dd>
+                <dd>{{name}} {{#if synonyms}}<span style="color:grey"> Alternative name: </span>{{#synonyms}}{{name}}{{#unless @last}} ; {{/unless}}{{/synonyms}}{{/if}}</dd>
                 {{/isoforms}}
                 {{/if}}
             </dl>

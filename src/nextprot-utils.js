@@ -92,18 +92,35 @@ var NXUtils = {
                 var type = an.type === "name" ? "Alternative name" : an.type === "International Nonproprietary Names" ? "International Nonproprietary Name" : an.type === "allergen" ? "Allergen" : an.type;
                 for (var elem in names) {
                     if (names[elem].type === type) {
-                        names[elem].names.push({name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)});
+                        names[elem].names.push({name: an.name, synonyms: NXUtils.getSynonyms(NXUtils.mergeArraysOfObjects(an.clazz,an.synonyms, an.otherRecommendedEntityNames))});
                         found = true;
                     }
                 }
                 if (!found) {
-                    names.push({type: type, names: [{name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)}]})
+                    names.push({type: type, names: [{name: an.name, synonyms: NXUtils.getSynonyms(NXUtils.mergeArraysOfObjects(an.clazz,an.synonyms, an.otherRecommendedEntityNames))}]})
                 }
             });
         }
         names.map(function(n){n.names.sort(NXUtils.sortByAlphabet)});
 //        names.forEach(function(n) {if (n.type === "Alternative name" && n.names.length > 1) {n.type = "Alternative names"}});
         return names;
+    },
+    mergeArraysOfObjects: function(type,arr1,arr2){
+        if (!(arr2 && arr2.length> 0)) return arr1;
+        else if (!(arr1 && arr1.length> 0)) return arr2;
+        var arr3 = [];
+        for(var i in arr1){
+           var shared = false;
+           for (var j in arr2)
+               if (arr2[j].name == arr1[i].name) {
+                   shared = true;
+                   break;
+               }
+           if(!shared) arr3.push(arr1[i])
+        }
+        console.log(arr3);
+        arr3 = arr3.concat(arr2);
+        return arr3;
     },
     getMainSynonym: function (sy) {
         var mainName;

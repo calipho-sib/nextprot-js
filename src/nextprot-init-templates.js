@@ -15,6 +15,8 @@ $(function () {
                         return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
                 }
             });
+            console.log("overview");
+            console.log(overview);
             Handlebars.registerHelper('plural', function (array, options) {
                 return array.length > 1 ? "s" : "";
             });
@@ -24,11 +26,15 @@ $(function () {
 
             if (overview.recommendedProteinName.synonyms) {
                 overview.recommendedProteinName.synonyms.forEach(function (p) {
-                    if (p.qualifier === "EC") EC.push(p.name);
                     if (p.qualifier === "short") short.push(p.name);
                 });
-                if (EC.length) EC.sort(NXUtils.sortByAlphabet);
                 if (short.length) short.sort(NXUtils.sortByAlphabet);
+            }
+            if (overview.recommendedProteinName.otherRecommendedEntityNames) {
+                overview.recommendedProteinName.otherRecommendedEntityNames.forEach(function (p) {
+                    if (p.qualifier === "EC") EC.push(p.name);
+                });
+                if (EC.length) EC.sort(NXUtils.sortByAlphabet);
             }
 
             var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
@@ -73,7 +79,7 @@ $(function () {
                 "lastSeqUpdate": overview.history.lastSequenceUpdate,
                 "accessionNumber": nxEntryName
             };
-                
+            console.log(data);
 
             var template = HBtemplates['templates/overviewProtein.tmpl'];
             var result = template(data);
