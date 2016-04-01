@@ -30,9 +30,11 @@
         var _convertToTupleMap = function (data) {
             var publiMap = {};
             var xrefMap = {};
-            data.entry.publications.forEach(function (p) {
-                publiMap[p.md5] = p;
-            });
+            if (data.entry.publications){
+                data.entry.publications.forEach(function (p) {
+                    publiMap[p.md5] = p;
+                });
+            }
             data.entry.xrefs.forEach(function (p) {
                 xrefMap[p.dbXrefId] = p;
             });

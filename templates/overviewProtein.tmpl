@@ -6,7 +6,7 @@ dd{
 <div id="proteinTitle">
     <button id="extender" class="btn btn-default" style="float:right;margin-top:-5px;">Extend overview</button>
     <h3>{{#if geneName}} {{#if geneName.[0].name}}{{geneName.[0].name}}  →  {{/if}}{{/if}}
-    {{entryName}} {{#recommendedProteinName}}{{#if EC}}  [{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}}{{#if mainShortName}}( {{mainShortName}} ) {{/if}}{{/recommendedProteinName}}</h3>
+    {{entryName}} {{#recommendedProteinName}}{{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}}{{/synonyms}}{{#if mainShortName}}( {{mainShortName}} ) {{/if}}{{/recommendedProteinName}}</h3>
 </div>
 <div id="INFOS-LESS" style="display:block;margin-top:15px;">
     {{#if recommendedProteinName.mainSynonymName}}
@@ -91,7 +91,7 @@ dd{
                 {{#if isoforms}}
                 <dt>Spliced into the following {{isoforms.length}} isoform{{plural isoforms}}</dt>
                 {{#isoforms}}
-                <dd>{{name}} {{#if synonyms}}<span style="color:grey"> Alternative name: </span>{{#synonyms}}{{name}}{{#unless @last}} ; {{/unless}}{{/synonyms}}{{/if}}</dd>
+                <dd>{{name}} {{#if synonyms}}<span style="color:grey"> Alternative name{{plural synonyms}}: </span>{{#synonyms}}{{name}}{{#unless @last}} ; {{/unless}}{{/synonyms}}{{/if}}</dd>
                 {{/isoforms}}
                 {{/if}}
             </dl>
