@@ -15,8 +15,6 @@ $(function () {
                         return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
                 }
             });
-            console.log("overview");
-            console.log(overview);
             Handlebars.registerHelper('plural', function (array, options) {
                 return array.length > 1 ? "s" : "";
             });
@@ -79,7 +77,6 @@ $(function () {
                 "lastSeqUpdate": overview.history.lastSequenceUpdate,
                 "accessionNumber": nxEntryName
             };
-            console.log(data);
 
             var template = HBtemplates['templates/overviewProtein.tmpl'];
             var result = template(data);
