@@ -6,7 +6,7 @@ dd{
 <div id="proteinTitle">
     <button id="extender" class="btn btn-default" style="float:right;margin-top:-5px;">Extend overview</button>
     <h3>{{#if geneName}} {{#if geneName.[0].name}}{{geneName.[0].name}}  →  {{/if}}{{/if}}
-    {{entryName}} {{#recommendedProteinName}}{{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}}{{/synonyms}}{{#if mainShortName}}( {{mainShortName}} ) {{/if}}{{/recommendedProteinName}}</h3>
+    {{entryName}} {{#recommendedProteinName}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}}{{#if mainShortName}}( {{mainShortName}} ) {{/if}}{{/recommendedProteinName}}</h3>
 </div>
 <div id="INFOS-LESS" style="display:block;margin-top:15px;">
     {{#if recommendedProteinName.mainSynonymName}}
@@ -58,7 +58,7 @@ dd{
             <dl>
                 <dt>Recommended name</dt>
                 {{#recommendedProteinName}}
-                <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} , {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}</dd>
+                <dd>{{name}} {{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}}{{#synonyms}} {{#if short}}<span><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} , {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}</dd>
                 {{/recommendedProteinName}}
                 {{#if alternativeProteinNames}}
                 {{#alternativeProteinNames}}

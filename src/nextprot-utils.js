@@ -8,7 +8,6 @@ var NXUtils = {
         if (isoforms && isoforms.length > 1 ) {
             isoforms.sort(NXUtils.sortIsoformNames);
             isoforms.forEach(function(iso){
-                console.log(iso);
                 if (iso.synonyms && iso.synonyms.length > 1) iso.synonyms.sort(NXUtils.sortByAlphabet);
             })
             return isoforms;
@@ -118,7 +117,6 @@ var NXUtils = {
                }
            if(!shared) arr3.push(arr1[i])
         }
-        console.log(arr3);
         arr3 = arr3.concat(arr2);
         return arr3;
     },
