@@ -22,8 +22,8 @@ module.exports = function (grunt) {
                 dest: 'dist/nextprot-vendor.js'
             },
             bundle: {
-                src: ['dist/nextprot.js',
-                    'dist/nextprot-vendor.js'],
+                src: ['dist/nextprot-vendor.js',
+                      'dist/nextprot.js'],
                 dest: 'dist/nextprot.bundle.js'
             }
         },
