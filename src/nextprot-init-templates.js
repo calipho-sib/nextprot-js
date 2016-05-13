@@ -102,7 +102,7 @@ $(function () {
 
     };
 
-    if ($("#nx-overview").length > 0) { // laad the overview if it exists
+    if ($("#nx-overview").length > 0) { // load the overview if it exists
         var Nextprot = window.Nextprot;
         var nx = new Nextprot.Client("neXtprot overview loader", "Calipho Group");
         var nxEntryName = nx.getEntryName();
