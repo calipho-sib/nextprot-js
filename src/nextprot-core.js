@@ -250,6 +250,24 @@
         };
         // END Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////
 
+        NextprotClient.prototype.getTerminology = function(terminologyFile) {
+            terminologyList = [];
+            $.ajax(
+                {
+                    type: "get",
+                    url: "https://api.nextprot.org/terminology/"+ terminologyFile + ".json",
+                    async: false,
+                    success: function (data) {
+                        terminologyList = data["terminologyList"]
+                    },
+                    error: function (msg) {
+                        console.log(msg);
+                    }
+                }
+            );
+            return terminologyList;
+        }
+
 
         //node.js compatibility
         if (typeof exports !== 'undefined') {
