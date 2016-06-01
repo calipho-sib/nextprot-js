@@ -123,6 +123,24 @@ QUnit.test("Mature protein Json test", function (assert) {
         assert.equal(message, "failed to load mature protein");
         done10();
     });
+
+
+    var done11 = assert.async();
+    var promise11 = nx.getTerminologyByName('nextprot-anatomy-cv');
+    promise11.then(function (data) {
+        assert.ok(data.cvTermList.length, 'should get a terminology Json filled');
+        if (data.cvTermList.length) {
+            var firstData = data.cvTermList[0];
+            assert.ok(firstData.accession, 'Expect a accession exists');
+            assert.ok(firstData.description, 'Expect a description to exist');
+            assert.ok(firstData.name, 'Expect a name exist');
+        }
+        done11();
+    }, function (message) {
+        assert.equal(message, "failed to load terminology");
+        done11();
+    });
+
 });
 
 
