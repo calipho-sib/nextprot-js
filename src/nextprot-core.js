@@ -91,6 +91,10 @@
             return _getJSON(url);
         };
 
+        var _callTerminology = function (terminologyName) {
+            var url = apiBaseUrl + "/terminology/" + terminologyName;
+            return _getJSON(url);
+        };
 
         var NextprotClient = function (appName, clientInformation) {
             applicationName = appName;
@@ -250,24 +254,11 @@
         };
         // END Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////
 
-        NextprotClient.prototype.getTerminology = function(terminologyFile) {
-            terminologyList = [];
-            $.ajax(
-                {
-                    type: "get",
-                    url: "https://api.nextprot.org/terminology/"+ terminologyFile + ".json",
-                    async: false,
-                    success: function (data) {
-                        terminologyList = data["terminologyList"]
-                    },
-                    error: function (msg) {
-                        console.log(msg);
-                    }
-                }
-            );
-            return terminologyList;
-        }
-
+        NextprotClient.prototype.getTerminologyByName = function (terminologyName) {
+            return _callTerminology(terminologyName).then(function (data) {
+                return data;
+            });
+        };
 
         //node.js compatibility
         if (typeof exports !== 'undefined') {

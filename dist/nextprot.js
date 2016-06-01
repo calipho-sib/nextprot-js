@@ -91,6 +91,10 @@
             return _getJSON(url);
         };
 
+        var _callTerminology = function (terminologyName) {
+            var url = apiBaseUrl + "/terminology/" + terminologyName;
+            return _getJSON(url);
+        };
 
         var NextprotClient = function (appName, clientInformation) {
             applicationName = appName;
@@ -250,6 +254,11 @@
         };
         // END Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////
 
+        NextprotClient.prototype.getTerminologyByName = function (terminologyName) {
+            return _callTerminology(terminologyName).then(function (data) {
+                return data;
+            });
+        };
 
         //node.js compatibility
         if (typeof exports !== 'undefined') {
