@@ -11,9 +11,9 @@
   ],
   "dependencies": {
     "jquery": "~2.1.4",
-    "handlebars": "3.0.3",
     "bootstrap": "~3.3.5",
-    "qunit": "1.19.0"
+    "qunit": "1.19.0",
+    "handlebars": "^4.0.5"
   },
   "resolutions": {
     "handlebars": "3.0.3",
