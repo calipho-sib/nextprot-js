@@ -204,6 +204,12 @@
                 return _convertToTupleMap(data);
             });
         };
+        
+        NextprotClient.prototype.getFullAnnotationsByCategory = function (entry, category) {
+            return _getEntry(entry, category).then(function (data) {
+                return data.entry;
+            });
+        };
 
         NextprotClient.prototype.getEntry = function (entry, category) {
             return _getEntry(entry, category).then(function (data) {
