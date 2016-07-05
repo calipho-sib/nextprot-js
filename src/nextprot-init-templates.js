@@ -148,9 +148,9 @@ $(function () {
         });
     }
 
-    var nxQualityParam = nx.getQualitySwitchParam();
+    var nxQualityParam = nx.getQualitySelector();
 
-    var nxGoldOnly = nx.getGoldOnlyParam();
+    var nxGoldOnly = nx.getGoldOnlySelector();
 
     function changeGoldParam(gold) {
         var url = window.location.href;

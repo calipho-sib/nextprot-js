@@ -138,10 +138,10 @@
         NextprotClient.prototype.getEnvironment = function () {
             return _getURLParameter("env") || 'pro'; //By default returns the insulin
         };
-        NextprotClient.prototype.getQualitySwitchParam = function () {
-            return _getURLParameter("qualitySwitch") || '';
+        NextprotClient.prototype.getQualitySelector = function () {
+            return _getURLParameter("qualitySelector") || '';
         };
-        NextprotClient.prototype.getGoldOnlyParam = function () {
+        NextprotClient.prototype.getGoldOnlySelector = function () {
             return _getURLParameter("goldOnly") || ''; // GOLD || GOLD & SILVER
         };
         NextprotClient.prototype.getApiBaseUrl = function () {
@@ -922,9 +922,9 @@ $(function () {
         });
     }
 
-    var nxQualityParam = nx.getQualitySwitchParam();
+    var nxQualityParam = nx.getQualitySelector();
 
-    var nxGoldOnly = nx.getGoldOnlyParam();
+    var nxGoldOnly = nx.getGoldOnlySelector();
 
     function changeGoldParam(gold) {
         var url = window.location.href;
