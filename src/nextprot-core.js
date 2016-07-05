@@ -109,6 +109,8 @@
         var NextprotClient = function (appName, clientInformation) {
             applicationName = appName;
             clientInfo = clientInformation;
+            goldOnly = _getURLParameter("goldOnly");
+            
             if (!appName) {
                 throw "Please provide some application name  ex:  new Nextprot.Client('demo application for visualizing peptides', clientInformation);";
             }
