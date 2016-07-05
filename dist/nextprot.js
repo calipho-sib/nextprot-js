@@ -52,6 +52,11 @@
             }
             return entry;
         };
+        
+        var goldOnly = function (annotations) {
+            annotations.forEach(function(a){a.evidences = a.evidences.filter(function(e){return e.qualityQualifier === "GOLD"})});
+            return annotations.filter(function(a){ return a.evidences.length > 0 });
+        }
 
 
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
@@ -64,6 +69,9 @@
 
         var applicationName = null;
         var clientInfo = null;
+        var goldOnly = null;
+        
+//        var goldOnlyQuality = _getURLParameter("goldOnly");
 
 
         function _getJSON(url) {
@@ -71,6 +79,8 @@
             var finalURL = url;
             finalURL = _changeParamOrAddParamByName(finalURL, "clientInfo", clientInfo);
             finalURL = _changeParamOrAddParamByName(finalURL, "applicationName", applicationName);
+            
+            if (goldOnly) finalURL = _changeParamOrAddParamByName(finalURL, "goldOnly", goldOnly);
 
             return Promise.resolve($.getJSON(finalURL));
             //return get(url).then(JSON.parse);
@@ -125,6 +135,12 @@
         //Gets the entry set in the parameter
         NextprotClient.prototype.getEnvironment = function () {
             return _getURLParameter("env") || 'pro'; //By default returns the insulin
+        };
+        NextprotClient.prototype.getQualitySwitchParam = function () {
+            return _getURLParameter("qualitySwitch") || '';
+        };
+        NextprotClient.prototype.getGoldOnlyParam = function () {
+            return _getURLParameter("goldOnly") || ''; // GOLD || GOLD & SILVER
         };
         NextprotClient.prototype.getApiBaseUrl = function () {
             return apiBaseUrl;
@@ -222,6 +238,12 @@
                 return data.entry.properties;
             });
         };
+
+        NextprotClient.prototype.filterGoldOnlyAnnotations = function (annotations) {
+            return goldOnly(annotations);
+        };
+        
+        
 
 
         /*  Special method to retrieve isoforms mapping on the master sequence (should not be used by public)  */
@@ -754,15 +776,15 @@ $(function () {
         if ($("#nx-overview").length > 0) {
             Handlebars.registerHelper('link_to', function (type, options) {
                 switch (type) {
-                    case "term":
-                        var url = "http://www.nextprot.org/db/term/" + this.accession;
-                        return "<a target='_blank' href='" + url + "'>" + this.name + "</a>";
-                    case "EC" :
-                        var url = "http://www.nextprot.org/db/term/" + this;
-                        return "<a target='_blank' href='" + url + "'> EC " + this + " </a>";
-                    case "history":
-                        var url = "http://www.uniprot.org/uniprot/" + this.slice(3) + "?version=*";
-                        return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
+                case "term":
+                    var url = "http://www.nextprot.org/db/term/" + this.accession;
+                    return "<a target='_blank' href='" + url + "'>" + this.name + "</a>";
+                case "EC":
+                    var url = "http://www.nextprot.org/db/term/" + this;
+                    return "<a target='_blank' href='" + url + "'> EC " + this + " </a>";
+                case "history":
+                    var url = "http://www.uniprot.org/uniprot/" + this.slice(3) + "?version=*";
+                    return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
                 }
             });
             Handlebars.registerHelper('plural', function (array, options) {
@@ -788,7 +810,7 @@ $(function () {
             var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
 
             var isonames = overview.isoformNames;
-            
+
             var data = {
                 "entryName": overview.recommendedProteinName.name,
                 "recommendedProteinName": {
@@ -798,7 +820,7 @@ $(function () {
                     short: short,
                     mainSynonymName: overview.proteinNames[0].synonyms ? NXUtils.getMainSynonym(overview.proteinNames[0].synonyms) : null,
                     mainShortName: recommendedProteinSynonyms.short ? NXUtils.getMainShort(recommendedProteinSynonyms.short) : null,
-                    others: NXUtils.getAlternativeNames(overview.alternativeProteinNames).filter(function(t) {
+                    others: NXUtils.getAlternativeNames(overview.alternativeProteinNames).filter(function (t) {
                         return t.type !== "EC" && t.type !== "full" && t.type !== "Alternative names" && t.type !== "Alternative name"
                     })
                 },
@@ -815,7 +837,9 @@ $(function () {
                 "cleavage": NXUtils.getAlternativeNames(overview.cleavedRegionNames),
                 "isoforms": NXUtils.getIsoforms(isonames),
                 "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
-                "families": overview.families.map(function(f){return NXUtils.getFamily(f,{})}),
+                "families": overview.families.map(function (f) {
+                    return NXUtils.getFamily(f, {})
+                }),
                 "proteineEvidence": NXUtils.getProteinExistence(overview.proteinExistence),
                 "proteineEvidenceCaution": overview.proteinExistenceInfo,
                 "integDate": overview.history.formattedNextprotIntegrationDate,
@@ -851,7 +875,6 @@ $(function () {
         }
 
     };
-
     if ($("#nx-overview").length > 0) { // load the overview if it exists
         var Nextprot = window.Nextprot;
         var nx = new Nextprot.Client("neXtprot overview loader", "Calipho Group");
@@ -859,42 +882,91 @@ $(function () {
         nx.getProteinOverview().then(function (data) {
             loadOverview(data, nxEntryName);
 
-            var nxInputOption = nx.getInputOption();
-
-            function addEntrySelection() {
-                $("body").prepend("<div id=\"inputOptionDiv\" class=\"col-md-2 col-md-offset-5 centered\" style=\"position:absolute;padding:10px;padding-top:0px;z-index:12\">" +
-                "<div class=\"panel panel-default\"><div class=\"panel-body\">" +
-                "<input id=\"entrySelector\" type=\"text\" class=\"form-control\" placeholder=\"neXtProt or UniProt accession...\"></div>" +
-                "</div></div>");
-                $('#entrySelector').keyup(function (e) {
-                    if (e.keyCode == 13) nx.changeEntry(this);
-                })
-            }
-
-            if (nxInputOption === "true") {
-                addEntrySelection();
-                nx.getEntryProperties().then(function (data) {
-                    $(function () {
-                        $("#inputOptionDiv").append("<div class=\"alert alert-success entry-alert\" role=\"alert\" style=\"display:none\">You successfully load the entry !</div>");
-                        $(".entry-alert").fadeIn("slow");
-                        $(".entry-alert").delay(2000).fadeOut("slow");
-                    });
-                }, function (error) {
-                    $(function () {
-                        $("#inputOptionDiv").append("<div class=\"alert alert-danger entry-alert\" role=\"alert\">This accession is not available !</div>");
-                    });
-                    console.error("Failed!", error);
-                });
-            }
-
         });
-        if(nx.getEnvironment() !== 'pro'){
+        if (nx.getEnvironment() !== 'pro') {
             $("body").append("<span style='position: absolute; top: 0; left: 0; border: 0; color: darkred; margin: 20px; font-weight: bold'>" + nx.getEnvironment().toUpperCase() + " API</span>");
         }
     }
 
-});
-;
+    // Check if url include param inputOption
+    var nxInputOption = nx.getInputOption();
+
+
+    // Add inputOption box
+    function addEntrySelection() {
+        $("body").prepend("<div class='topParams' style='text-align:center;width:100%;'><div id=\"inputOptionDiv\" style=\"display:inline-block;vertical-align:top;border:1px solid #ddd;\">" +
+            "<div class=\"panel panel-default\" style='border:0px;box-shadow:none;margin:0px'><div class=\"panel-body\" style='min-width:240px;padding:10px;'>" +
+            "<input id=\"entrySelector\" type=\"text\" class=\"form-control\" placeholder=\"neXtProt or UniProt accession...\"></div>" +
+            "</div></div></div>");
+        $('#entrySelector').keyup(function (e) {
+            if (e.keyCode == 13) nx.changeEntry(this);
+        })
+    }
+
+    if (nxInputOption === "true") {
+        addEntrySelection();
+        nx.getEntryProperties().then(function (data) {
+            $(function () {
+                $("#inputOptionDiv").append("<div class=\"alert alert-success entry-alert\" role=\"alert\" style=\"display:none;position:absolute;z-index:12;min-width:240px;margin-top:15px;\">You successfully load the entry !</div>");
+                $(".entry-alert").fadeIn("slow");
+                $(".entry-alert").delay(2000).fadeOut("slow");
+            });
+        }, function (error) {
+            $(function () {
+                $("#inputOptionDiv").append("<div class=\"alert alert-danger entry-alert\" role=\"alert\" style=\"position:absolute;z-index:12;min-width:240px;margin-top:15px;\">This accession is not available !</div>");
+                
+            });
+            console.error("Failed!", error);
+        });
+    }
+
+    var nxQualityParam = nx.getQualitySwitchParam();
+
+    var nxGoldOnly = nx.getGoldOnlyParam();
+
+    function changeGoldParam(gold) {
+        var url = window.location.href;
+
+        // If key exists updates the value
+        if (url.indexOf('goldOnly=') > -1) {
+            url = url.replace('goldOnly=' + !gold, 'goldOnly=' + gold);
+
+            // If not, append
+        } else {
+            if (url.indexOf('?') > -1) url = url + '&goldOnly=' + gold;
+            else url = url + '?goldOnly=' + gold;
+        }
+
+        return url;
+    }
+
+    if (nxQualityParam === "true") {
+        if (nxGoldOnly) {
+            if ($(".topParams").length === 0) {
+                $("body").prepend("<div class='topParams' style='text-align:center;width:100%;'></div>");
+            }
+            var borderCollapse = $("#inputOptionDiv").length > 0 ? "border-right:0px;" : "";
+            
+            $(".topParams").prepend('<div style="display:inline-block;vertical-align:top;">\
+            <div class="btn-group" role="group" style="padding:10px;background-color:white;border:1px solid #ddd;' + borderCollapse +'">\
+                <a class="btn btn-default" role="presentation" id="quality-gold" href=' + changeGoldParam(true) + '><span style="color:#aa6708">GOLD</span></a>\
+                <a class="btn btn-default" role="presentation" id="quality-goldAndSilver" href=' + changeGoldParam(false) + '><span style="color:#aa6708">GOLD</span> & <span style="color:#838996">SILVER</span></a>\
+            </div>\
+        </div>');
+
+            if (nxGoldOnly === "true") {
+                $("#quality-gold").addClass("active");
+                $("#quality-goldAndSilver").removeClass("active");
+            } else if (nxGoldOnly === "false"){
+                $("#quality-goldAndSilver").addClass("active");
+                $("#quality-gold").removeClass("active");
+            }
+        } else {
+            console.warn("Please provide the param 'goldOnly' in the URL in order to display the gold quality switch");
+        }
+    }
+
+});;
 this["HBtemplates"] = this["HBtemplates"] || {};
 
 this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {

@@ -52,6 +52,11 @@
             }
             return entry;
         };
+        
+        var goldOnly = function (annotations) {
+            annotations.forEach(function(a){a.evidences = a.evidences.filter(function(e){return e.qualityQualifier === "GOLD"})});
+            return annotations.filter(function(a){ return a.evidences.length > 0 });
+        }
 
 
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
@@ -64,6 +69,9 @@
 
         var applicationName = null;
         var clientInfo = null;
+        var goldOnly = null;
+        
+//        var goldOnlyQuality = _getURLParameter("goldOnly");
 
 
         function _getJSON(url) {
@@ -71,6 +79,8 @@
             var finalURL = url;
             finalURL = _changeParamOrAddParamByName(finalURL, "clientInfo", clientInfo);
             finalURL = _changeParamOrAddParamByName(finalURL, "applicationName", applicationName);
+            
+            if (goldOnly) finalURL = _changeParamOrAddParamByName(finalURL, "goldOnly", goldOnly);
 
             return Promise.resolve($.getJSON(finalURL));
             //return get(url).then(JSON.parse);
@@ -125,6 +135,12 @@
         //Gets the entry set in the parameter
         NextprotClient.prototype.getEnvironment = function () {
             return _getURLParameter("env") || 'pro'; //By default returns the insulin
+        };
+        NextprotClient.prototype.getQualitySwitchParam = function () {
+            return _getURLParameter("qualitySwitch") || '';
+        };
+        NextprotClient.prototype.getGoldOnlyParam = function () {
+            return _getURLParameter("goldOnly") || ''; // GOLD || GOLD & SILVER
         };
         NextprotClient.prototype.getApiBaseUrl = function () {
             return apiBaseUrl;
@@ -222,6 +238,12 @@
                 return data.entry.properties;
             });
         };
+
+        NextprotClient.prototype.filterGoldOnlyAnnotations = function (annotations) {
+            return goldOnly(annotations);
+        };
+        
+        
 
 
         /*  Special method to retrieve isoforms mapping on the master sequence (should not be used by public)  */
