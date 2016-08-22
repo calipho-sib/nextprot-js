@@ -497,11 +497,11 @@ var NXUtils = {
         } else if (type === "antibody") {
             var url = accession;
             return "<a href='" + url + "'>" + description + "</a>";
-        } else if (accession) {
-            var url = domain + "/term/" + accession;
-            return "<a href='" + url + "'>" + description + "</a>";
         } else if (type === "publication") {
             var url = domain + "/publication/" + accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        } else if (accession) {
+            var url = domain + "/term/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
         } else if (description) return description;
         else return "";
