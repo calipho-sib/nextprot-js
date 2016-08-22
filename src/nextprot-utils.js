@@ -184,7 +184,7 @@ var NXUtils = {
         }
         return result;
     },
-    getLinkForFeature: function (accession, description, type) {
+    getLinkForFeature: function (domain, accession, description, type) {
         if (type === "Peptide" || type === "SRM Peptide") {
             if (description) {
                 var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
@@ -194,10 +194,10 @@ var NXUtils = {
             var url = accession;
             return "<a href='" + url + "'>" + description + "</a>";
         } else if (accession) {
-            var url = "http://www.nextprot.org/db/term/" + accession;
+            var url = domain + "/term/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
         } else if (type === "publication") {
-            var url = "http://www.nextprot.org/db/publication/" + accession;
+            var url = domain + "/publication/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
         } else if (description) return description;
         else return "";
@@ -238,7 +238,8 @@ var NXUtils = {
         }
         else return true;
     },
-    convertMappingsToIsoformMap: function (featMappings, category, group) {
+    convertMappingsToIsoformMap: function (featMappings, category, group, baseUrl) {
+        var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://search.nextprot.org";
         var mappings = jQuery.extend([], featMappings);
         var publiActive = false;
         if (featMappings.hasOwnProperty("annot")) {
@@ -253,7 +254,7 @@ var NXUtils = {
                         var start = mapping.targetingIsoformsMap[name].firstPosition,
                             end = mapping.targetingIsoformsMap[name].lastPosition,
                             description = NXUtils.getDescription(mapping,category),
-                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, description, category),
+                            link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category),
                             quality = mapping.qualityQualifier !== "GOLD" ? mapping.qualityQualifier.toLowerCase() : "",
                             proteotypic = NXUtils.getProteotypicity(mapping.properties),
                             source = mapping.evidences.map(function (d) {
@@ -272,7 +273,7 @@ var NXUtils = {
                                         resourceDb: d.resourceDb,
                                         externalDb: d.resourceDb !== "UniProt",
                                         publicationMD5: d.publicationMD5,
-                                        title: pub ? NXUtils.getLinkForFeature(featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
+                                        title: pub ? NXUtils.getLinkForFeature(domain,featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
                                         authors: pub ? featMappings.publi[pub].authors.map(function (d) {
                                             return {
                                                 lastName: d.lastName,
@@ -321,7 +322,7 @@ var NXUtils = {
                                 var desc = mapping.description;
                                 if (match) {
                                     var parseMatch = match[1].split(":");
-                                    var desc = mapping.description.replace(/(\[.*?\])/g, NXUtils.getLinkForFeature(parseMatch[2], parseMatch[0]));
+                                    var desc = mapping.description.replace(/(\[.*?\])/g, NXUtils.getLinkForFeature(domain, parseMatch[2], parseMatch[0]));
 
                                 }
                                 link += " ; " + desc;
@@ -367,13 +368,13 @@ var NXUtils = {
                             }
                             if (mapping.hasOwnProperty("xrefs")) {
                                 description = mapping.xrefs[0].accession;
-                                link = NXUtils.getLinkForFeature(mapping.xrefs[0].resolvedUrl, description, "antibody")
+                                link = NXUtils.getLinkForFeature(domain, mapping.xrefs[0].resolvedUrl, description, "antibody")
                             } else {
                                 description = mapping.evidences[0].accession;
                                 for (ev in mapping.evidences)
                                     if (mapping.evidences[ev].databaseName === "PeptideAtlas" || mapping.evidences[ev].databaseName === "SRMAtlas") {
                                         description = mapping.evidences[ev].accession;
-                                        link = NXUtils.getLinkForFeature(description, description, "peptide");
+                                        link = NXUtils.getLinkForFeature(domain, description, description, "peptide");
 
                                         break;
                                     }
