@@ -57,12 +57,16 @@
             annotations.forEach(function(a){a.evidences = a.evidences.filter(function(e){return e.qualityQualifier === "GOLD"})});
             return annotations.filter(function(a){ return a.evidences.length > 0 });
         }
-
+        
 
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
         var apiBaseUrl = "https://api.nextprot.org";
+        var nextprotUrl = "https://www.nextprot.org";
         if (environment !== 'pro') {
-            apiBaseUrl = "http://" + environment + "-api.nextprot.org";
+            var protocol = environment === "vit" ? "https://" : "http://";
+            apiBaseUrl = protocol + environment + "-api.nextprot.org";
+            if (environment === 'vit') nextprotUrl = 'https://vit-www.nextprot.org';
+            else nextprotUrl = protocol + environment + "-search.nextprot.org"; 
         }
         var sparqlEndpoint = apiBaseUrl + "/sparql";
         var sparqlFormat = "?output=json";
@@ -146,6 +150,9 @@
         };
         NextprotClient.prototype.getApiBaseUrl = function () {
             return apiBaseUrl;
+        };
+        NextprotClient.prototype.getNeXtProtUrl = function () {
+            return nextprotUrl;
         };
 
         //Gets the entry set in the parameter
@@ -775,15 +782,15 @@ if ( typeof module === "object" && typeof module.exports === "object" ) {
 };
 $(function () {
 
-    var loadOverview = function (overview, nxEntryName) {
+    var loadOverview = function (overview, nxEntryName, nxUrl) {
         if ($("#nx-overview").length > 0) {
             Handlebars.registerHelper('link_to', function (type, options) {
                 switch (type) {
                 case "term":
-                    var url = "http://www.nextprot.org/db/term/" + this.accession;
+                    var url = nxUrl + "/term/" + this.accession;
                     return "<a target='_blank' href='" + url + "'>" + this.name + "</a>";
                 case "EC":
-                    var url = "http://www.nextprot.org/db/term/" + this;
+                    var url = nxUrl + "/term/" + this;
                     return "<a target='_blank' href='" + url + "'> EC " + this + " </a>";
                 case "history":
                     var url = "http://www.uniprot.org/uniprot/" + this.slice(3) + "?version=*";
@@ -882,8 +889,9 @@ $(function () {
         var Nextprot = window.Nextprot;
         var nx = new Nextprot.Client("neXtprot overview loader", "Calipho Group");
         var nxEntryName = nx.getEntryName();
+        var nxUrl = nx.getNeXtProtUrl();
         nx.getProteinOverview().then(function (data) {
-            loadOverview(data, nxEntryName);
+            loadOverview(data, nxEntryName, nxUrl);
 
         });
         if (nx.getEnvironment() !== 'pro') {

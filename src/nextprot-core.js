@@ -57,12 +57,16 @@
             annotations.forEach(function(a){a.evidences = a.evidences.filter(function(e){return e.qualityQualifier === "GOLD"})});
             return annotations.filter(function(a){ return a.evidences.length > 0 });
         }
-
+        
 
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
         var apiBaseUrl = "https://api.nextprot.org";
+        var nextprotUrl = "https://www.nextprot.org";
         if (environment !== 'pro') {
-            apiBaseUrl = "http://" + environment + "-api.nextprot.org";
+            var protocol = environment === "vit" ? "https://" : "http://";
+            apiBaseUrl = protocol + environment + "-api.nextprot.org";
+            if (environment === 'vit') nextprotUrl = 'https://vit-www.nextprot.org';
+            else nextprotUrl = protocol + environment + "-search.nextprot.org"; 
         }
         var sparqlEndpoint = apiBaseUrl + "/sparql";
         var sparqlFormat = "?output=json";
@@ -146,6 +150,9 @@
         };
         NextprotClient.prototype.getApiBaseUrl = function () {
             return apiBaseUrl;
+        };
+        NextprotClient.prototype.getNeXtProtUrl = function () {
+            return nextprotUrl;
         };
 
         //Gets the entry set in the parameter
