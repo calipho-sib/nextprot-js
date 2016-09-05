@@ -64,12 +64,12 @@
         var nextprotUrl = "https://www.nextprot.org";
         if (environment !== 'pro') {
             var protocol = environment === 'vit' ? "https://" : "http://";
-            console.log("api protocol : " + protocol)
+//            console.log("api protocol : " + protocol)
             apiBaseUrl = protocol + environment + "-api.nextprot.org";
             if (environment === 'vit') nextprotUrl = 'https://vit-www.nextprot.org';
             else nextprotUrl = protocol + environment + "-search.nextprot.org"; 
         }
-        console.log("api base url : " + apiBaseUrl);
+        console.log("nx api base url : " + apiBaseUrl);
         var sparqlEndpoint = apiBaseUrl + "/sparql";
         var sparqlFormat = "?output=json";
 
