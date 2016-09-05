@@ -280,7 +280,7 @@ var NXUtils = {
                                                 initials: d.initials
                                             }
                                         }) : [],
-                                        journal: pub ? featMappings.publi[pub].cvJournal ? featMappings.publi[pub].cvJournal.name : "" : "",
+                                        journal: pub ? featMappings.publi[pub].journalResourceLocator ? featMappings.publi[pub].journalResourceLocator.abbrev : "" : "",
                                         volume: pub ? featMappings.publi[pub].volume : "",
                                         year: pub ? featMappings.publi[pub].publicationYear : "",
                                         firstPage: pub ? featMappings.publi[pub].firstPage : "",
