@@ -600,13 +600,13 @@ var NXUtils = {
                                         lastPage: pub ? (featMappings.publi[pub].lastPage === "" ? featMappings.publi[pub].firstPage : featMappings.publi[pub].lastPage) : "",
                                         pubId: pub ? featMappings.publi[pub].publicationId : "",
                                         abstract: pub ? featMappings.publi[pub].abstractText : "",
-                                        dbXrefs: pub ? featMappings.publi[pub].dbXrefs.map(function (o) {
+                                        dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
                                             return {
                                                 name: o.databaseName === "DOI" ? "Full Text" : o.databaseName,
                                                 url: o.resolvedUrl,
                                                 accession: o.accession
                                             }
-                                        }) : [],
+                                        }) : [] : [],
                                         crossRef: xref ? {
                                             dbName: xref.databaseName,
                                             name: xref.accession,
