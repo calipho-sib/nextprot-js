@@ -239,7 +239,7 @@ var NXUtils = {
         else return true;
     },
     convertMappingsToIsoformMap: function (featMappings, category, group, baseUrl) {
-        var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://search.nextprot.org";
+        var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://www.nextprot.org";
         var mappings = jQuery.extend([], featMappings);
         var publiActive = false;
         if (featMappings.hasOwnProperty("annot")) {
@@ -255,7 +255,7 @@ var NXUtils = {
                             end = mapping.targetingIsoformsMap[name].lastPosition,
                             description = NXUtils.getDescription(mapping,category),
                             link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category),
-                            quality = mapping.qualityQualifier !== "GOLD" ? mapping.qualityQualifier.toLowerCase() : "",
+                            quality = mapping.qualityQualifier ? mapping.qualityQualifier.toLowerCase() : "",
                             proteotypic = NXUtils.getProteotypicity(mapping.properties),
                             source = mapping.evidences.map(function (d) {
                                 var pub = null;
