@@ -272,10 +272,10 @@ var NXUtils = {
                                         assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                         resourceDb: d.resourceDb,
                                         externalDb: d.resourceDb !== "UniProt",
-                                        qualityQualifier: d.qualityQualifier,
+                                        qualityQualifier: d.qualityQualifier.toLowerCase(),
                                         publicationMD5: d.publicationMD5,
                                         publication: pub ? featMappings.publi[pub]: null,
-                                        title: pub ? NXUtils.getLinkForFeature(domain,featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
+                                        /*title: pub ? NXUtils.getLinkForFeature(domain,featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
                                         authors: pub ? featMappings.publi[pub].authors.map(function (d) {
                                             return {
                                                 lastName: d.lastName,
@@ -288,7 +288,7 @@ var NXUtils = {
                                         firstPage: pub ? featMappings.publi[pub].firstPage : "",
                                         lastPage: pub ? (featMappings.publi[pub].lastPage === "" ? featMappings.publi[pub].firstPage : featMappings.publi[pub].lastPage) : "",
                                         pubId: pub ? featMappings.publi[pub].publicationId : "",
-                                        abstract: pub ? featMappings.publi[pub].abstractText : "",
+                                        abstract: pub ? featMappings.publi[pub].abstractText : "",*/
                                         dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
                                             return {
                                                 name: o.databaseName === "DOI" ? "Full Text" : o.databaseName,
