@@ -272,7 +272,9 @@ var NXUtils = {
                                         assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                         resourceDb: d.resourceDb,
                                         externalDb: d.resourceDb !== "UniProt",
+                                        qualityQualifier: d.qualityQualifier,
                                         publicationMD5: d.publicationMD5,
+                                        publication: pub ? featMappings.publi[pub]: null,
                                         title: pub ? NXUtils.getLinkForFeature(domain,featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
                                         authors: pub ? featMappings.publi[pub].authors.map(function (d) {
                                             return {
