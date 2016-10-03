@@ -6,13 +6,13 @@ $(function () {
                 switch (type) {
                 case "term":
                     var url = nxUrl + "/term/" + this.accession;
-                    return "<a target='_blank' href='" + url + "'>" + this.name + "</a>";
+                    return "<a href='" + url + "' class='extLink'>" + this.name + "</a>";
                 case "EC":
                     var url = nxUrl + "/term/" + this;
                     return "<a target='_blank' href='" + url + "'> EC " + this + " </a>";
                 case "history":
                     var url = "http://www.uniprot.org/uniprot/" + this.slice(3) + "?version=*";
-                    return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
+                    return "<a target='_blank' class='extLink' href='" + url + "'>Complete UniProtKB history</a>";
                 }
             });
             Handlebars.registerHelper('plural', function (array, options) {
