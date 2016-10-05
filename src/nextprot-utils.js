@@ -188,11 +188,11 @@ var NXUtils = {
         if (type === "Peptide" || type === "SRM Peptide") {
             if (description) {
                 var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
-                return "<a href='" + url + "'>" + description + "</a>";
+                return "<a class='extLink' href='" + url + "'>" + description + "</a>";
             }
         } else if (type === "antibody") {
             var url = accession;
-            return "<a href='" + url + "'>" + description + "</a>";
+            return "<a class='extLink' href='" + url + "'>" + description + "</a>";
         } else if (type === "publication") {
             var url = domain + "/publication/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
@@ -315,8 +315,8 @@ var NXUtils = {
                             }),
                             variant = false;
                         if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
-                            link = "<span style='color:#00C500'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
-                            description = "<span style=\"color:#00C500\">" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
+                            link = "<span>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
+                            description = "<span>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
                             variant = true;
                             if (mapping.description) {
                                 var reg = /\[(.*?)\]/g;
