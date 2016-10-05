@@ -315,8 +315,8 @@ var NXUtils = {
                             }),
                             variant = false;
                         if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
-                            link = "<span>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
-                            description = "<span>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
+                            link = "<span style='color:#00C500'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
+                            description = "<span style=\"color:#00C500\">" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
                             variant = true;
                             if (mapping.description) {
                                 var reg = /\[(.*?)\]/g;
