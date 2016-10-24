@@ -103,9 +103,12 @@ $(function () {
         }
 
     };
-    if ($("#nx-overview").length > 0) { // load the overview if it exists
-        var Nextprot = window.Nextprot;
+
+    var Nextprot = window.Nextprot;
+    if(nx === undefined)
         var nx = new Nextprot.Client("neXtprot overview loader", "Calipho Group");
+
+    if ($("#nx-overview").length > 0) { // load the overview if it exists
         var nxEntryName = nx.getEntryName();
         var nxUrl = nx.getNeXtProtUrl();
         nx.getProteinOverview().then(function (data) {
