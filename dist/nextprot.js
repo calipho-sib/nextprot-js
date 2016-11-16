@@ -102,6 +102,11 @@
             return _getJSON(url);
         };
 
+        var _getPublicationById = function (id) {
+            var url = apiBaseUrl + "/publication/" + id + ".json";
+            return _getJSON(url);
+        };
+
         var _callPepX = function (seq, mode) {
             var url = apiBaseUrl + "/entries/search/peptide?peptide=" + seq + "&modeIL=" + mode;
             return _getJSON(url);
@@ -225,6 +230,11 @@
                 return data.entry.xrefs;
             });
         };
+        NextprotClient.prototype.getPublicationById = function (id) {
+            return _getPublicationById(id);
+        };
+
+
         /** USE THIS INSTEAD OF THE OTHERS for example getEntryPart(NX_1038042, "ptm") */
         NextprotClient.prototype.getAnnotationsByCategory = function (entry, category) {
             return _getEntry(entry, category).then(function (data) {
