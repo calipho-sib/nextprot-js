@@ -52,18 +52,32 @@
             }
             return entry;
         };
-
+        
+        var goldOnly = function (annotations) {
+            annotations.forEach(function(a){a.evidences = a.evidences.filter(function(e){return e.qualityQualifier === "GOLD"})});
+            return annotations.filter(function(a){ return a.evidences.length > 0 });
+        }
+        
 
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
         var apiBaseUrl = "https://api.nextprot.org";
+        var nextprotUrl = "https://www.nextprot.org";
         if (environment !== 'pro') {
-            apiBaseUrl = "http://" + environment + "-api.nextprot.org";
+            var protocol = environment === 'dev' ? "https://" : "http://";
+//            console.log("api protocol : " + protocol)
+            apiBaseUrl = protocol + environment + "-api.nextprot.org";
+            if (environment === 'dev') nextprotUrl = 'https://dev-search.nextprot.org';
+            else nextprotUrl = protocol + environment + "-search.nextprot.org"; 
         }
+        console.log("nx api base url : " + apiBaseUrl);
         var sparqlEndpoint = apiBaseUrl + "/sparql";
         var sparqlFormat = "?output=json";
 
         var applicationName = null;
         var clientInfo = null;
+        var goldOnly = null;
+        
+//        var goldOnlyQuality = _getURLParameter("goldOnly");
 
 
         function _getJSON(url) {
@@ -71,6 +85,8 @@
             var finalURL = url;
             finalURL = _changeParamOrAddParamByName(finalURL, "clientInfo", clientInfo);
             finalURL = _changeParamOrAddParamByName(finalURL, "applicationName", applicationName);
+            
+            if (goldOnly) finalURL = _changeParamOrAddParamByName(finalURL, "goldOnly", goldOnly);
 
             return Promise.resolve($.getJSON(finalURL));
             //return get(url).then(JSON.parse);
@@ -99,6 +115,8 @@
         var NextprotClient = function (appName, clientInformation) {
             applicationName = appName;
             clientInfo = clientInformation;
+            goldOnly = _getURLParameter("goldOnly");
+            
             if (!appName) {
                 throw "Please provide some application name  ex:  new Nextprot.Client('demo application for visualizing peptides', clientInformation);";
             }
@@ -126,8 +144,17 @@
         NextprotClient.prototype.getEnvironment = function () {
             return _getURLParameter("env") || 'pro'; //By default returns the insulin
         };
+        NextprotClient.prototype.getQualitySelector = function () {
+            return _getURLParameter("qualitySelector") || '';
+        };
+        NextprotClient.prototype.getGoldOnlySelector = function () {
+            return _getURLParameter("goldOnly") || ''; // GOLD || GOLD & SILVER
+        };
         NextprotClient.prototype.getApiBaseUrl = function () {
             return apiBaseUrl;
+        };
+        NextprotClient.prototype.getNeXtProtUrl = function () {
+            return nextprotUrl;
         };
 
         //Gets the entry set in the parameter
@@ -222,6 +249,12 @@
                 return data.entry.properties;
             });
         };
+
+        NextprotClient.prototype.filterGoldOnlyAnnotations = function (annotations) {
+            return goldOnly(annotations);
+        };
+        
+        
 
 
         /*  Special method to retrieve isoforms mapping on the master sequence (should not be used by public)  */
@@ -464,20 +497,20 @@ var NXUtils = {
         }
         return result;
     },
-    getLinkForFeature: function (accession, description, type) {
+    getLinkForFeature: function (domain, accession, description, type) {
         if (type === "Peptide" || type === "SRM Peptide") {
             if (description) {
                 var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
-                return "<a href='" + url + "'>" + description + "</a>";
+                return "<a class='extLink' href='" + url + "'>" + description + "</a>";
             }
         } else if (type === "antibody") {
             var url = accession;
+            return "<a class='extLink' href='" + url + "'>" + description + "</a>";
+        } else if (type === "publication") {
+            var url = domain + "/publication/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
         } else if (accession) {
-            var url = "http://www.nextprot.org/db/term/" + accession;
-            return "<a href='" + url + "'>" + description + "</a>";
-        } else if (type === "publication") {
-            var url = "http://www.nextprot.org/db/publication/" + accession;
+            var url = domain + "/term/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
         } else if (description) return description;
         else return "";
@@ -518,7 +551,8 @@ var NXUtils = {
         }
         else return true;
     },
-    convertMappingsToIsoformMap: function (featMappings, category, group) {
+    convertMappingsToIsoformMap: function (featMappings, category, group, baseUrl) {
+        var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://www.nextprot.org";
         var mappings = jQuery.extend([], featMappings);
         var publiActive = false;
         if (featMappings.hasOwnProperty("annot")) {
@@ -533,8 +567,8 @@ var NXUtils = {
                         var start = mapping.targetingIsoformsMap[name].firstPosition,
                             end = mapping.targetingIsoformsMap[name].lastPosition,
                             description = NXUtils.getDescription(mapping,category),
-                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, description, category),
-                            quality = mapping.qualityQualifier !== "GOLD" ? mapping.qualityQualifier.toLowerCase() : "",
+                            link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category),
+                            quality = mapping.qualityQualifier ? mapping.qualityQualifier.toLowerCase() : "",
                             proteotypic = NXUtils.getProteotypicity(mapping.properties),
                             source = mapping.evidences.map(function (d) {
                                 var pub = null;
@@ -551,28 +585,30 @@ var NXUtils = {
                                         assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                         resourceDb: d.resourceDb,
                                         externalDb: d.resourceDb !== "UniProt",
+                                        qualityQualifier: d.qualityQualifier.toLowerCase(),
                                         publicationMD5: d.publicationMD5,
-                                        title: pub ? NXUtils.getLinkForFeature(featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
+                                        publication: pub ? featMappings.publi[pub]: null,
+                                        /*title: pub ? NXUtils.getLinkForFeature(domain,featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
                                         authors: pub ? featMappings.publi[pub].authors.map(function (d) {
                                             return {
                                                 lastName: d.lastName,
                                                 initials: d.initials
                                             }
                                         }) : [],
-                                        journal: pub ? featMappings.publi[pub].cvJournal ? featMappings.publi[pub].cvJournal.name : "" : "",
+                                        journal: pub ? featMappings.publi[pub].journalResourceLocator ? featMappings.publi[pub].journalResourceLocator.abbrev : "" : "",
                                         volume: pub ? featMappings.publi[pub].volume : "",
                                         year: pub ? featMappings.publi[pub].publicationYear : "",
                                         firstPage: pub ? featMappings.publi[pub].firstPage : "",
                                         lastPage: pub ? (featMappings.publi[pub].lastPage === "" ? featMappings.publi[pub].firstPage : featMappings.publi[pub].lastPage) : "",
                                         pubId: pub ? featMappings.publi[pub].publicationId : "",
-                                        abstract: pub ? featMappings.publi[pub].abstractText : "",
-                                        dbXrefs: pub ? featMappings.publi[pub].dbXrefs.map(function (o) {
+                                        abstract: pub ? featMappings.publi[pub].abstractText : "",*/
+                                        dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
                                             return {
                                                 name: o.databaseName === "DOI" ? "Full Text" : o.databaseName,
                                                 url: o.resolvedUrl,
                                                 accession: o.accession
                                             }
-                                        }) : [],
+                                        }) : [] : [],
                                         crossRef: xref ? {
                                             dbName: xref.databaseName,
                                             name: xref.accession,
@@ -592,8 +628,8 @@ var NXUtils = {
                             }),
                             variant = false;
                         if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
-                            link = "<span style='color:#00C500'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
-                            description = "<span style=\"color:#00C500\">" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
+                            link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
+                            description = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
                             variant = true;
                             if (mapping.description) {
                                 var reg = /\[(.*?)\]/g;
@@ -601,7 +637,7 @@ var NXUtils = {
                                 var desc = mapping.description;
                                 if (match) {
                                     var parseMatch = match[1].split(":");
-                                    var desc = mapping.description.replace(/(\[.*?\])/g, NXUtils.getLinkForFeature(parseMatch[2], parseMatch[0]));
+                                    var desc = mapping.description.replace(/(\[.*?\])/g, NXUtils.getLinkForFeature(domain, parseMatch[2], parseMatch[0]));
 
                                 }
                                 link += " ; " + desc;
@@ -647,13 +683,13 @@ var NXUtils = {
                             }
                             if (mapping.hasOwnProperty("xrefs")) {
                                 description = mapping.xrefs[0].accession;
-                                link = NXUtils.getLinkForFeature(mapping.xrefs[0].resolvedUrl, description, "antibody")
+                                link = NXUtils.getLinkForFeature(domain, mapping.xrefs[0].resolvedUrl, description, "antibody")
                             } else {
                                 description = mapping.evidences[0].accession;
                                 for (ev in mapping.evidences)
                                     if (mapping.evidences[ev].databaseName === "PeptideAtlas" || mapping.evidences[ev].databaseName === "SRMAtlas") {
                                         description = mapping.evidences[ev].accession;
-                                        link = NXUtils.getLinkForFeature(description, description, "peptide");
+                                        link = NXUtils.getLinkForFeature(domain, description, description, "peptide");
 
                                         break;
                                     }
@@ -750,19 +786,19 @@ if ( typeof module === "object" && typeof module.exports === "object" ) {
 };
 $(function () {
 
-    var loadOverview = function (overview, nxEntryName) {
+    var loadOverview = function (overview, nxEntryName, nxUrl) {
         if ($("#nx-overview").length > 0) {
             Handlebars.registerHelper('link_to', function (type, options) {
                 switch (type) {
-                    case "term":
-                        var url = "http://www.nextprot.org/db/term/" + this.accession;
-                        return "<a target='_blank' href='" + url + "'>" + this.name + "</a>";
-                    case "EC" :
-                        var url = "http://www.nextprot.org/db/term/" + this;
-                        return "<a target='_blank' href='" + url + "'> EC " + this + " </a>";
-                    case "history":
-                        var url = "http://www.uniprot.org/uniprot/" + this.slice(3) + "?version=*";
-                        return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
+                case "term":
+                    var url = nxUrl + "/term/" + this.accession;
+                    return "<a href='" + url + "'>" + this.name + "</a>";
+                case "EC":
+                    var url = nxUrl + "/term/" + this;
+                    return "<a href='" + url + "'> EC " + this + " </a>";
+                case "history":
+                    var url = "http://www.uniprot.org/uniprot/" + this.slice(3) + "?version=*";
+                    return "<a target='_blank' class='extLink' href='" + url + "'>Complete UniProtKB history</a>";
                 }
             });
             Handlebars.registerHelper('plural', function (array, options) {
@@ -788,7 +824,7 @@ $(function () {
             var recommendedProteinSynonyms = NXUtils.getSynonyms(overview.recommendedProteinName.synonyms);
 
             var isonames = overview.isoformNames;
-            
+
             var data = {
                 "entryName": overview.recommendedProteinName.name,
                 "recommendedProteinName": {
@@ -798,7 +834,7 @@ $(function () {
                     short: short,
                     mainSynonymName: overview.proteinNames[0].synonyms ? NXUtils.getMainSynonym(overview.proteinNames[0].synonyms) : null,
                     mainShortName: recommendedProteinSynonyms.short ? NXUtils.getMainShort(recommendedProteinSynonyms.short) : null,
-                    others: NXUtils.getAlternativeNames(overview.alternativeProteinNames).filter(function(t) {
+                    others: NXUtils.getAlternativeNames(overview.alternativeProteinNames).filter(function (t) {
                         return t.type !== "EC" && t.type !== "full" && t.type !== "Alternative names" && t.type !== "Alternative name"
                     })
                 },
@@ -815,7 +851,9 @@ $(function () {
                 "cleavage": NXUtils.getAlternativeNames(overview.cleavedRegionNames),
                 "isoforms": NXUtils.getIsoforms(isonames),
                 "functionalRegionNames": NXUtils.getAlternativeNames(overview.functionalRegionNames),
-                "families": overview.families.map(function(f){return NXUtils.getFamily(f,{})}),
+                "families": overview.families.map(function (f) {
+                    return NXUtils.getFamily(f, {})
+                }),
                 "proteineEvidence": NXUtils.getProteinExistence(overview.proteinExistence),
                 "proteineEvidenceCaution": overview.proteinExistenceInfo,
                 "integDate": overview.history.formattedNextprotIntegrationDate,
@@ -852,49 +890,102 @@ $(function () {
 
     };
 
-    if ($("#nx-overview").length > 0) { // load the overview if it exists
-        var Nextprot = window.Nextprot;
+    var Nextprot = window.Nextprot;
+    var nx;
+    if(nx === undefined)
         var nx = new Nextprot.Client("neXtprot overview loader", "Calipho Group");
+
+    if ($("#nx-overview").length > 0) { // load the overview if it exists
         var nxEntryName = nx.getEntryName();
+        var nxUrl = nx.getNeXtProtUrl();
         nx.getProteinOverview().then(function (data) {
-            loadOverview(data, nxEntryName);
-
-            var nxInputOption = nx.getInputOption();
-
-            function addEntrySelection() {
-                $("body").prepend("<div id=\"inputOptionDiv\" class=\"col-md-2 col-md-offset-5 centered\" style=\"position:absolute;padding:10px;padding-top:0px;z-index:12\">" +
-                "<div class=\"panel panel-default\"><div class=\"panel-body\">" +
-                "<input id=\"entrySelector\" type=\"text\" class=\"form-control\" placeholder=\"neXtProt or UniProt accession...\"></div>" +
-                "</div></div>");
-                $('#entrySelector').keyup(function (e) {
-                    if (e.keyCode == 13) nx.changeEntry(this);
-                })
-            }
-
-            if (nxInputOption === "true") {
-                addEntrySelection();
-                nx.getEntryProperties().then(function (data) {
-                    $(function () {
-                        $("#inputOptionDiv").append("<div class=\"alert alert-success entry-alert\" role=\"alert\" style=\"display:none\">You successfully load the entry !</div>");
-                        $(".entry-alert").fadeIn("slow");
-                        $(".entry-alert").delay(2000).fadeOut("slow");
-                    });
-                }, function (error) {
-                    $(function () {
-                        $("#inputOptionDiv").append("<div class=\"alert alert-danger entry-alert\" role=\"alert\">This accession is not available !</div>");
-                    });
-                    console.error("Failed!", error);
-                });
-            }
+            loadOverview(data, nxEntryName, nxUrl);
 
         });
-        if(nx.getEnvironment() !== 'pro'){
+        if (nx.getEnvironment() !== 'pro') {
             $("body").append("<span style='position: absolute; top: 0; left: 0; border: 0; color: darkred; margin: 20px; font-weight: bold'>" + nx.getEnvironment().toUpperCase() + " API</span>");
         }
     }
 
-});
-;
+    // Check if url include param inputOption
+    var nxInputOption = nx.getInputOption();
+
+
+    // Add inputOption box
+    function addEntrySelection() {
+        $("body").prepend("<div class='topParams' style='text-align:center;width:100%;'><div id=\"inputOptionDiv\" style=\"display:inline-block;vertical-align:top;border:1px solid #ddd;\">" +
+            "<div class=\"panel panel-default\" style='border:0px;box-shadow:none;margin:0px'><div class=\"panel-body\" style='min-width:240px;padding:10px;'>" +
+            "<input id=\"entrySelector\" type=\"text\" class=\"form-control\" placeholder=\"neXtProt or UniProt accession...\"></div>" +
+            "</div></div></div>");
+        $('#entrySelector').keyup(function (e) {
+            if (e.keyCode == 13) nx.changeEntry(this);
+        })
+    }
+
+    if (nxInputOption === "true") {
+        addEntrySelection();
+        nx.getEntryProperties().then(function (data) {
+            $(function () {
+                $("#inputOptionDiv").append("<div class=\"alert alert-success entry-alert\" role=\"alert\" style=\"display:none;position:absolute;z-index:12;min-width:240px;margin-top:15px;\">You successfully load the entry !</div>");
+                $(".entry-alert").fadeIn("slow");
+                $(".entry-alert").delay(2000).fadeOut("slow");
+            });
+        }, function (error) {
+            $(function () {
+                $("#inputOptionDiv").append("<div class=\"alert alert-danger entry-alert\" role=\"alert\" style=\"position:absolute;z-index:12;min-width:240px;margin-top:15px;\">This accession is not available !</div>");
+                
+            });
+            console.error("Failed!", error);
+        });
+    }
+
+    var nxQualityParam = nx.getQualitySelector();
+
+    var nxGoldOnly = nx.getGoldOnlySelector();
+
+    function changeGoldParam(gold) {
+        var url = window.location.href;
+
+        // If key exists updates the value
+        if (url.indexOf('goldOnly=') > -1) {
+            url = url.replace('goldOnly=' + !gold, 'goldOnly=' + gold);
+
+            // If not, append
+        } else {
+            if (url.indexOf('?') > -1) url = url + '&goldOnly=' + gold;
+            else url = url + '?goldOnly=' + gold;
+        }
+
+        return url;
+    }
+
+    if (nxQualityParam === "true") {
+        if (nxGoldOnly) {
+            if ($(".topParams").length === 0) {
+                $("body").prepend("<div class='topParams' style='text-align:center;width:100%;'></div>");
+            }
+            var borderCollapse = $("#inputOptionDiv").length > 0 ? "border-right:0px;" : "";
+            
+            $(".topParams").prepend('<div style="display:inline-block;vertical-align:top;">\
+            <div class="btn-group" role="group" style="padding:10px;background-color:white;border:1px solid #ddd;' + borderCollapse +'">\
+                <a class="btn btn-default" role="presentation" id="quality-gold" href=' + changeGoldParam(true) + '><span style="color:#aa6708">GOLD</span></a>\
+                <a class="btn btn-default" role="presentation" id="quality-goldAndSilver" href=' + changeGoldParam(false) + '><span style="color:#aa6708">GOLD</span> & <span style="color:#838996">SILVER</span></a>\
+            </div>\
+        </div>');
+
+            if (nxGoldOnly === "true") {
+                $("#quality-gold").addClass("active");
+                $("#quality-goldAndSilver").removeClass("active");
+            } else if (nxGoldOnly === "false"){
+                $("#quality-goldAndSilver").addClass("active");
+                $("#quality-gold").removeClass("active");
+            }
+        } else {
+            console.warn("Please provide the param 'goldOnly' in the URL in order to display the gold quality switch");
+        }
+    }
+
+});;
 this["HBtemplates"] = this["HBtemplates"] || {};
 
 this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
@@ -937,11 +1028,11 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + " ) ";
 },"11":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
-  "    <div id=\"synonym-less\" class=\"row\">\r\n        <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Protein also known as :</div>\r\n        <div class=\"col-md-9 col-xs-9\">";
+  "    <div id=\"synonym-less\" class=\"row\">\n        <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Protein also known as :</div>\n        <div class=\"col-md-9 col-xs-9\">";
   stack1 = ((helper = (helper = helpers.recommendedProteinName || (depth0 != null ? depth0.recommendedProteinName : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"recommendedProteinName","hash":{},"fn":container.program(12, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},options) : helper));
   if (!helpers.recommendedProteinName) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "</div>\r\n    </div>\r\n";
+  return buffer + "</div>\n    </div>\n";
 },"12":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=helpers.blockHelperMissing, buffer = "";
 
@@ -990,11 +1081,11 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},((stack1 = (depth0 != null ? depth0.recommendedProteinName : depth0)) != null ? stack1.others : stack1),{"name":"if","hash":{},"fn":container.program(24, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"24":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
-  "    <div id=\"synonym-other-less\" class=\"row\">\r\n        <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Protein also known as :</div>\r\n        <div class=\"col-md-9 col-xs-9\">";
+  "    <div id=\"synonym-other-less\" class=\"row\">\n        <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Protein also known as :</div>\n        <div class=\"col-md-9 col-xs-9\">";
   stack1 = ((helper = (helper = helpers.recommendedProteinName || (depth0 != null ? depth0.recommendedProteinName : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"recommendedProteinName","hash":{},"fn":container.program(25, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},options) : helper));
   if (!helpers.recommendedProteinName) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "</div>\r\n    </div>\r\n";
+  return buffer + "</div>\n    </div>\n";
 },"25":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options;
 
@@ -1019,11 +1110,11 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + ((stack1 = helpers.unless.call(alias1,(data && data.last),{"name":"unless","hash":{},"fn":container.program(7, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"29":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
-  "    <div id=\"cleavage-less\" class=\"row\">\r\n        <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Cleaved into :</div>\r\n        <div class=\"col-md-6 col-xs-6\">";
+  "    <div id=\"cleavage-less\" class=\"row\">\n        <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Cleaved into :</div>\n        <div class=\"col-md-6 col-xs-6\">";
   stack1 = ((helper = (helper = helpers.cleavage || (depth0 != null ? depth0.cleavage : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"cleavage","hash":{},"fn":container.program(30, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},options) : helper));
   if (!helpers.cleavage) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "</div>\r\n    </div>\r\n";
+  return buffer + "</div>\n    </div>\n";
 },"30":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options;
 
@@ -1044,11 +1135,11 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},((stack1 = ((stack1 = (depth0 != null ? depth0.geneName : depth0)) != null ? stack1["0"] : stack1)) != null ? stack1.name : stack1),{"name":"if","hash":{},"fn":container.program(34, data, 0),"inverse":container.program(37, data, 0),"data":data})) != null ? stack1 : "");
 },"34":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
-  "            <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Gene name :</div>\r\n            <div class=\"col-md-6 col-xs-6\" >";
+  "            <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Gene name :</div>\n            <div class=\"col-md-6 col-xs-6\" >";
   stack1 = ((helper = (helper = helpers.geneName || (depth0 != null ? depth0.geneName : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"geneName","hash":{},"fn":container.program(35, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},options) : helper));
   if (!helpers.geneName) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "</div>\r\n";
+  return buffer + "</div>\n";
 },"35":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {};
 
@@ -1057,18 +1148,18 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
 },"37":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "            <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">ORF name :</div>\r\n            <div class=\"col-md-6 col-xs-6\">"
+  return "            <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">ORF name :</div>\n            <div class=\"col-md-6 col-xs-6\">"
     + container.escapeExpression(container.lambda(((stack1 = ((stack1 = ((stack1 = ((stack1 = (depth0 != null ? depth0.geneName : depth0)) != null ? stack1["0"] : stack1)) != null ? stack1.orf : stack1)) != null ? stack1["0"] : stack1)) != null ? stack1.name : stack1), depth0))
-    + "</div>\r\n";
+    + "</div>\n";
 },"39":function(container,depth0,helpers,partials,data) {
-    return "            <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Gene name :</div>\r\n            <div class=\"col-md-6 col-xs-6\" >None assigned yet</div>\r\n";
+    return "            <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Gene name :</div>\n            <div class=\"col-md-6 col-xs-6\" >None assigned yet</div>\n";
 },"41":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
-  "    <div id=\"family-less\" class=\"row\">\r\n        <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Family name :</div>\r\n        <div class=\"col-md-6 col-xs-6\">";
+  "    <div id=\"family-less\" class=\"row\">\n        <div class=\"col-md-3 col-xs-3\" style=\"color: grey;text-align:right\">Family name :</div>\n        <div class=\"col-md-6 col-xs-6\">";
   stack1 = ((helper = (helper = helpers.families || (depth0 != null ? depth0.families : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"families","hash":{},"fn":container.program(42, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},options) : helper));
   if (!helpers.families) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "</div>\r\n    </div>\r\n";
+  return buffer + "</div>\n    </div>\n";
 },"42":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, alias1=depth0 != null ? depth0 : {}, buffer = 
   "<span>";
@@ -1118,7 +1209,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   stack1 = ((helper = (helper = helpers.synonyms || (depth0 != null ? depth0.synonyms : depth0)) != null ? helper : alias2),(options={"name":"synonyms","hash":{},"fn":container.program(54, data, 0),"inverse":container.noop,"data":data}),(typeof helper === alias3 ? helper.call(alias1,options) : helper));
   if (!helpers.synonyms) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "</dd>\r\n";
+  return buffer + "</dd>\n";
 },"54":function(container,depth0,helpers,partials,data) {
     var stack1;
 
@@ -1150,7 +1241,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   "                <dt>"
     + alias4(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"type","hash":{},"data":data}) : helper)))
     + alias4((helpers.plural || (depth0 && depth0.plural) || alias2).call(alias1,(depth0 != null ? depth0.names : depth0),{"name":"plural","hash":{},"data":data}))
-    + "</dt>\r\n";
+    + "</dt>\n";
   stack1 = ((helper = (helper = helpers.names || (depth0 != null ? depth0.names : depth0)) != null ? helper : alias2),(options={"name":"names","hash":{},"fn":container.program(61, data, 0),"inverse":container.noop,"data":data}),(typeof helper === alias3 ? helper.call(alias1,options) : helper));
   if (!helpers.names) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
@@ -1159,11 +1250,11 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     var stack1, helper, options, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", buffer = 
   "                <dd> "
     + container.escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
-    + "\r\n                    ";
+    + "\n                    ";
   stack1 = ((helper = (helper = helpers.synonyms || (depth0 != null ? depth0.synonyms : depth0)) != null ? helper : alias2),(options={"name":"synonyms","hash":{},"fn":container.program(62, data, 0),"inverse":container.noop,"data":data}),(typeof helper === alias3 ? helper.call(alias1,options) : helper));
   if (!helpers.synonyms) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\r\n                </dd>\r\n";
+  return buffer + "\n                </dd>\n";
 },"62":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {};
 
@@ -1183,7 +1274,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + alias1(container.lambda(((stack1 = (depth0 != null ? depth0.names : depth0)) != null ? stack1.length : stack1), depth0))
     + " functional region"
     + alias1((helpers.plural || (depth0 && depth0.plural) || alias3).call(alias2,(depth0 != null ? depth0.names : depth0),{"name":"plural","hash":{},"data":data}))
-    + "</dt>\r\n";
+    + "</dt>\n";
   stack1 = ((helper = (helper = helpers.names || (depth0 != null ? depth0.names : depth0)) != null ? helper : alias3),(options={"name":"names","hash":{},"fn":container.program(66, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(alias2,options) : helper));
   if (!helpers.names) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
@@ -1192,11 +1283,11 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     var stack1, helper, options, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", buffer = 
   "                <dd> "
     + container.escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
-    + "\r\n                    ";
+    + "\n                    ";
   stack1 = ((helper = (helper = helpers.synonyms || (depth0 != null ? depth0.synonyms : depth0)) != null ? helper : alias2),(options={"name":"synonyms","hash":{},"fn":container.program(67, data, 0),"inverse":container.noop,"data":data}),(typeof helper === alias3 ? helper.call(alias1,options) : helper));
   if (!helpers.synonyms) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\r\n                </dd>\r\n";
+  return buffer + "\n                </dd>\n";
 },"67":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {};
 
@@ -1230,7 +1321,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + alias1(container.lambda(((stack1 = (depth0 != null ? depth0.names : depth0)) != null ? stack1.length : stack1), depth0))
     + " chain"
     + alias1((helpers.plural || (depth0 && depth0.plural) || alias3).call(alias2,(depth0 != null ? depth0.names : depth0),{"name":"plural","hash":{},"data":data}))
-    + "</dt>\r\n";
+    + "</dt>\n";
   stack1 = ((helper = (helper = helpers.names || (depth0 != null ? depth0.names : depth0)) != null ? helper : alias3),(options={"name":"names","hash":{},"fn":container.program(73, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(alias2,options) : helper));
   if (!helpers.names) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
@@ -1243,14 +1334,14 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
   stack1 = ((helper = (helper = helpers.synonyms || (depth0 != null ? depth0.synonyms : depth0)) != null ? helper : alias2),(options={"name":"synonyms","hash":{},"fn":container.program(67, data, 0),"inverse":container.noop,"data":data}),(typeof helper === alias3 ? helper.call(alias1,options) : helper));
   if (!helpers.synonyms) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "</dd>\r\n";
+  return buffer + "</dd>\n";
 },"75":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, alias1=container.escapeExpression, alias2=depth0 != null ? depth0 : {}, alias3=helpers.helperMissing, buffer = 
   "                <dt>Spliced into the following "
     + alias1(container.lambda(((stack1 = (depth0 != null ? depth0.isoforms : depth0)) != null ? stack1.length : stack1), depth0))
     + " isoform"
     + alias1((helpers.plural || (depth0 && depth0.plural) || alias3).call(alias2,(depth0 != null ? depth0.isoforms : depth0),{"name":"plural","hash":{},"data":data}))
-    + "</dt>\r\n";
+    + "</dt>\n";
   stack1 = ((helper = (helper = helpers.isoforms || (depth0 != null ? depth0.isoforms : depth0)) != null ? helper : alias3),(options={"name":"isoforms","hash":{},"fn":container.program(76, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(alias2,options) : helper));
   if (!helpers.isoforms) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
@@ -1262,7 +1353,7 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + container.escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
     + " "
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.synonyms : depth0),{"name":"if","hash":{},"fn":container.program(77, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "</dd>\r\n";
+    + "</dd>\n";
 },"77":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, buffer = 
   "<span style=\"color:grey\"> Alternative name"
@@ -1294,14 +1385,14 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
 },"82":function(container,depth0,helpers,partials,data) {
     var helper;
 
-  return "                <dt>Recommended name</dt>\r\n                <dd>"
+  return "                <dt>Recommended name</dt>\n                <dd>"
     + container.escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"name","hash":{},"data":data}) : helper)))
-    + "</dd>\r\n";
+    + "</dd>\n";
 },"84":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, buffer = 
   "                <dt>Alternative name"
     + container.escapeExpression((helpers.plural || (depth0 && depth0.plural) || alias2).call(alias1,(depth0 != null ? depth0.synonyms : depth0),{"name":"plural","hash":{},"data":data}))
-    + "</dt>\r\n";
+    + "</dt>\n";
   stack1 = ((helper = (helper = helpers.synonyms || (depth0 != null ? depth0.synonyms : depth0)) != null ? helper : alias2),(options={"name":"synonyms","hash":{},"fn":container.program(85, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(alias1,options) : helper));
   if (!helpers.synonyms) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
@@ -1311,27 +1402,27 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
 
   return "                <dd> "
     + container.escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"name","hash":{},"data":data}) : helper)))
-    + "</dd>\r\n";
+    + "</dd>\n";
 },"87":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, buffer = 
   "                <dt>ORF name"
     + container.escapeExpression((helpers.plural || (depth0 && depth0.plural) || alias2).call(alias1,(depth0 != null ? depth0.orf : depth0),{"name":"plural","hash":{},"data":data}))
-    + "</dt>\r\n";
+    + "</dt>\n";
   stack1 = ((helper = (helper = helpers.orf || (depth0 != null ? depth0.orf : depth0)) != null ? helper : alias2),(options={"name":"orf","hash":{},"fn":container.program(85, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(alias1,options) : helper));
   if (!helpers.orf) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"89":function(container,depth0,helpers,partials,data) {
-    return "                <br>\r\n";
+    return "                <br>\n";
 },"91":function(container,depth0,helpers,partials,data) {
-    return "                <dt>Recommended name</dt>\r\n                <dd>None assigned yet</dd>\r\n";
+    return "                <dt>Recommended name</dt>\n                <dd>None assigned yet</dd>\n";
 },"93":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
-  "    <div id=\"family-full\" class=\"row\">\r\n        <div class=\"col-md-1 col-xs-2 text-uppercase\" style=\"color: grey;\">Family</div>\r\n        <div class=\"col-md-9 col-xs-8\">\r\n            <dl>\r\n";
+  "    <div id=\"family-full\" class=\"row\">\n        <div class=\"col-md-1 col-xs-2 text-uppercase\" style=\"color: grey;\">Family</div>\n        <div class=\"col-md-9 col-xs-8\">\n            <dl>\n";
   stack1 = ((helper = (helper = helpers.families || (depth0 != null ? depth0.families : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"families","hash":{},"fn":container.program(94, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},options) : helper));
   if (!helpers.families) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "            </dl>\r\n        </div>\r\n    </div>\r\n";
+  return buffer + "            </dl>\n        </div>\n    </div>\n";
 },"94":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {};
 
@@ -1348,9 +1439,9 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
 },"96":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "                <dt>Superfamily</dt>\r\n                <dd>"
+  return "                <dt>Superfamily</dt>\n                <dd>"
     + ((stack1 = (helpers.link_to || (depth0 && depth0.link_to) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"term",{"name":"link_to","hash":{},"data":data})) != null ? stack1 : "")
-    + "</dd>\r\n";
+    + "</dd>\n";
 },"98":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = "";
 
@@ -1361,9 +1452,9 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
 },"99":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "                <dt>Family</dt>\r\n                <dd>"
+  return "                <dt>Family</dt>\n                <dd>"
     + ((stack1 = (helpers.link_to || (depth0 && depth0.link_to) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"term",{"name":"link_to","hash":{},"data":data})) != null ? stack1 : "")
-    + "</dd>\r\n";
+    + "</dd>\n";
 },"101":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = "";
 
@@ -1374,38 +1465,38 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
 },"102":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "                <dt>Subfamily</dt>\r\n                <dd>"
+  return "                <dt>Subfamily</dt>\n                <dd>"
     + ((stack1 = (helpers.link_to || (depth0 && depth0.link_to) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"term",{"name":"link_to","hash":{},"data":data})) != null ? stack1 : "")
-    + "</dd>\r\n";
+    + "</dd>\n";
 },"104":function(container,depth0,helpers,partials,data) {
     var helper;
 
   return "                <dd>Last sequence update "
     + container.escapeExpression(((helper = (helper = helpers.lastSeqUpdate || (depth0 != null ? depth0.lastSeqUpdate : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"lastSeqUpdate","hash":{},"data":data}) : helper)))
-    + "</dd>\r\n";
+    + "</dd>\n";
 },"106":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return ((stack1 = (helpers.link_to || (depth0 && depth0.link_to) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"history",{"name":"link_to","hash":{},"data":data})) != null ? stack1 : "");
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression, alias5=helpers.blockHelperMissing, buffer = 
-  "<style>\r\ndd{\r\n margin-left:15px;\r\n}\r\n</style>\r\n<div id=\"proteinTitle\">\r\n    <button id=\"extender\" class=\"btn btn-default\" style=\"float:right;margin-top:-5px;\">Extend overview</button>\r\n    <h3>"
+  "<style>\ndd{\n margin-left:15px;\n}\n</style>\n<div id=\"proteinTitle\">\n    <button id=\"extender\" class=\"btn btn-default\" style=\"float:right;margin-top:-5px;\">Extend overview</button>\n    <h3>"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.geneName : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\r\n    "
+    + "\n    "
     + alias4(((helper = (helper = helpers.entryName || (depth0 != null ? depth0.entryName : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"entryName","hash":{},"data":data}) : helper)))
     + " ";
   stack1 = ((helper = (helper = helpers.recommendedProteinName || (depth0 != null ? depth0.recommendedProteinName : depth0)) != null ? helper : alias2),(options={"name":"recommendedProteinName","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data}),(typeof helper === alias3 ? helper.call(alias1,options) : helper));
   if (!helpers.recommendedProteinName) { stack1 = alias5.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  buffer += "</h3>\r\n</div>\r\n<div id=\"INFOS-LESS\" style=\"display:block;margin-top:15px;\">\r\n"
+  buffer += "</h3>\n</div>\n<div id=\"INFOS-LESS\" style=\"display:block;margin-top:15px;\">\n"
     + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.recommendedProteinName : depth0)) != null ? stack1.mainSynonymName : stack1),{"name":"if","hash":{},"fn":container.program(11, data, 0),"inverse":container.program(23, data, 0),"data":data})) != null ? stack1 : "")
-    + "\r\n"
+    + "\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.cleavage : depth0),{"name":"if","hash":{},"fn":container.program(29, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "    <div id=\"gene-less\" class=\"row\">\r\n"
+    + "    <div id=\"gene-less\" class=\"row\">\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.geneName : depth0),{"name":"if","hash":{},"fn":container.program(33, data, 0),"inverse":container.program(39, data, 0),"data":data})) != null ? stack1 : "")
-    + "\r\n    </div>\r\n"
+    + "\n    </div>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.families : depth0),{"name":"if","hash":{},"fn":container.program(41, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "</div>\r\n<div id=\"INFOS-FULL\" style=\"display:none\">\r\n    <div id=\"protein-full\" class=\"row\">\r\n        <div class=\"col-md-1 col-xs-2 text-uppercase\" style=\"color: grey;\">Protein</div>\r\n        <div class=\"col-md-9 col-xs-8\">\r\n            <dl>\r\n                <dt>Recommended name</dt>\r\n";
+    + "</div>\n<div id=\"INFOS-FULL\" style=\"display:none\">\n    <div id=\"protein-full\" class=\"row\">\n        <div class=\"col-md-1 col-xs-2 text-uppercase\" style=\"color: grey;\">Protein</div>\n        <div class=\"col-md-9 col-xs-8\">\n            <dl>\n                <dt>Recommended name</dt>\n";
   stack1 = ((helper = (helper = helpers.recommendedProteinName || (depth0 != null ? depth0.recommendedProteinName : depth0)) != null ? helper : alias2),(options={"name":"recommendedProteinName","hash":{},"fn":container.program(53, data, 0),"inverse":container.noop,"data":data}),(typeof helper === alias3 ? helper.call(alias1,options) : helper));
   if (!helpers.recommendedProteinName) { stack1 = alias5.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
@@ -1413,29 +1504,29 @@ this["HBtemplates"]["templates/overviewProtein.tmpl"] = Handlebars.template({"1"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.functionalRegionNames : depth0),{"name":"if","hash":{},"fn":container.program(64, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.cleavage : depth0),{"name":"if","hash":{},"fn":container.program(71, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isoforms : depth0),{"name":"if","hash":{},"fn":container.program(75, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "            </dl>\r\n        </div>\r\n    </div>\r\n    <div id=\"gene-full\" class=\"row\">\r\n        <div class=\"col-md-1 col-xs-2 text-uppercase\" style=\"color: grey;\">Gene</div>\r\n        <div class=\"col-md-9 col-xs-8\">\r\n            <dl>\r\n"
+    + "            </dl>\n        </div>\n    </div>\n    <div id=\"gene-full\" class=\"row\">\n        <div class=\"col-md-1 col-xs-2 text-uppercase\" style=\"color: grey;\">Gene</div>\n        <div class=\"col-md-9 col-xs-8\">\n            <dl>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.geneName : depth0),{"name":"if","hash":{},"fn":container.program(80, data, 0),"inverse":container.program(91, data, 0),"data":data})) != null ? stack1 : "")
-    + "            </dl>\r\n        </div>\r\n    </div>\r\n"
+    + "            </dl>\n        </div>\n    </div>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.families : depth0),{"name":"if","hash":{},"fn":container.program(93, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "    <div id=\"History-full\" class=\"row\">\r\n        <div class=\"col-md-1 col-xs-2 text-uppercase\" style=\"color: grey;\">History</div>\r\n        <div class=\"col-md-9 col-xs-8\">\r\n            <dl>\r\n                <dt>neXtProt</dt>\r\n                <dd>Integrated "
+    + "    <div id=\"History-full\" class=\"row\">\n        <div class=\"col-md-1 col-xs-2 text-uppercase\" style=\"color: grey;\">History</div>\n        <div class=\"col-md-9 col-xs-8\">\n            <dl>\n                <dt>neXtProt</dt>\n                <dd>Integrated "
     + alias4(((helper = (helper = helpers.integDate || (depth0 != null ? depth0.integDate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"integDate","hash":{},"data":data}) : helper)))
-    + "</dd>\r\n                <dd>Last updated "
+    + "</dd>\n                <dd>Last updated "
     + alias4(((helper = (helper = helpers.lastUpdate || (depth0 != null ? depth0.lastUpdate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"lastUpdate","hash":{},"data":data}) : helper)))
-    + "</dd>\r\n                <dt>UniProtKB</dt>\r\n                <dd>Integrated "
+    + "</dd>\n                <dt>UniProtKB</dt>\n                <dd>Integrated "
     + alias4(((helper = (helper = helpers.UniprotIntegDate || (depth0 != null ? depth0.UniprotIntegDate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"UniprotIntegDate","hash":{},"data":data}) : helper)))
-    + "</dd>\r\n                <dd>Last updated "
+    + "</dd>\n                <dd>Last updated "
     + alias4(((helper = (helper = helpers.UniprotLastUpdate || (depth0 != null ? depth0.UniprotLastUpdate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"UniprotLastUpdate","hash":{},"data":data}) : helper)))
-    + "</dd>\r\n                <dd>Entry version "
+    + "</dd>\n                <dd>Entry version "
     + alias4(((helper = (helper = helpers.version || (depth0 != null ? depth0.version : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"version","hash":{},"data":data}) : helper)))
-    + "</dd>\r\n"
+    + "</dd>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.lastSeqUpdate : depth0),{"name":"if","hash":{},"fn":container.program(104, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "                <dd>Sequence version "
     + alias4(((helper = (helper = helpers.seqVersion || (depth0 != null ? depth0.seqVersion : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"seqVersion","hash":{},"data":data}) : helper)))
-    + "</dd>\r\n                <dd>";
+    + "</dd>\n                <dd>";
   stack1 = ((helper = (helper = helpers.accessionNumber || (depth0 != null ? depth0.accessionNumber : depth0)) != null ? helper : alias2),(options={"name":"accessionNumber","hash":{},"fn":container.program(106, data, 0),"inverse":container.noop,"data":data}),(typeof helper === alias3 ? helper.call(alias1,options) : helper));
   if (!helpers.accessionNumber) { stack1 = alias5.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "</dd>\r\n            </dl>\r\n        </div>\r\n    </div>\r\n</div>\r\n<p style=\"margin:10px 10px;\">"
+  return buffer + "</dd>\n            </dl>\n        </div>\n    </div>\n</div>\n<p style=\"margin:10px 10px;\">"
     + alias4(((helper = (helper = helpers.proteineEvidence || (depth0 != null ? depth0.proteineEvidence : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"proteineEvidence","hash":{},"data":data}) : helper)))
     + ". "
     + alias4(((helper = (helper = helpers.proteineEvidenceCaution || (depth0 != null ? depth0.proteineEvidenceCaution : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"proteineEvidenceCaution","hash":{},"data":data}) : helper)))

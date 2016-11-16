@@ -184,20 +184,20 @@ var NXUtils = {
         }
         return result;
     },
-    getLinkForFeature: function (accession, description, type) {
+    getLinkForFeature: function (domain, accession, description, type) {
         if (type === "Peptide" || type === "SRM Peptide") {
             if (description) {
                 var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
-                return "<a href='" + url + "'>" + description + "</a>";
+                return "<a class='extLink' href='" + url + "'>" + description + "</a>";
             }
         } else if (type === "antibody") {
             var url = accession;
+            return "<a class='extLink' href='" + url + "'>" + description + "</a>";
+        } else if (type === "publication") {
+            var url = domain + "/publication/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
         } else if (accession) {
-            var url = "http://www.nextprot.org/db/term/" + accession;
-            return "<a href='" + url + "'>" + description + "</a>";
-        } else if (type === "publication") {
-            var url = "http://www.nextprot.org/db/publication/" + accession;
+            var url = domain + "/term/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
         } else if (description) return description;
         else return "";
@@ -238,7 +238,8 @@ var NXUtils = {
         }
         else return true;
     },
-    convertMappingsToIsoformMap: function (featMappings, category, group) {
+    convertMappingsToIsoformMap: function (featMappings, category, group, baseUrl) {
+        var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://www.nextprot.org";
         var mappings = jQuery.extend([], featMappings);
         var publiActive = false;
         if (featMappings.hasOwnProperty("annot")) {
@@ -253,8 +254,8 @@ var NXUtils = {
                         var start = mapping.targetingIsoformsMap[name].firstPosition,
                             end = mapping.targetingIsoformsMap[name].lastPosition,
                             description = NXUtils.getDescription(mapping,category),
-                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, description, category),
-                            quality = mapping.qualityQualifier !== "GOLD" ? mapping.qualityQualifier.toLowerCase() : "",
+                            link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category),
+                            quality = mapping.qualityQualifier ? mapping.qualityQualifier.toLowerCase() : "",
                             proteotypic = NXUtils.getProteotypicity(mapping.properties),
                             source = mapping.evidences.map(function (d) {
                                 var pub = null;
@@ -271,28 +272,30 @@ var NXUtils = {
                                         assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                         resourceDb: d.resourceDb,
                                         externalDb: d.resourceDb !== "UniProt",
+                                        qualityQualifier: d.qualityQualifier.toLowerCase(),
                                         publicationMD5: d.publicationMD5,
-                                        title: pub ? NXUtils.getLinkForFeature(featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
+                                        publication: pub ? featMappings.publi[pub]: null,
+                                        /*title: pub ? NXUtils.getLinkForFeature(domain,featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
                                         authors: pub ? featMappings.publi[pub].authors.map(function (d) {
                                             return {
                                                 lastName: d.lastName,
                                                 initials: d.initials
                                             }
                                         }) : [],
-                                        journal: pub ? featMappings.publi[pub].cvJournal ? featMappings.publi[pub].cvJournal.name : "" : "",
+                                        journal: pub ? featMappings.publi[pub].journalResourceLocator ? featMappings.publi[pub].journalResourceLocator.abbrev : "" : "",
                                         volume: pub ? featMappings.publi[pub].volume : "",
                                         year: pub ? featMappings.publi[pub].publicationYear : "",
                                         firstPage: pub ? featMappings.publi[pub].firstPage : "",
                                         lastPage: pub ? (featMappings.publi[pub].lastPage === "" ? featMappings.publi[pub].firstPage : featMappings.publi[pub].lastPage) : "",
                                         pubId: pub ? featMappings.publi[pub].publicationId : "",
-                                        abstract: pub ? featMappings.publi[pub].abstractText : "",
-                                        dbXrefs: pub ? featMappings.publi[pub].dbXrefs.map(function (o) {
+                                        abstract: pub ? featMappings.publi[pub].abstractText : "",*/
+                                        dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
                                             return {
                                                 name: o.databaseName === "DOI" ? "Full Text" : o.databaseName,
                                                 url: o.resolvedUrl,
                                                 accession: o.accession
                                             }
-                                        }) : [],
+                                        }) : [] : [],
                                         crossRef: xref ? {
                                             dbName: xref.databaseName,
                                             name: xref.accession,
@@ -312,8 +315,8 @@ var NXUtils = {
                             }),
                             variant = false;
                         if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
-                            link = "<span style='color:#00C500'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
-                            description = "<span style=\"color:#00C500\">" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
+                            link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
+                            description = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
                             variant = true;
                             if (mapping.description) {
                                 var reg = /\[(.*?)\]/g;
@@ -321,7 +324,7 @@ var NXUtils = {
                                 var desc = mapping.description;
                                 if (match) {
                                     var parseMatch = match[1].split(":");
-                                    var desc = mapping.description.replace(/(\[.*?\])/g, NXUtils.getLinkForFeature(parseMatch[2], parseMatch[0]));
+                                    var desc = mapping.description.replace(/(\[.*?\])/g, NXUtils.getLinkForFeature(domain, parseMatch[2], parseMatch[0]));
 
                                 }
                                 link += " ; " + desc;
@@ -367,13 +370,13 @@ var NXUtils = {
                             }
                             if (mapping.hasOwnProperty("xrefs")) {
                                 description = mapping.xrefs[0].accession;
-                                link = NXUtils.getLinkForFeature(mapping.xrefs[0].resolvedUrl, description, "antibody")
+                                link = NXUtils.getLinkForFeature(domain, mapping.xrefs[0].resolvedUrl, description, "antibody")
                             } else {
                                 description = mapping.evidences[0].accession;
                                 for (ev in mapping.evidences)
                                     if (mapping.evidences[ev].databaseName === "PeptideAtlas" || mapping.evidences[ev].databaseName === "SRMAtlas") {
                                         description = mapping.evidences[ev].accession;
-                                        link = NXUtils.getLinkForFeature(description, description, "peptide");
+                                        link = NXUtils.getLinkForFeature(domain, description, description, "peptide");
 
                                         break;
                                     }

@@ -13,7 +13,7 @@
     "jquery": "~2.1.4",
     "bootstrap": "~3.3.5",
     "qunit": "1.19.0",
-    "handlebars": "^4.0.5"
+    "handlebars": "~4.0.2"
   },
   "resolutions": {
     "handlebars": "3.0.3",

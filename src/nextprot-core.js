@@ -52,18 +52,32 @@
             }
             return entry;
         };
-
+        
+        var goldOnly = function (annotations) {
+            annotations.forEach(function(a){a.evidences = a.evidences.filter(function(e){return e.qualityQualifier === "GOLD"})});
+            return annotations.filter(function(a){ return a.evidences.length > 0 });
+        }
+        
 
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
         var apiBaseUrl = "https://api.nextprot.org";
+        var nextprotUrl = "https://www.nextprot.org";
         if (environment !== 'pro') {
-            apiBaseUrl = "http://" + environment + "-api.nextprot.org";
+            var protocol = environment === 'dev' ? "https://" : "http://";
+//            console.log("api protocol : " + protocol)
+            apiBaseUrl = protocol + environment + "-api.nextprot.org";
+            if (environment === 'dev') nextprotUrl = 'https://dev-search.nextprot.org';
+            else nextprotUrl = protocol + environment + "-search.nextprot.org"; 
         }
+        console.log("nx api base url : " + apiBaseUrl);
         var sparqlEndpoint = apiBaseUrl + "/sparql";
         var sparqlFormat = "?output=json";
 
         var applicationName = null;
         var clientInfo = null;
+        var goldOnly = null;
+        
+//        var goldOnlyQuality = _getURLParameter("goldOnly");
 
 
         function _getJSON(url) {
@@ -71,6 +85,8 @@
             var finalURL = url;
             finalURL = _changeParamOrAddParamByName(finalURL, "clientInfo", clientInfo);
             finalURL = _changeParamOrAddParamByName(finalURL, "applicationName", applicationName);
+            
+            if (goldOnly) finalURL = _changeParamOrAddParamByName(finalURL, "goldOnly", goldOnly);
 
             return Promise.resolve($.getJSON(finalURL));
             //return get(url).then(JSON.parse);
@@ -99,6 +115,8 @@
         var NextprotClient = function (appName, clientInformation) {
             applicationName = appName;
             clientInfo = clientInformation;
+            goldOnly = _getURLParameter("goldOnly");
+            
             if (!appName) {
                 throw "Please provide some application name  ex:  new Nextprot.Client('demo application for visualizing peptides', clientInformation);";
             }
@@ -126,8 +144,17 @@
         NextprotClient.prototype.getEnvironment = function () {
             return _getURLParameter("env") || 'pro'; //By default returns the insulin
         };
+        NextprotClient.prototype.getQualitySelector = function () {
+            return _getURLParameter("qualitySelector") || '';
+        };
+        NextprotClient.prototype.getGoldOnlySelector = function () {
+            return _getURLParameter("goldOnly") || ''; // GOLD || GOLD & SILVER
+        };
         NextprotClient.prototype.getApiBaseUrl = function () {
             return apiBaseUrl;
+        };
+        NextprotClient.prototype.getNeXtProtUrl = function () {
+            return nextprotUrl;
         };
 
         //Gets the entry set in the parameter
@@ -222,6 +249,12 @@
                 return data.entry.properties;
             });
         };
+
+        NextprotClient.prototype.filterGoldOnlyAnnotations = function (annotations) {
+            return goldOnly(annotations);
+        };
+        
+        
 
 
         /*  Special method to retrieve isoforms mapping on the master sequence (should not be used by public)  */

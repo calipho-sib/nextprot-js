@@ -1,6 +1,12 @@
+# neXtProt - The knowledge resource on human proteins
+
+This is a code repository for the SIB - Swiss Institute of Bioinformatics CALIPHO group neXtProt project
+
+See: http://www.nextprot.org/
+
 # nextprot-js
 
-A Javascript SDK that speaks with the neXtprot (www.nextprot.org) api (https://api.nextprot.org) and SPARQL endpoint. These resources are freely available and can be used by anyone to create awesome apps.
+A Javascript SDK that speaks with the neXtProt API (https://api.nextprot.org) and SPARQL endpoint. These resources are freely available and can be used by anyone to create awesome apps.
 
 [![Build Status](https://travis-ci.org/calipho-sib/nextprot-js.svg?branch=develop)](https://travis-ci.org/calipho-sib/nextprot-js)
 
