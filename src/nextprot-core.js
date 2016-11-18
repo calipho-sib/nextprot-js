@@ -94,7 +94,7 @@
 
 
         var _getEntry = function (entry, context) {
-            var entryName = normalizeEntry(entry || (_getURLParameter("nxentry") || 'NX_P01308'));
+            var entryName = normalizeEntry(_getURLParameter("nxentry") || (entry || 'NX_P01308'));
             var url = apiBaseUrl + "/entry/" + entryName;
             if (context) {
                 url += "/" + context;
@@ -142,7 +142,10 @@
         NextprotClient.prototype.setSparqlEndpoint = function (_sparqlEndpoint) {
             sparqlEndpoint = _sparqlEndpoint;
         };
-
+        /** By default it is set to https://api.nextprot.org */
+        NextprotClient.prototype.setEnv = function (_env) {
+            env = _env;
+        };
         //////////////// END Setters ////////////////////////////////////////////////////////////////////////
 
         //Gets the entry set in the parameter
@@ -164,7 +167,7 @@
 
         //Gets the entry set in the parameter
         NextprotClient.prototype.getEntryName = function () {
-            return normalizeEntry(_getURLParameter("nxentry") || 'NX_P01308'); //By default returns the insulin
+            return normalizeEntry(_getURLParameter("nxentry") || entry || 'NX_P01308'); //By default returns the insulin
         };
 
         NextprotClient.prototype.getInputOption = function () {
