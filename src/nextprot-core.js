@@ -166,7 +166,7 @@
         };
 
         //Gets the entry set in the parameter
-        NextprotClient.prototype.getEntryName = function () {
+        NextprotClient.prototype.getEntryName = function (entry) {
             return normalizeEntry(_getURLParameter("nxentry") || entry || 'NX_P01308'); //By default returns the insulin
         };
 
