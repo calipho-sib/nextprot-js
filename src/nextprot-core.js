@@ -94,7 +94,15 @@
 
 
         var _getEntry = function (entry, context) {
-            var entryName = normalizeEntry(entry || (_getURLParameter("nxentry") || 'NX_P01308'));
+            if(entry === undefined){
+                var urlEntry = _getURLParameter("nxentry");
+                if(urlEntry){
+                    console.info("Overriding with URL parameter nxentry " + urlEntry);
+                } else {
+                    console.warn("NO entry defined, using default entry insulin: NX_P01308")
+                }
+            }
+            var entryName = normalizeEntry((entry || urlEntry || 'NX_P01308'));
             var url = apiBaseUrl + "/entry/" + entryName;
             if (context) {
                 url += "/" + context;
@@ -159,7 +167,13 @@
 
         //Gets the entry set in the parameter
         NextprotClient.prototype.getEntryName = function () {
-            return normalizeEntry(_getURLParameter("nxentry") || 'NX_P01308'); //By default returns the insulin
+            var nxentry = _getURLParameter("nxentry");
+            if(nxentry){
+                return normalizeEntry(nxentry)
+            }else {
+                console.warn("Returning the INSULIN by default")
+                return normalizeEntry('NX_P01308');
+            }
         };
 
         NextprotClient.prototype.getInputOption = function () {
