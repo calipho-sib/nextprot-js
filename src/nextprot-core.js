@@ -26,13 +26,19 @@
             }
             return href += (((href.indexOf("?") !== -1) ? "&" : "?") + paramName + "=" + newVal);
         }
-
+        
         var _convertToTupleMap = function (data) {
             var publiMap = {};
+            var isoformMap = {};
             var xrefMap = {};
             if (data.entry.publications){
                 data.entry.publications.forEach(function (p) {
                     publiMap[p.md5] = p;
+                });
+            }
+            if (data.entry.isoforms){
+                data.entry.isoforms.forEach(function (i) {
+                    isoformMap[i.isoformAccession] = i;
                 });
             }
             data.entry.xrefs.forEach(function (p) {
@@ -42,7 +48,8 @@
             return {
                 annot: data.entry.annotations,
                 publi: publiMap,
-                xrefs: xrefMap
+                xrefs: xrefMap,
+                isoforms: isoformMap
             };
         };
 
