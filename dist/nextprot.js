@@ -26,7 +26,7 @@
             }
             return href += (((href.indexOf("?") !== -1) ? "&" : "?") + paramName + "=" + newVal);
         }
-        
+
         var _convertToTupleMap = function (data) {
             var publiMap = {};
             var isoformMap = {};
@@ -151,7 +151,7 @@
         };
         /** By default it is set to https://api.nextprot.org */
         NextprotClient.prototype.setEnv = function (_env) {
-            env = _env;
+            environment = _env;
         };
         //////////////// END Setters ////////////////////////////////////////////////////////////////////////
 
