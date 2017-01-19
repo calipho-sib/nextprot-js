@@ -33,7 +33,7 @@
             var xrefMap = {};
             if (data.entry.publications){
                 data.entry.publications.forEach(function (p) {
-                    publiMap[p.md5] = p;
+                    publiMap[p.publicationId] = p;
                 });
             }
             if (data.entry.isoforms){
