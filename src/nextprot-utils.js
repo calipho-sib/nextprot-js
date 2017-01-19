@@ -261,8 +261,8 @@ var NXUtils = {
                                 var pub = null;
                                 var xref = null;
                                 if (publiActive) {
-                                    if (featMappings.publi[d.publicationMD5]) {
-                                        pub = d.publicationMD5;
+                                    if (featMappings.publi[d.resourceId]) {
+                                        pub = d.resourceId;
                                     }
                                     if (featMappings.xrefs[d.resourceId]) {
                                         xref = featMappings.xrefs[d.resourceId];
