@@ -44,6 +44,10 @@
             data.entry.xrefs.forEach(function (p) {
                 xrefMap[p.dbXrefId] = p;
             });
+            if (category=="keyword") category = "uniprot-keyword";
+            if(category && data.entry.annotationsByCategory && data.entry.annotationsByCategory[category.toLowerCase()]){
+                data.entry.annotations = data.entry.annotationsByCategory[category.toLowerCase()];
+            }
             //return data.entry.annotations;
             return {
                 annot: data.entry.annotations,
