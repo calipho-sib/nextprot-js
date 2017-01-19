@@ -27,7 +27,7 @@
             return href += (((href.indexOf("?") !== -1) ? "&" : "?") + paramName + "=" + newVal);
         }
 
-        var _convertToTupleMap = function (data) {
+        var _convertToTupleMap = function (data, category) {
             var publiMap = {};
             var isoformMap = {};
             var xrefMap = {};
@@ -44,6 +44,10 @@
             data.entry.xrefs.forEach(function (p) {
                 xrefMap[p.dbXrefId] = p;
             });
+            if (category=="keyword") category = "uniprot-keyword";
+            if(category && data.entry.annotationsByCategory && data.entry.annotationsByCategory[category.toLowerCase()]){
+                data.entry.annotations = data.entry.annotationsByCategory[category.toLowerCase()];
+            }
             //return data.entry.annotations;
             return {
                 annot: data.entry.annotations,
@@ -248,7 +252,7 @@
         /** USE THIS INSTEAD OF THE OTHERS for example getEntryPart(NX_1038042, "ptm") */
         NextprotClient.prototype.getAnnotationsByCategory = function (entry, category) {
             return _getEntry(entry, category).then(function (data) {
-                return _convertToTupleMap(data);
+                return _convertToTupleMap(data, category);
             });
         };
         
