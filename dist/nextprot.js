@@ -52,7 +52,7 @@
           }
             //return data.entry.annotations;
             return {
-                annot: data.entry.annotations,
+                annot: (data.entry.annotations === undefined) ? [] : data.entry.annotations,
                 publi: publiMap,
                 xrefs: xrefMap,
                 isoforms: isoformMap
