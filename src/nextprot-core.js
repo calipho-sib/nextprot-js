@@ -277,9 +277,23 @@
         NextprotClient.prototype.filterGoldOnlyAnnotations = function (annotations) {
             return goldOnly(annotations);
         };
-        
-        
 
+
+        NextprotClient.prototype.getBlastByIsoform = function (isoform, matrix, evalue, gapopen, gapextend, begin, end) {
+            var positions = "";
+            if (begin && end) positions = "&begin="+begin+"&end="+end;
+            return _getJSON(apiBaseUrl+"/blast/isoform/"+isoform+"?&matrix="+matrix+"&evalue="+evalue+"&gapopen="+gapopen+"&gapextend="+gapextend+positions)
+                .then(function (data) {
+                    return data;
+                });
+        };
+
+        NextprotClient.prototype.getBlastBySequence = function (sequence, title, matrix, evalue, gapopen, gapextend) {
+            return _getJSON(apiBaseUrl+"/blast/sequence/"+sequence+"?title="+title+"&matrix="+matrix+"&evalue="+evalue+"&gapopen="+gapopen+"&gapextend="+gapextend)
+                .then(function (data) {
+                    return data;
+                });
+        };
 
         /*  Special method to retrieve isoforms mapping on the master sequence (should not be used by public)  */
         NextprotClient.prototype.getIsoformMapping = function (entry) {
