@@ -45,12 +45,12 @@
                 xrefMap[p.dbXrefId] = p;
             });
             if (category=="keyword") category = "uniprot-keyword";
-            if(category && data.entry.annotationsByCategory && data.entry.annotationsByCategory[category.toLowerCase()]){
-                if(data.entry.annotationsByCategory[category.toLowerCase()]){
-                  data.entry.annotations = data.entry.annotationsByCategory[category.toLowerCase()];
-                }else data.entry.annotations = [];
-          }
-            //return data.entry.annotations;
+            if(category && data.entry.annotationsByCategory && Object.keys(data.entry.annotationsByCategory).length > 0){
+                for(var key in data.entry.annotationsByCategory) {
+                    if(!data.entry.annotations) data.entry.annotations = [];
+                    data.entry.annotations = data.entry.annotations.concat(data.entry.annotationsByCategory[key]);
+                }
+            }
             return {
                 annot: (data.entry.annotations === undefined) ? [] : data.entry.annotations,
                 publi: publiMap,
