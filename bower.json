@@ -1,5 +1,5 @@
 {
-  "name": "nextprot-js",
+  "name": "nextprot",
   "main": "dist/nextprot.js",
   "ignore": [
     "**/.*",
