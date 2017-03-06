@@ -75,14 +75,6 @@
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
         var apiBaseUrl = "https://api.nextprot.org";
         var nextprotUrl = "https://www.nextprot.org";
-        if (environment !== 'pro') {
-            var protocol = environment === 'dev' ? "https://" : "http://";
-//            console.log("api protocol : " + protocol)
-            apiBaseUrl = protocol + environment + "-api.nextprot.org";
-            if (environment === 'dev') nextprotUrl = 'https://dev-search.nextprot.org';
-            else nextprotUrl = protocol + environment + "-search.nextprot.org";
-        }
-        console.log("nx api base url : " + apiBaseUrl);
         var sparqlEndpoint = apiBaseUrl + "/sparql";
         var sparqlFormat = "?output=json";
 
@@ -90,8 +82,22 @@
         var clientInfo = null;
         var goldOnly = null;
 
-//        var goldOnlyQuality = _getURLParameter("goldOnly");
-
+        function setEnvironment(env){
+            environment = env||_getURLParameter("env") || 'pro'; //By default returns the production
+            apiBaseUrl = "https://api.nextprot.org";
+            nextprotUrl = "https://www.nextprot.org";
+            if (environment !== 'pro') {
+                var protocol = environment === 'dev' ? "https://" : "http://";
+//            console.log("api protocol : " + protocol)
+                apiBaseUrl = protocol + environment + "-api.nextprot.org";
+                if (environment === 'dev') nextprotUrl = 'https://dev-search.nextprot.org';
+                else nextprotUrl = protocol + environment + "-search.nextprot.org";
+            }
+            console.log("nx api base url : " + apiBaseUrl);
+            sparqlEndpoint = apiBaseUrl + "/sparql";
+            sparqlFormat = "?output=json";
+        }
+        setEnvironment();
 
         function _getJSON(url) {
 
@@ -160,7 +166,9 @@
             environment = _env;
         };
         //////////////// END Setters ////////////////////////////////////////////////////////////////////////
-
+        NextprotClient.prototype.updateEnvironment = function(env){
+            setEnvironment(env);
+        }
         //Gets the entry set in the parameter
         NextprotClient.prototype.getEnvironment = function () {
             return _getURLParameter("env") || 'pro'; //By default returns the insulin
