@@ -112,12 +112,14 @@
         }
 
 
-        var _getEntry = function (entry, context) {
+        var _getEntry = function (entry, context, term) {
             var entryName = normalizeEntry(_getURLParameter("nxentry") || (entry || 'NX_P01308'));
             var url = apiBaseUrl + "/entry/" + entryName;
             if (context) {
                 url += "/" + context;
             }
+            if (term) url+= "?term-child-of="+term;
+
             return _getJSON(url);
         };
 
@@ -260,8 +262,8 @@
 
 
         /** USE THIS INSTEAD OF THE OTHERS for example getEntryPart(NX_1038042, "ptm") */
-        NextprotClient.prototype.getAnnotationsByCategory = function (entry, category) {
-            return _getEntry(entry, category).then(function (data) {
+        NextprotClient.prototype.getAnnotationsByCategory = function (entry, category, term) {
+            return _getEntry(entry, category, term).then(function (data) {
                 return _convertToTupleMap(data, category);
             });
         };
