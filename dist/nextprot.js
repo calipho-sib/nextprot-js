@@ -27,7 +27,7 @@
             return href += (((href.indexOf("?") !== -1) ? "&" : "?") + paramName + "=" + newVal);
         }
 
-        var _convertToTupleMap = function (data, category) {
+        var _convertToTupleMap = function (data, category, term) {
             var publiMap = {};
             var isoformMap = {};
             var xrefMap = {};
@@ -52,6 +52,7 @@
                 }
             }
             return {
+                childrenOfCvTerm: term,
                 annot: (data.entry.annotations === undefined) ? [] : data.entry.annotations,
                 publi: publiMap,
                 xrefs: xrefMap,
@@ -264,7 +265,7 @@
         /** USE THIS INSTEAD OF THE OTHERS for example getEntryPart(NX_1038042, "ptm") */
         NextprotClient.prototype.getAnnotationsByCategory = function (entry, category, term) {
             return _getEntry(entry, category, term).then(function (data) {
-                return _convertToTupleMap(data, category);
+                return _convertToTupleMap(data, category, term);
             });
         };
 
