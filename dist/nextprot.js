@@ -130,7 +130,7 @@
             if (context) {
                 url += "/" + context;
             }
-            if (propertyName && propertyValue) url+= "?property-name="+propertyname+"&property-value="+propertyValue;
+            if (propertyName && propertyValue) url+= "?property-name="+propertyName+"&property-value="+propertyValue;
 
             return _getJSON(url);
         };
