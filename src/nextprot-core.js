@@ -124,6 +124,18 @@
             return _getJSON(url);
         };
 
+        var _getEntryWithProperty = function (entry, context, propertyName, propertyValue) {
+            var entryName = normalizeEntry(_getURLParameter("nxentry") || (entry || 'NX_P01308'));
+            var url = apiBaseUrl + "/entry/" + entryName;
+            if (context) {
+                url += "/" + context;
+            }
+            if (propertyName && propertyValue) url+= "?property-name="+propertyname+"&property-value="+propertyValue;
+
+            return _getJSON(url);
+        };
+
+
         var _getPublicationById = function (id) {
             var url = apiBaseUrl + "/publication/" + id + ".json";
             return _getJSON(url);
@@ -266,6 +278,12 @@
         NextprotClient.prototype.getAnnotationsByCategory = function (entry, category, term) {
             return _getEntry(entry, category, term).then(function (data) {
                 return _convertToTupleMap(data, category, term);
+            });
+        };
+
+        NextprotClient.prototype.getAnnotationsWithProperty = function (entry, category, propertyName, propertyValue) {
+            return _getEntryWithProperty(entry, category, propertyName, propertyValue).then(function (data) {
+                return _convertToTupleMap(data, category);
             });
         };
 
