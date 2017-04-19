@@ -31,6 +31,7 @@
             var publiMap = {};
             var isoformMap = {};
             var xrefMap = {};
+            var experimentalContexts = {};
             if (data.entry.publications){
                 data.entry.publications.forEach(function (p) {
                     publiMap[p.publicationId] = p;
@@ -39,6 +40,11 @@
             if (data.entry.isoforms){
                 data.entry.isoforms.forEach(function (i) {
                     isoformMap[i.isoformAccession] = i;
+                });
+            }
+            if (data.entry.experimentalContexts){
+                data.entry.experimentalContexts.forEach(function (c) {
+                    experimentalContexts[c.contextId] = c;
                 });
             }
             data.entry.xrefs.forEach(function (p) {
@@ -56,7 +62,9 @@
                 annot: (data.entry.annotations === undefined) ? [] : data.entry.annotations,
                 publi: publiMap,
                 xrefs: xrefMap,
-                isoforms: isoformMap
+                isoforms: isoformMap,
+                contexts: experimentalContexts
+
             };
         };
 
@@ -377,8 +385,7 @@
     }());
 
 
-}(this));
-;
+}(this));;
 //Utility methods
 var NXUtils = {
 
@@ -451,8 +458,8 @@ var NXUtils = {
         else return a.name > b.name;
     },
     sortByAlphabet: function(a,b) {
-        var a = typeof a === "string" ? a.toLowerCase() : a.name ? a.name.toLowerCase() : null;        
-        var b = typeof b === "string" ? b.toLowerCase() : b.name ? b.name.toLowerCase() : null;        
+        var a = typeof a === "string" ? a.toLowerCase() : a.name ? a.name.toLowerCase() : null;
+        var b = typeof b === "string" ? b.toLowerCase() : b.name ? b.name.toLowerCase() : null;
         if (a < b) return -1;
         if (a > b) return 1;
         return 0;
@@ -490,13 +497,13 @@ var NXUtils = {
         else if (!(arr1 && arr1.length> 0)) return arr2;
         var arr3 = [];
         for(var i in arr1){
-           var shared = false;
-           for (var j in arr2)
-               if (arr2[j].name == arr1[i].name) {
-                   shared = true;
-                   break;
-               }
-           if(!shared) arr3.push(arr1[i])
+            var shared = false;
+            for (var j in arr2)
+                if (arr2[j].name == arr1[i].name) {
+                    shared = true;
+                    break;
+                }
+            if(!shared) arr3.push(arr1[i])
         }
         arr3 = arr3.concat(arr2);
         return arr3;
@@ -641,6 +648,7 @@ var NXUtils = {
                             source = mapping.evidences.map(function (d) {
                                 var pub = null;
                                 var xref = null;
+                                var context = (featMappings.contexts[d.experimentalContextId]) ? featMappings.contexts[d.experimentalContextId] : false;
                                 if (publiActive) {
                                     if (featMappings.publi[d.resourceId]) {
                                         pub = d.resourceId;
@@ -657,19 +665,19 @@ var NXUtils = {
                                         publicationMD5: d.publicationMD5,
                                         publication: pub ? featMappings.publi[pub]: null,
                                         /*title: pub ? NXUtils.getLinkForFeature(domain,featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
-                                        authors: pub ? featMappings.publi[pub].authors.map(function (d) {
-                                            return {
-                                                lastName: d.lastName,
-                                                initials: d.initials
-                                            }
-                                        }) : [],
-                                        journal: pub ? featMappings.publi[pub].journalResourceLocator ? featMappings.publi[pub].journalResourceLocator.abbrev : "" : "",
-                                        volume: pub ? featMappings.publi[pub].volume : "",
-                                        year: pub ? featMappings.publi[pub].publicationYear : "",
-                                        firstPage: pub ? featMappings.publi[pub].firstPage : "",
-                                        lastPage: pub ? (featMappings.publi[pub].lastPage === "" ? featMappings.publi[pub].firstPage : featMappings.publi[pub].lastPage) : "",
-                                        pubId: pub ? featMappings.publi[pub].publicationId : "",
-                                        abstract: pub ? featMappings.publi[pub].abstractText : "",*/
+                                         authors: pub ? featMappings.publi[pub].authors.map(function (d) {
+                                         return {
+                                         lastName: d.lastName,
+                                         initials: d.initials
+                                         }
+                                         }) : [],
+                                         journal: pub ? featMappings.publi[pub].journalResourceLocator ? featMappings.publi[pub].journalResourceLocator.abbrev : "" : "",
+                                         volume: pub ? featMappings.publi[pub].volume : "",
+                                         year: pub ? featMappings.publi[pub].publicationYear : "",
+                                         firstPage: pub ? featMappings.publi[pub].firstPage : "",
+                                         lastPage: pub ? (featMappings.publi[pub].lastPage === "" ? featMappings.publi[pub].firstPage : featMappings.publi[pub].lastPage) : "",
+                                         pubId: pub ? featMappings.publi[pub].publicationId : "",
+                                         abstract: pub ? featMappings.publi[pub].abstractText : "",*/
                                         dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
                                             return {
                                                 name: o.databaseName === "DOI" ? "Full Text" : o.databaseName,
@@ -681,7 +689,8 @@ var NXUtils = {
                                             dbName: xref.databaseName,
                                             name: xref.accession,
                                             url: xref.resolvedUrl
-                                        } : null
+                                        } : null,
+                                        context: context
                                     }
                                 } else return {
                                     evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
@@ -691,7 +700,8 @@ var NXUtils = {
                                     authors: [],
                                     journal: "",
                                     volume: "",
-                                    abstract: ""
+                                    abstract: "",
+                                    context: context
                                 }
                             }),
                             variant = false;
@@ -725,7 +735,8 @@ var NXUtils = {
                             link: link,
                             evidenceLength: source.length,
                             source: source,
-                            variant: variant
+                            variant: variant,
+                            context: featMappings.contexts
                         });
                     }
                 }

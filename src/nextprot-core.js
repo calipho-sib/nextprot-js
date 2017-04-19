@@ -31,6 +31,7 @@
             var publiMap = {};
             var isoformMap = {};
             var xrefMap = {};
+            var experimentalContexts = {};
             if (data.entry.publications){
                 data.entry.publications.forEach(function (p) {
                     publiMap[p.publicationId] = p;
@@ -39,6 +40,11 @@
             if (data.entry.isoforms){
                 data.entry.isoforms.forEach(function (i) {
                     isoformMap[i.isoformAccession] = i;
+                });
+            }
+            if (data.entry.experimentalContexts){
+                data.entry.experimentalContexts.forEach(function (c) {
+                    experimentalContexts[c.contextId] = c;
                 });
             }
             data.entry.xrefs.forEach(function (p) {
@@ -56,7 +62,9 @@
                 annot: (data.entry.annotations === undefined) ? [] : data.entry.annotations,
                 publi: publiMap,
                 xrefs: xrefMap,
-                isoforms: isoformMap
+                isoforms: isoformMap,
+                contexts: experimentalContexts
+
             };
         };
 
