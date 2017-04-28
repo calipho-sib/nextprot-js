@@ -375,6 +375,20 @@
             });
         };
 
+        NextprotClient.prototype.getChromosomes = function () {
+            return _getJSON(apiBaseUrl+"/chromosome-names.json")
+                .then(function (data) {
+                    return data;
+                });
+        };
+
+        NextprotClient.prototype.getChromosomeEntries = function (chromosome) {
+            return _getJSON(apiBaseUrl+"/chromosome-report/"+chromosome+".json")
+                .then(function (data) {
+                    return data;
+                });
+        };
+
         //node.js compatibility
         if (typeof exports !== 'undefined') {
             exports.Client = NextprotClient;
