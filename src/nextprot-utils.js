@@ -323,11 +323,11 @@ var NXUtils = {
                             variant = true;
                             if (mapping.description) {
                                 var reg = /\[(.*?)\]/g;
-                                var match = reg.exec(mapping.description);
+                                var matches = mapping.description.match(reg);
                                 var desc = mapping.description;
-                                if (match) {
-                                    var parseMatch = match[1].split(":");
-                                    var desc = mapping.description.replace(/(\[.*?\])/g, NXUtils.getLinkForFeature(domain, parseMatch[2], parseMatch[0]));
+                                for (var m in matches) {
+                                    var matchElements = matches[m].substring(1, matches[m].length - 1).split(":");
+                                    var desc = desc.replace(matches[m], NXUtils.getLinkForFeature(domain, matchElements[2], matchElements[0]));
 
                                 }
                                 link += " ; " + desc;
