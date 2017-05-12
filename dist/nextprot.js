@@ -653,7 +653,8 @@ var NXUtils = {
             if (mapping.hasOwnProperty("targetingIsoformsMap")) {
                 for (var name in mapping.targetingIsoformsMap) {
                     if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
-                        var start = mapping.targetingIsoformsMap[name].firstPosition,
+                        var uniqueName = mapping.uniqueName,
+                            start = mapping.targetingIsoformsMap[name].firstPosition,
                             end = mapping.targetingIsoformsMap[name].lastPosition,
                             description = NXUtils.getDescription(mapping,category),
                             link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category),
@@ -740,7 +741,7 @@ var NXUtils = {
                             start: start,
                             end: end,
                             length: end - start + 1,
-                            id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString(),
+                            id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString() + "_" + uniqueName,
                             description: description,
                             quality: quality,
                             proteotypicity: proteotypic,
