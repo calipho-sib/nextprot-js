@@ -27,22 +27,44 @@
             return href += (((href.indexOf("?") !== -1) ? "&" : "?") + paramName + "=" + newVal);
         }
 
-        var _convertToTupleMap = function (data) {
+        var _convertToTupleMap = function (data, category, term) {
             var publiMap = {};
+            var isoformMap = {};
             var xrefMap = {};
+            var experimentalContexts = {};
             if (data.entry.publications){
                 data.entry.publications.forEach(function (p) {
-                    publiMap[p.md5] = p;
+                    publiMap[p.publicationId] = p;
+                });
+            }
+            if (data.entry.isoforms){
+                data.entry.isoforms.forEach(function (i) {
+                    isoformMap[i.isoformAccession] = i;
+                });
+            }
+            if (data.entry.experimentalContexts){
+                data.entry.experimentalContexts.forEach(function (c) {
+                    experimentalContexts[c.contextId] = c;
                 });
             }
             data.entry.xrefs.forEach(function (p) {
                 xrefMap[p.dbXrefId] = p;
             });
-            //return data.entry.annotations;
+            if (category=="keyword") category = "uniprot-keyword";
+            if(category && data.entry.annotationsByCategory && Object.keys(data.entry.annotationsByCategory).length > 0){
+                for(var key in data.entry.annotationsByCategory) {
+                    if(!data.entry.annotations) data.entry.annotations = [];
+                    data.entry.annotations = data.entry.annotations.concat(data.entry.annotationsByCategory[key]);
+                }
+            }
             return {
-                annot: data.entry.annotations,
+                childrenOfCvTerm: term,
+                annot: (data.entry.annotations === undefined) ? [] : data.entry.annotations,
                 publi: publiMap,
-                xrefs: xrefMap
+                xrefs: xrefMap,
+                isoforms: isoformMap,
+                contexts: experimentalContexts
+
             };
         };
 
@@ -52,40 +74,46 @@
             }
             return entry;
         };
-        
+
         var goldOnly = function (annotations) {
             annotations.forEach(function(a){a.evidences = a.evidences.filter(function(e){return e.qualityQualifier === "GOLD"})});
             return annotations.filter(function(a){ return a.evidences.length > 0 });
         }
-        
+
 
         var environment = _getURLParameter("env") || 'pro'; //By default returns the production
         var apiBaseUrl = "https://api.nextprot.org";
         var nextprotUrl = "https://www.nextprot.org";
-        if (environment !== 'pro') {
-            var protocol = environment === 'dev' ? "https://" : "http://";
-//            console.log("api protocol : " + protocol)
-            apiBaseUrl = protocol + environment + "-api.nextprot.org";
-            if (environment === 'dev') nextprotUrl = 'https://dev-search.nextprot.org';
-            else nextprotUrl = protocol + environment + "-search.nextprot.org"; 
-        }
-        console.log("nx api base url : " + apiBaseUrl);
         var sparqlEndpoint = apiBaseUrl + "/sparql";
         var sparqlFormat = "?output=json";
 
         var applicationName = null;
         var clientInfo = null;
         var goldOnly = null;
-        
-//        var goldOnlyQuality = _getURLParameter("goldOnly");
 
+        function setEnvironment(env){
+            environment = env||_getURLParameter("env") || 'pro'; //By default returns the production
+            apiBaseUrl = "https://api.nextprot.org";
+            nextprotUrl = "https://www.nextprot.org";
+            if (environment !== 'pro') {
+                var protocol = environment === 'dev' ? "https://" : "http://";
+//            console.log("api protocol : " + protocol)
+                apiBaseUrl = protocol + environment + "-api.nextprot.org";
+                if (environment === 'dev') nextprotUrl = 'https://dev-search.nextprot.org';
+                else nextprotUrl = protocol + environment + "-search.nextprot.org";
+            }
+            console.log("nx api base url : " + apiBaseUrl);
+            sparqlEndpoint = apiBaseUrl + "/sparql";
+            sparqlFormat = "?output=json";
+        }
+        setEnvironment();
 
         function _getJSON(url) {
 
             var finalURL = url;
             finalURL = _changeParamOrAddParamByName(finalURL, "clientInfo", clientInfo);
             finalURL = _changeParamOrAddParamByName(finalURL, "applicationName", applicationName);
-            
+
             if (goldOnly) finalURL = _changeParamOrAddParamByName(finalURL, "goldOnly", goldOnly);
 
             return Promise.resolve($.getJSON(finalURL));
@@ -93,20 +121,31 @@
         }
 
 
-        var _getEntry = function (entry, context) {
-            if(entry === undefined){
-                var urlEntry = _getURLParameter("nxentry");
-                if(urlEntry){
-                    console.info("Overriding with URL parameter nxentry " + urlEntry);
-                } else {
-                    console.warn("NO entry defined, using default entry insulin: NX_P01308")
-                }
-            }
-            var entryName = normalizeEntry((entry || urlEntry || 'NX_P01308'));
+        var _getEntry = function (entry, context, term) {
+            var entryName = normalizeEntry(_getURLParameter("nxentry") || (entry || 'NX_P01308'));
             var url = apiBaseUrl + "/entry/" + entryName;
             if (context) {
                 url += "/" + context;
             }
+            if (term) url+= "?term-child-of="+term;
+
+            return _getJSON(url);
+        };
+
+        var _getEntryWithProperty = function (entry, context, propertyName, propertyValue) {
+            var entryName = normalizeEntry(_getURLParameter("nxentry") || (entry || 'NX_P01308'));
+            var url = apiBaseUrl + "/entry/" + entryName;
+            if (context) {
+                url += "/" + context;
+            }
+            if (propertyName && propertyValue) url+= "?property-name="+propertyName+"&property-value="+propertyValue;
+
+            return _getJSON(url);
+        };
+
+
+        var _getPublicationById = function (id) {
+            var url = apiBaseUrl + "/publication/" + id + ".json";
             return _getJSON(url);
         };
 
@@ -124,7 +163,7 @@
             applicationName = appName;
             clientInfo = clientInformation;
             goldOnly = _getURLParameter("goldOnly");
-            
+
             if (!appName) {
                 throw "Please provide some application name  ex:  new Nextprot.Client('demo application for visualizing peptides', clientInformation);";
             }
@@ -145,9 +184,14 @@
         NextprotClient.prototype.setSparqlEndpoint = function (_sparqlEndpoint) {
             sparqlEndpoint = _sparqlEndpoint;
         };
-
+        /** By default it is set to https://api.nextprot.org */
+        NextprotClient.prototype.setEnv = function (_env) {
+            environment = _env;
+        };
         //////////////// END Setters ////////////////////////////////////////////////////////////////////////
-
+        NextprotClient.prototype.updateEnvironment = function(env){
+            setEnvironment(env);
+        }
         //Gets the entry set in the parameter
         NextprotClient.prototype.getEnvironment = function () {
             return _getURLParameter("env") || 'pro'; //By default returns the insulin
@@ -166,14 +210,8 @@
         };
 
         //Gets the entry set in the parameter
-        NextprotClient.prototype.getEntryName = function () {
-            var nxentry = _getURLParameter("nxentry");
-            if(nxentry){
-                return normalizeEntry(nxentry)
-            }else {
-                console.warn("Returning the INSULIN by default")
-                return normalizeEntry('NX_P01308');
-            }
+        NextprotClient.prototype.getEntryName = function (entry) {
+            return normalizeEntry(_getURLParameter("nxentry") || entry || 'NX_P01308'); //By default returns the insulin
         };
 
         NextprotClient.prototype.getInputOption = function () {
@@ -239,13 +277,24 @@
                 return data.entry.xrefs;
             });
         };
+        NextprotClient.prototype.getPublicationById = function (id) {
+            return _getPublicationById(id);
+        };
+
+
         /** USE THIS INSTEAD OF THE OTHERS for example getEntryPart(NX_1038042, "ptm") */
-        NextprotClient.prototype.getAnnotationsByCategory = function (entry, category) {
-            return _getEntry(entry, category).then(function (data) {
-                return _convertToTupleMap(data);
+        NextprotClient.prototype.getAnnotationsByCategory = function (entry, category, term) {
+            return _getEntry(entry, category, term).then(function (data) {
+                return _convertToTupleMap(data, category, term);
             });
         };
-        
+
+        NextprotClient.prototype.getAnnotationsWithProperty = function (entry, category, propertyName, propertyValue) {
+            return _getEntryWithProperty(entry, category, propertyName, propertyValue).then(function (data) {
+                return _convertToTupleMap(data, category);
+            });
+        };
+
         NextprotClient.prototype.getFullAnnotationsByCategory = function (entry, category) {
             return _getEntry(entry, category).then(function (data) {
                 return data.entry;
@@ -267,9 +316,22 @@
         NextprotClient.prototype.filterGoldOnlyAnnotations = function (annotations) {
             return goldOnly(annotations);
         };
-        
-        
 
+        NextprotClient.prototype.getBlastByIsoform = function (isoform, matrix, evalue, gapopen, gapextend, begin, end) {
+            var positions = "";
+            if (begin && end) positions = "&begin="+begin+"&end="+end;
+            return _getJSON(apiBaseUrl+"/blast/isoform/"+isoform+"?&matrix="+matrix+"&evalue="+evalue+"&gapopen="+gapopen+"&gapextend="+gapextend+positions)
+                .then(function (data) {
+                    return data;
+                });
+        };
+
+        NextprotClient.prototype.getBlastBySequence = function (sequence, title, matrix, evalue, gapopen, gapextend) {
+            return _getJSON(apiBaseUrl+"/blast/sequence/"+sequence+"?title="+title+"&matrix="+matrix+"&evalue="+evalue+"&gapopen="+gapopen+"&gapextend="+gapextend)
+                .then(function (data) {
+                    return data;
+                });
+        };
 
         /*  Special method to retrieve isoforms mapping on the master sequence (should not be used by public)  */
         NextprotClient.prototype.getIsoformMapping = function (entry) {
@@ -311,6 +373,27 @@
             return _callTerminology(terminologyName).then(function (data) {
                 return data;
             });
+        };
+
+        NextprotClient.prototype.getChromosomeNames = function () {
+            return _getJSON(apiBaseUrl+"/chromosome-names.json")
+                .then(function (data) {
+                    return data;
+                });
+        };
+
+        NextprotClient.prototype.getChromosomes = function () {
+            return _getJSON(apiBaseUrl+"/chromosomes.json")
+                .then(function (data) {
+                    return data;
+                });
+        };
+
+        NextprotClient.prototype.getChromosomeEntries = function (chromosome) {
+            return _getJSON(apiBaseUrl+"/chromosome-report/"+chromosome+".json")
+                .then(function (data) {
+                    return data;
+                });
         };
 
         //node.js compatibility
