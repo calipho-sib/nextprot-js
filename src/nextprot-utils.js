@@ -251,7 +251,8 @@ var NXUtils = {
             if (mapping.hasOwnProperty("targetingIsoformsMap")) {
                 for (var name in mapping.targetingIsoformsMap) {
                     if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
-                        var start = mapping.targetingIsoformsMap[name].firstPosition,
+                        var uniqueName = mapping.uniqueName,
+                            start = mapping.targetingIsoformsMap[name].firstPosition,
                             end = mapping.targetingIsoformsMap[name].lastPosition,
                             description = NXUtils.getDescription(mapping,category),
                             link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category),
@@ -323,11 +324,11 @@ var NXUtils = {
                             variant = true;
                             if (mapping.description) {
                                 var reg = /\[(.*?)\]/g;
-                                var match = reg.exec(mapping.description);
+                                var matches = mapping.description.match(reg);
                                 var desc = mapping.description;
-                                if (match) {
-                                    var parseMatch = match[1].split(":");
-                                    var desc = mapping.description.replace(/(\[.*?\])/g, NXUtils.getLinkForFeature(domain, parseMatch[2], parseMatch[0]));
+                                for (var m in matches) {
+                                    var matchElements = matches[m].substring(1, matches[m].length - 1).split(":");
+                                    var desc = desc.replace(matches[m], NXUtils.getLinkForFeature(domain, matchElements[2], matchElements[0]));
 
                                 }
                                 link += " ; " + desc;
@@ -338,7 +339,7 @@ var NXUtils = {
                             start: start,
                             end: end,
                             length: end - start + 1,
-                            id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString(),
+                            id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString() + "_" + uniqueName,
                             description: description,
                             quality: quality,
                             proteotypicity: proteotypic,
