@@ -376,20 +376,20 @@
         };
 
         NextprotClient.prototype.getChromosomeNames = function () {
-            return _getJSON(apiBaseUrl+"/chromosome-names.json")
-                .then(function (data) {
-                    return data;
-                });
-        };
-
-        NextprotClient.prototype.getChromosomes = function () {
             return _getJSON(apiBaseUrl+"/chromosomes.json")
                 .then(function (data) {
                     return data;
                 });
         };
 
-        NextprotClient.prototype.getChromosomeEntries = function (chromosome) {
+        NextprotClient.prototype.getChromosomeReportsSummary = function () {
+            return _getJSON(apiBaseUrl+"/chromosome-reports/summary.json")
+                .then(function (data) {
+                    return data;
+                });
+        };
+
+        NextprotClient.prototype.getChromosomeReportEntries = function (chromosome) {
             return _getJSON(apiBaseUrl+"/chromosome-report/"+chromosome+".json")
                 .then(function (data) {
                     return data;
