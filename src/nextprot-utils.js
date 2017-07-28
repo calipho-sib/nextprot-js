@@ -254,6 +254,7 @@ var NXUtils = {
                         var uniqueName = mapping.uniqueName,
                             start = mapping.targetingIsoformsMap[name].firstPosition,
                             end = mapping.targetingIsoformsMap[name].lastPosition,
+                            length = start && end ? end - start + 1 : null,
                             description = NXUtils.getDescription(mapping,category),
                             link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category),
                             quality = mapping.qualityQualifier ? mapping.qualityQualifier.toLowerCase() : "",
@@ -335,11 +336,13 @@ var NXUtils = {
                             }
                         }
                         if (!result[name]) result[name] = [];
+                        var idStart = start ? start.toString() : "NA";
+                        var idEnd = end ? end.toString() : "NA";
                         result[name].push({
                             start: start,
                             end: end,
-                            length: end - start + 1,
-                            id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString() + "_" + uniqueName,
+                            length: length,
+                            id: category.replace(/\s/g, '') + "_" + idStart + "_" + idEnd + "_" + uniqueName,
                             description: description,
                             quality: quality,
                             proteotypicity: proteotypic,
@@ -411,6 +414,7 @@ var NXUtils = {
                     if (a.length === b.length) return b.id > a.id;
                     else return b.length - a.length;
                 }
+                if (a.start === null) return 0;
                 if (a.end === null) return 1;
                 return a.start - b.start;
             })
@@ -451,15 +455,15 @@ var NXUtils = {
 };
 
 var NXViewerUtils = {
-    convertNXAnnotations: function (annotations, metadata) {
+    convertNXAnnotations: function (annotations, metadata, isoLengths) {
         if (!annotations) return "Cannot load this";
         var result = {};
         for (name in annotations) {
             var meta = jQuery.extend({}, metadata);
             meta.data = annotations[name].map(function (annotation) {
                 return {
-                    x: annotation.start,
-                    y: annotation.end,
+                    x: annotation.start ? annotation.start : 1,
+                    y: annotation.end ? annotation.end : isoLengths && isoLengths[name] ? isoLengths[name] : 100000,
                     id: annotation.id,
                     category: annotation.category,
                     description: annotation.description
