@@ -132,6 +132,14 @@
             return _getJSON(url);
         };
 
+        var _getEntryPageView = function (entry, view, part) {
+
+            var entryName = normalizeEntry(_getURLParameter("nxentry") || (entry || 'NX_P01308'));
+            var url = apiBaseUrl + "/page-view/" + view + "/" + entryName + "/" + part;
+
+            return _getJSON(url);
+        };
+
         var _getEntryWithProperty = function (entry, context, propertyName, propertyValue) {
             var entryName = normalizeEntry(_getURLParameter("nxentry") || (entry || 'NX_P01308'));
             var url = apiBaseUrl + "/entry/" + entryName;
@@ -286,6 +294,13 @@
         NextprotClient.prototype.getAnnotationsByCategory = function (entry, category, term) {
             return _getEntry(entry, category, term).then(function (data) {
                 return _convertToTupleMap(data, category, term);
+            });
+        };
+
+        NextprotClient.prototype.getEntryXrefInPageView = function (entry, view) {
+
+            return _getEntryPageView(entry, view, "xref").then(function (data) {
+                return _convertToTupleMap(data);
             });
         };
 
