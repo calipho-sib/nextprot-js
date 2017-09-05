@@ -671,67 +671,87 @@ var NXUtils = {
             mappings = jQuery.extend([], featMappings.annot);
         }
         var result = {};
+
+        var _cleanDescriptionText = function(category, rawDescription) {
+
+            var formattedDescription = "";
+
+            if (rawDescription) {
+
+                formattedDescription = ": ";
+
+                if (category === "sequence conflict") {
+                    // ex: In Ref. 3; BAG65616.
+                    // => In BAG65616.
+                    formattedDescription += rawDescription.replace(/Ref\. \d+; /, "");
+                }
+                else if (category === "sequence variant") {
+                    // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; may affect KCNQ1/KCNE2 channel
+                    // => In LQT6; may affect KCNQ1/KCNE2 channel
+                    var results = /In\s+\[([^:]+):[^\]]+\](.*)/.exec(rawDescription);
+                    formattedDescription += (results) ? "In "+ results[1] + results[2] : rawDescription;
+                }
+                else {
+                    formattedDescription += rawDescription;
+                }
+            }
+            return formattedDescription;
+        };
+
+        var _formatAminoAcidsText = function(aas) {
+
+            return (aas.length > 9) ? aas.substr(0, 3) + "..." + aas.substr(aas.length - 3, 3) : aas;
+        };
+
         mappings.forEach(function (mapping) {
             if (mapping.hasOwnProperty("targetingIsoformsMap")) {
                 for (var name in mapping.targetingIsoformsMap) {
                     if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
-                        var uniqueName = mapping.uniqueName,
-                            start = mapping.targetingIsoformsMap[name].firstPosition,
-                            end = mapping.targetingIsoformsMap[name].lastPosition,
-                            length = start && end ? end - start + 1 : null,
-                            description = NXUtils.getDescription(mapping,category),
-                            link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category),
-                            quality = mapping.qualityQualifier ? mapping.qualityQualifier.toLowerCase() : "",
-                            proteotypic = NXUtils.getProteotypicity(mapping.properties),
-                            source = mapping.evidences.map(function (d) {
-                                var pub = null;
-                                var xref = null;
-                                var context = (featMappings.contexts[d.experimentalContextId]) ? featMappings.contexts[d.experimentalContextId] : false;
-                                if (publiActive) {
-                                    if (featMappings.publi[d.resourceId]) {
-                                        pub = d.resourceId;
-                                    }
-                                    if (featMappings.xrefs[d.resourceId]) {
-                                        xref = featMappings.xrefs[d.resourceId];
-                                    }
-                                    return {
-                                        evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
-                                        assignedBy: NXUtils.getAssignedBy(d.assignedBy),
-                                        resourceDb: d.resourceDb,
-                                        externalDb: d.resourceDb !== "UniProt",
-                                        qualityQualifier: d.qualityQualifier.toLowerCase(),
-                                        publicationMD5: d.publicationMD5,
-                                        publication: pub ? featMappings.publi[pub]: null,
-                                        /*title: pub ? NXUtils.getLinkForFeature(domain,featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
-                                         authors: pub ? featMappings.publi[pub].authors.map(function (d) {
-                                         return {
-                                         lastName: d.lastName,
-                                         initials: d.initials
-                                         }
-                                         }) : [],
-                                         journal: pub ? featMappings.publi[pub].journalResourceLocator ? featMappings.publi[pub].journalResourceLocator.abbrev : "" : "",
-                                         volume: pub ? featMappings.publi[pub].volume : "",
-                                         year: pub ? featMappings.publi[pub].publicationYear : "",
-                                         firstPage: pub ? featMappings.publi[pub].firstPage : "",
-                                         lastPage: pub ? (featMappings.publi[pub].lastPage === "" ? featMappings.publi[pub].firstPage : featMappings.publi[pub].lastPage) : "",
-                                         pubId: pub ? featMappings.publi[pub].publicationId : "",
-                                         abstract: pub ? featMappings.publi[pub].abstractText : "",*/
-                                        dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
-                                            return {
-                                                name: o.databaseName === "DOI" ? "Full Text" : o.databaseName,
-                                                url: o.resolvedUrl,
-                                                accession: o.accession
-                                            }
-                                        }) : [] : [],
-                                        crossRef: xref ? {
-                                            dbName: xref.databaseName,
-                                            name: xref.accession,
-                                            url: xref.resolvedUrl
-                                        } : null,
-                                        context: context
-                                    }
-                                } else return {
+                        var uniqueName = mapping.uniqueName;
+                        var start = mapping.targetingIsoformsMap[name].firstPosition;
+                        var end = mapping.targetingIsoformsMap[name].lastPosition;
+                        var length = start && end ? end - start + 1 : null;
+                        var description = NXUtils.getDescription(mapping,category);
+                        var link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category);
+                        var quality = mapping.qualityQualifier ? mapping.qualityQualifier.toLowerCase() : "";
+                        var proteotypic = NXUtils.getProteotypicity(mapping.properties);
+                        var variant = false;
+                        var source = mapping.evidences.map(function (d) {
+                            var pub = null;
+                            var xref = null;
+                            var context = (featMappings.contexts[d.experimentalContextId]) ? featMappings.contexts[d.experimentalContextId] : false;
+                            if (publiActive) {
+                                if (featMappings.publi[d.resourceId]) {
+                                    pub = d.resourceId;
+                                }
+                                if (featMappings.xrefs[d.resourceId]) {
+                                    xref = featMappings.xrefs[d.resourceId];
+                                }
+                                return {
                                     evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
+                                    assignedBy: NXUtils.getAssignedBy(d.assignedBy),
+                                    resourceDb: d.resourceDb,
+                                    externalDb: d.resourceDb !== "UniProt",
+                                    qualityQualifier: d.qualityQualifier.toLowerCase(),
+                                    publicationMD5: d.publicationMD5,
+                                    publication: pub ? featMappings.publi[pub]: null,
+                                    dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
+                                        return {
+                                            name: o.databaseName === "DOI" ? "Full Text" : o.databaseName,
+                                            url: o.resolvedUrl,
+                                            accession: o.accession
+                                        }
+                                    }) : [] : [],
+                                    crossRef: xref ? {
+                                        dbName: xref.databaseName,
+                                        name: xref.accession,
+                                        url: xref.resolvedUrl
+                                    } : null,
+                                    context: context
+                                }
+                            } else {
+                                return {
+                                    evidenceCodeName: NXUtils.getEvidenceCodeName(d, category),
                                     assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                     publicationMD5: d.publicationMD5,
                                     title: "",
@@ -741,12 +761,24 @@ var NXUtils = {
                                     abstract: "",
                                     context: context
                                 }
-                            }),
-                            variant = false;
+                            }
+                        });
+
                         if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
+
                             link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
-                            description = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
+
+                            var originalAAsFormatted = _formatAminoAcidsText(mapping.variant.original);
+                            var variantAAsFormatted  = _formatAminoAcidsText(mapping.variant.variant);
+                            var descriptionFormatted = _cleanDescriptionText(mapping.category, mapping.description);
+
+                            description =
+                                "<span class='variant-description'>" +
+                                    originalAAsFormatted + " → " + variantAAsFormatted + descriptionFormatted +
+                                "</span>  ";
+
                             variant = true;
+
                             if (mapping.description) {
                                 var reg = /\[(.*?)\]/g;
                                 var matches = mapping.description.match(reg);
@@ -781,57 +813,8 @@ var NXUtils = {
                     }
                 }
             }
-            //TODO This is the old format, the API should evolve
-            else if (mapping.hasOwnProperty("isoformSpecificity")) {
-                for (var name in mapping.isoformSpecificity) {
-                    if (mapping.isoformSpecificity.hasOwnProperty(name)) {
-                        for (var i = 0; i < mapping.isoformSpecificity[name].positions.length; i++) {
-                            var start = mapping.isoformSpecificity[name].positions[i].first,
-                                end = mapping.isoformSpecificity[name].positions[i].second,
-                                description = "",
-                                link = "",
-                                source = [];
-                            if (mapping.hasOwnProperty("evidences")) {
-                                source = mapping.evidences.map(function (d) {
-                                    return {
-                                        evidenceCodeName: d.evidenceCodeName,
-                                        assignedBy: d.assignedBy,
-                                        publicationMD5: d.publicationMD5
-                                    }
-                                });
-                            }
-                            if (mapping.hasOwnProperty("xrefs")) {
-                                description = mapping.xrefs[0].accession;
-                                link = NXUtils.getLinkForFeature(domain, mapping.xrefs[0].resolvedUrl, description, "antibody")
-                            } else {
-                                description = mapping.evidences[0].accession;
-                                for (ev in mapping.evidences)
-                                    if (mapping.evidences[ev].databaseName === "PeptideAtlas" || mapping.evidences[ev].databaseName === "SRMAtlas") {
-                                        description = mapping.evidences[ev].accession;
-                                        link = NXUtils.getLinkForFeature(domain, description, description, "peptide");
-
-                                        break;
-                                    }
-                            }
-
-                            if (!result[name]) result[name] = [];
-                            result[name].push({
-                                start: start,
-                                end: end,
-                                length: end - start,
-                                id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString(),
-                                description: description,
-                                category: category,
-                                group: group,
-                                link: link,
-                                evidenceLength: source.length,
-                                source: source
-                            });
-                        }
-                    }
-                }
-            }
         });
+
         for (var iso in result) {
             result[iso].sort(function (a, b) {
                 if (a.start === b.start) {
@@ -890,7 +873,7 @@ var NXViewerUtils = {
                     y: annotation.end ? annotation.end : isoLengths && isoLengths[name] ? isoLengths[name] : 100000,
                     id: annotation.id,
                     category: annotation.category,
-                    description: annotation.description
+                    description: annotation.description // tooltip description
                 }
             });
             result[name] = meta;
