@@ -274,6 +274,11 @@ var NXUtils = {
             return formattedDescription;
         };
 
+        var _formatAminoAcidsText = function(aas) {
+
+            return (aas.length > 9) ? aas.substr(0, 3) + "..." + aas.substr(aas.length - 3, 3) : aas;
+        };
+
         mappings.forEach(function (mapping) {
             if (mapping.hasOwnProperty("targetingIsoformsMap")) {
                 for (var name in mapping.targetingIsoformsMap) {
@@ -339,12 +344,14 @@ var NXUtils = {
 
                             link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
 
-                            var originalSpanText = mapping.variant.original;
-                            var variantSpanText = mapping.variant.variant;
-                            var descriptionSpanText = _cleanDescriptionText(mapping.category, mapping.description);
+                            var originalAAsFormatted = _formatAminoAcidsText(mapping.variant.original);
+                            var variantAAsFormatted  = _formatAminoAcidsText(mapping.variant.variant);
+                            var descriptionFormatted = _cleanDescriptionText(mapping.category, mapping.description);
 
-                            description = "<span class='variant-description'>" + originalSpanText + " → " + variantSpanText
-                                + descriptionSpanText + "</span>  ";
+                            description =
+                                "<span class='variant-description'>" +
+                                    originalAAsFormatted + " → " + variantAAsFormatted + descriptionFormatted +
+                                "</span>  ";
 
                             variant = true;
 
