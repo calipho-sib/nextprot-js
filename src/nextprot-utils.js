@@ -247,6 +247,19 @@ var NXUtils = {
             mappings = jQuery.extend([], featMappings.annot);
         }
         var result = {};
+
+        var _getMoreDescription = function(mapping) {
+
+            if (mapping.category === "sequence conflict") {
+                // ex: In Ref. 3; BAG65616. => In BAG65616.
+                return mapping.description.replace(/Ref\. \d+; /, "");
+            }
+            else if (mapping.category !== "sequence variant") {
+                return mapping.description;
+            }
+            return "";
+        };
+
         mappings.forEach(function (mapping) {
             if (mapping.hasOwnProperty("targetingIsoformsMap")) {
                 for (var name in mapping.targetingIsoformsMap) {
@@ -311,7 +324,12 @@ var NXUtils = {
                         if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
 
                             link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
-                            description = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
+
+                            var moreDescription = _getMoreDescription(mapping);
+
+                            description = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant +
+                                ((moreDescription) ? ": "+ moreDescription : "") + "</span>  ";
+
                             variant = true;
 
                             if (mapping.description) {
