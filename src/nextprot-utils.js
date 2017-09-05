@@ -248,16 +248,30 @@ var NXUtils = {
         }
         var result = {};
 
-        var _getMoreDescription = function(mapping) {
+        var _cleanDescriptionText = function(category, rawDescription) {
 
-            if (mapping.category === "sequence conflict") {
-                // ex: In Ref. 3; BAG65616. => In BAG65616.
-                return mapping.description.replace(/Ref\. \d+; /, "");
+            var formattedDescription = "";
+
+            if (rawDescription) {
+
+                formattedDescription = ": ";
+
+                if (category === "sequence conflict") {
+                    // ex: In Ref. 3; BAG65616.
+                    // => In BAG65616.
+                    formattedDescription += rawDescription.replace(/Ref\. \d+; /, "");
+                }
+                else if (category === "sequence variant") {
+                    // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; may affect KCNQ1/KCNE2 channel
+                    // => In LQT6; may affect KCNQ1/KCNE2 channel
+                    var results = /In\s+\[([^:]+):[^\]]+\](.*)/.exec(rawDescription);
+                    formattedDescription += (results) ? "In "+ results[1] + results[2] : rawDescription;
+                }
+                else {
+                    formattedDescription += rawDescription;
+                }
             }
-            else if (mapping.category !== "sequence variant") {
-                return mapping.description;
-            }
-            return "";
+            return formattedDescription;
         };
 
         mappings.forEach(function (mapping) {
@@ -325,10 +339,12 @@ var NXUtils = {
 
                             link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
 
-                            var moreDescription = _getMoreDescription(mapping);
+                            var originalSpanText = mapping.variant.original;
+                            var variantSpanText = mapping.variant.variant;
+                            var descriptionSpanText = _cleanDescriptionText(mapping.category, mapping.description);
 
-                            description = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant +
-                                ((moreDescription) ? ": "+ moreDescription : "") + "</span>  ";
+                            description = "<span class='variant-description'>" + originalSpanText + " → " + variantSpanText
+                                + descriptionSpanText + "</span>  ";
 
                             variant = true;
 
@@ -426,7 +442,7 @@ var NXViewerUtils = {
                     y: annotation.end ? annotation.end : isoLengths && isoLengths[name] ? isoLengths[name] : 100000,
                     id: annotation.id,
                     category: annotation.category,
-                    description: annotation.description
+                    description: annotation.description // tooltip description
                 }
             });
             result[name] = meta;
