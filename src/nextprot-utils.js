@@ -238,17 +238,9 @@ var NXUtils = {
         }
         else return true;
     },
-    convertMappingsToIsoformMap: function (featMappings, category, group, baseUrl) {
-        var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://www.nextprot.org";
-        var mappings = jQuery.extend([], featMappings);
-        var publiActive = false;
-        if (featMappings.hasOwnProperty("annot")) {
-            publiActive = true;
-            mappings = jQuery.extend([], featMappings.annot);
-        }
-        var result = {};
+    _buildVariantObjectForTooltip: function (mapping) {
 
-        var _cleanDescriptionText = function(category, rawDescription) {
+        function _cleanDescriptionText(category, rawDescription) {
 
             var formattedDescription = "";
 
@@ -272,12 +264,41 @@ var NXUtils = {
                 }
             }
             return formattedDescription;
-        };
+        }
 
-        var _formatAminoAcidsText = function(aas) {
+        function _formatVariantAminoAcidsText(aas) {
 
             return (aas.length > 9) ? aas.substr(0, 3) + "..." + aas.substr(aas.length - 3, 3) : aas;
+        }
+
+        var originalAAs;
+        var variantAAs;
+
+        if (mapping.category === "sequence variant") {
+            originalAAs = _formatVariantAminoAcidsText(mapping.variant.original);
+            variantAAs  = _formatVariantAminoAcidsText(mapping.variant.variant);
+        } else {
+            originalAAs = mapping.variant.original;
+            variantAAs  = mapping.variant.variant;
+        }
+
+        var descriptionFormatted = _cleanDescriptionText(mapping.category, mapping.description);
+
+        return {
+            original: originalAAs,
+            variant: variantAAs,
+            description: descriptionFormatted
         };
+    },
+    convertMappingsToIsoformMap: function (featMappings, category, group, baseUrl) {
+        var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://www.nextprot.org";
+        var mappings = jQuery.extend([], featMappings);
+        var publiActive = false;
+        if (featMappings.hasOwnProperty("annot")) {
+            publiActive = true;
+            mappings = jQuery.extend([], featMappings.annot);
+        }
+        var result = {};
 
         mappings.forEach(function (mapping) {
             if (mapping.hasOwnProperty("targetingIsoformsMap")) {
@@ -342,16 +363,10 @@ var NXUtils = {
 
                         if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
 
+                            var variantObj = this._buildVariantObjectForTooltip(mapping);
+
                             link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
-
-                            var originalAAsFormatted = _formatAminoAcidsText(mapping.variant.original);
-                            var variantAAsFormatted  = _formatAminoAcidsText(mapping.variant.variant);
-                            var descriptionFormatted = _cleanDescriptionText(mapping.category, mapping.description);
-
-                            description =
-                                "<span class='variant-description'>" +
-                                    originalAAsFormatted + " → " + variantAAsFormatted + descriptionFormatted +
-                                "</span>  ";
+                            var tooltipDescription = "<span class='variant-description'>" + variantObj.original + " → " + variantObj.variant + variantObj.description + "</span>  ";
 
                             variant = true;
 
@@ -375,7 +390,7 @@ var NXUtils = {
                             end: end,
                             length: length,
                             id: category.replace(/\s/g, '') + "_" + idStart + "_" + idEnd + "_" + uniqueName,
-                            description: description,
+                            description: tooltipDescription,
                             quality: quality,
                             proteotypicity: proteotypic,
                             category: category,
