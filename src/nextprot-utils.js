@@ -238,58 +238,6 @@ var NXUtils = {
         }
         else return true;
     },
-    _buildVariantObjectForTooltip: function (mapping) {
-
-        function _cleanDescriptionText(category, rawDescription) {
-
-            var formattedDescription = "";
-
-            if (rawDescription) {
-
-                formattedDescription = ": ";
-
-                if (category === "sequence conflict") {
-                    // ex: In Ref. 3; BAG65616.
-                    // => In BAG65616.
-                    formattedDescription += rawDescription.replace(/Ref\. \d+; /, "");
-                }
-                else if (category === "sequence variant") {
-                    // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; may affect KCNQ1/KCNE2 channel
-                    // => In LQT6; may affect KCNQ1/KCNE2 channel
-                    var results = /In\s+\[([^:]+):[^\]]+\](.*)/.exec(rawDescription);
-                    formattedDescription += (results) ? "In "+ results[1] + results[2] : rawDescription;
-                }
-                else {
-                    formattedDescription += rawDescription;
-                }
-            }
-            return formattedDescription;
-        }
-
-        function _formatVariantAminoAcidsText(aas) {
-
-            return (aas.length > 9) ? aas.substr(0, 3) + "..." + aas.substr(aas.length - 3, 3) : aas;
-        }
-
-        var originalAAs;
-        var variantAAs;
-
-        if (mapping.category === "sequence variant") {
-            originalAAs = _formatVariantAminoAcidsText(mapping.variant.original);
-            variantAAs  = _formatVariantAminoAcidsText(mapping.variant.variant);
-        } else {
-            originalAAs = mapping.variant.original;
-            variantAAs  = mapping.variant.variant;
-        }
-
-        var descriptionFormatted = _cleanDescriptionText(mapping.category, mapping.description);
-
-        return {
-            original: originalAAs,
-            variant: variantAAs,
-            description: descriptionFormatted
-        };
-    },
     convertMappingsToIsoformMap: function (featMappings, category, group, baseUrl) {
         var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://www.nextprot.org";
         var mappings = jQuery.extend([], featMappings);
@@ -363,10 +311,63 @@ var NXUtils = {
 
                         if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
 
-                            var variantObj = this._buildVariantObjectForTooltip(mapping);
+                            function _buildVariantObjectForTooltip(mapping) {
+
+                                function _cleanDescriptionText(category, rawDescription) {
+
+                                    var formattedDescription = "";
+
+                                    if (rawDescription) {
+
+                                        formattedDescription = ": ";
+
+                                        if (category === "sequence conflict") {
+                                            // ex: In Ref. 3; BAG65616.
+                                            // => In BAG65616.
+                                            formattedDescription += rawDescription.replace(/Ref\. \d+; /, "");
+                                        }
+                                        else if (category === "sequence variant") {
+                                            // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; may affect KCNQ1/KCNE2 channel
+                                            // => In LQT6; may affect KCNQ1/KCNE2 channel
+                                            var results = /In\s+\[([^:]+):[^\]]+\](.*)/.exec(rawDescription);
+                                            formattedDescription += (results) ? "In "+ results[1] + results[2] : rawDescription;
+                                        }
+                                        else {
+                                            formattedDescription += rawDescription;
+                                        }
+                                    }
+                                    return formattedDescription;
+                                }
+
+                                function _formatVariantAminoAcidsText(aas) {
+
+                                    return (aas.length > 9) ? aas.substr(0, 3) + "..." + aas.substr(aas.length - 3, 3) : aas;
+                                }
+
+                                var originalAAs;
+                                var variantAAs;
+
+                                if (mapping.category === "sequence variant") {
+                                    originalAAs = _formatVariantAminoAcidsText(mapping.variant.original);
+                                    variantAAs  = _formatVariantAminoAcidsText(mapping.variant.variant);
+                                } else {
+                                    originalAAs = mapping.variant.original;
+                                    variantAAs  = mapping.variant.variant;
+                                }
+
+                                var descriptionFormatted = _cleanDescriptionText(mapping.category, mapping.description);
+
+                                return {
+                                    original: originalAAs,
+                                    variant: variantAAs,
+                                    description: descriptionFormatted
+                                };
+                            }
+
+                            var variantObj = _buildVariantObjectForTooltip(mapping);
 
                             link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
-                            var tooltipDescription = "<span class='variant-description'>" + variantObj.original + " → " + variantObj.variant + variantObj.description + "</span>  ";
+                            var tooltipDescription = "<span class='variant-description'>" + variantObj.original + " → " + variantObj.variant + variantObj.description + "</span>";
 
                             variant = true;
 
