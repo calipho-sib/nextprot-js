@@ -664,16 +664,19 @@ var NXUtils = {
     },
     truncateString: function(str, lenMax, internalString, suffixLen) {
 
-        internalString = internalString || "";
-        suffixLen = suffixLen || 0;
+        if (str) {
+            internalString = internalString || "";
+            suffixLen = suffixLen || 0;
 
-        if (lenMax <= 0) throw new Error("maximum length should be strictly positive");
-        if (suffixLen < 0) throw new Error("suffix length should be positive");
-        if (suffixLen > lenMax) throw new Error("suffix "+suffixLen+" should be shorter than maximum length "+lenMax);
+            if (lenMax <= 0) throw new Error("maximum length should be strictly positive");
 
-        if (str.length > lenMax) {
-            var prefixLen = lenMax - (suffixLen + internalString.length);
-            return str.substr(0, prefixLen) + internalString + str.substr(str.length - suffixLen, suffixLen);
+            if (str.length > lenMax) {
+                if (suffixLen < 0) throw new Error("suffix length should be positive");
+                if (suffixLen > lenMax) throw new Error("suffix " + suffixLen + " should be shorter than maximum length " + lenMax);
+
+                var prefixLen = lenMax - (suffixLen + internalString.length);
+                return str.substr(0, prefixLen) + internalString + str.substr(str.length - suffixLen, suffixLen);
+            }
         }
         return str;
     },
