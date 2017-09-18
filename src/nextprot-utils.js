@@ -297,7 +297,7 @@ var NXUtils = {
                                     assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                     resourceDb: d.resourceDb,
                                     externalDb: d.resourceDb !== "UniProt",
-                                    qualityQualifier: d.qualityQualifier.toLowerCase(),
+                                    qualityQualifier: d.qualityQualifier ? d.qualityQualifier.toLowerCase():"",
                                     publicationMD5: d.publicationMD5,
                                     publication: pub ? featMappings.publi[pub]: null,
                                     dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
