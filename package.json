@@ -1,6 +1,6 @@
 {
   "name": "nextprot",
-  "version": "0.0.128",
+  "version": "0.0.129",
   "main": "dist/nextprot.min.js",
   "description": "neXtProt api javascript client",
   "repository": {
