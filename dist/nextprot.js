@@ -612,11 +612,13 @@ var NXUtils = {
         if (type === "Peptide" || type === "SRM Peptide") {
             if (description) {
                 var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
-                return "<a class='extLink' href='" + url + "'>" + description + "</a>";
+                return "<a class='ext-link' href='" + url + "' target='_blank'>" + description + "</a>";
             }
-        } else if (type === "antibody") {
-            var url = accession;
-            return "<a class='extLink' href='" + url + "'>" + description + "</a>";
+            else return "";
+        } else if (type === "Antibody") {
+            if(domain) return "<a class='ext-link' href='" + domain + "' target='_blank'>" + accession + "</a>";
+//            if(domain) return "<a class='ext-link' href='" + domain + "'>" + accession + "<span class='fa fa-external-link'></span></a>";
+            else return "";
         } else if (type === "publication") {
             var url = domain + "/publication/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
@@ -634,6 +636,13 @@ var NXUtils = {
                 }
             }
             return "";
+        }
+        else if (category === "Antibody"){
+            for (var ev in elem.evidences) {
+                if (elem.evidences[ev].resourceDb === "HPA") {
+                    return elem.evidences[ev].resourceAccession;
+                }
+            }
         }
         else return elem.description;
     },
@@ -662,6 +671,24 @@ var NXUtils = {
         }
         else return true;
     },
+    truncateString: function(str, lenMax, internalString, suffixLen) {
+
+        if (str) {
+            internalString = internalString || "";
+            suffixLen = suffixLen || 0;
+
+            if (lenMax <= 0) throw new Error("maximum length should be strictly positive");
+
+            if (str.length > lenMax) {
+                if (suffixLen < 0) throw new Error("suffix length should be positive");
+                if (suffixLen > lenMax) throw new Error("suffix " + suffixLen + " should be shorter than maximum length " + lenMax);
+
+                var prefixLen = lenMax - (suffixLen + internalString.length);
+                return str.substr(0, prefixLen) + internalString + str.substr(str.length - suffixLen, suffixLen);
+            }
+        }
+        return str;
+    },
     convertMappingsToIsoformMap: function (featMappings, category, group, baseUrl) {
         var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://www.nextprot.org";
         var mappings = jQuery.extend([], featMappings);
@@ -672,36 +699,7 @@ var NXUtils = {
         }
         var result = {};
 
-        var _cleanDescriptionText = function(category, rawDescription) {
-
-            var formattedDescription = "";
-
-            if (rawDescription) {
-
-                formattedDescription = ": ";
-
-                if (category === "sequence conflict") {
-                    // ex: In Ref. 3; BAG65616.
-                    // => In BAG65616.
-                    formattedDescription += rawDescription.replace(/Ref\. \d+; /, "");
-                }
-                else if (category === "sequence variant") {
-                    // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; may affect KCNQ1/KCNE2 channel
-                    // => In LQT6; may affect KCNQ1/KCNE2 channel
-                    var results = /In\s+\[([^:]+):[^\]]+\](.*)/.exec(rawDescription);
-                    formattedDescription += (results) ? "In "+ results[1] + results[2] : rawDescription;
-                }
-                else {
-                    formattedDescription += rawDescription;
-                }
-            }
-            return formattedDescription;
-        };
-
-        var _formatAminoAcidsText = function(aas) {
-
-            return (aas.length > 9) ? aas.substr(0, 3) + "..." + aas.substr(aas.length - 3, 3) : aas;
-        };
+        var thisNXUtilsObject = this;
 
         mappings.forEach(function (mapping) {
             if (mapping.hasOwnProperty("targetingIsoformsMap")) {
@@ -732,7 +730,7 @@ var NXUtils = {
                                     assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                     resourceDb: d.resourceDb,
                                     externalDb: d.resourceDb !== "UniProt",
-                                    qualityQualifier: d.qualityQualifier.toLowerCase(),
+                                    qualityQualifier: d.qualityQualifier ? d.qualityQualifier.toLowerCase():"",
                                     publicationMD5: d.publicationMD5,
                                     publication: pub ? featMappings.publi[pub]: null,
                                     dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
@@ -766,31 +764,91 @@ var NXUtils = {
 
                         if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
 
-                            link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
+                            function buildVariantObjectForTooltip(mapping) {
 
-                            var originalAAsFormatted = _formatAminoAcidsText(mapping.variant.original);
-                            var variantAAsFormatted  = _formatAminoAcidsText(mapping.variant.variant);
-                            var descriptionFormatted = _cleanDescriptionText(mapping.category, mapping.description);
+                                function cleanDescriptionText(category, rawDescription) {
 
-                            description =
-                                "<span class='variant-description'>" +
-                                    originalAAsFormatted + " → " + variantAAsFormatted + descriptionFormatted +
-                                "</span>  ";
+                                    var formattedDescription = "";
+
+                                    if (rawDescription) {
+
+                                        formattedDescription = ": ";
+
+                                        if (category === "sequence conflict") {
+                                            // ex: In Ref. 3; BAG65616.
+                                            // => In BAG65616.
+                                            formattedDescription += rawDescription.replace(/Ref\. \d+; /, "");
+                                        }
+                                        else if (category === "sequence variant") {
+                                            // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; may affect KCNQ1/KCNE2 channel
+                                            // => In LQT6; may affect KCNQ1/KCNE2 channel
+                                            var results = /In\s+\[([^:]+):[^\]]+\](.*)/.exec(rawDescription);
+                                            formattedDescription += (results) ? "In "+ results[1] + results[2] : rawDescription;
+                                        }
+                                        else {
+                                            formattedDescription += rawDescription;
+                                        }
+                                    }
+                                    return formattedDescription;
+                                }
+
+                                var originalAAs;
+                                var variantAAs;
+
+                                if (mapping.category === "sequence variant") {
+                                    originalAAs = thisNXUtilsObject.truncateString(mapping.variant.original, 9, "...", 3);
+                                    variantAAs  = thisNXUtilsObject.truncateString(mapping.variant.variant, 9, "...", 3);
+                                } else {
+                                    originalAAs = mapping.variant.original;
+                                    variantAAs  = mapping.variant.variant;
+                                }
+
+                                var descriptionFormatted = cleanDescriptionText(mapping.category, mapping.description);
+
+                                return {
+                                    original: originalAAs,
+                                    variant: variantAAs,
+                                    description: thisNXUtilsObject.truncateString(descriptionFormatted, 80, " ... ", 40)
+                                };
+                            }
+
+                            function buildVariantDescriptionWithLinks(description) {
+
+                                function _replacePotentialLinks(description) {
+
+                                    var withLinksDesc = description;
+
+                                    // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; unknown pathological significance
+                                    var matchedLinks = description.match(/\[([^\]]+)\]/g);
+
+                                    for (var m in matchedLinks) {
+
+                                        var matchElements = matchedLinks[m].substring(1, matchedLinks[m].length - 1).split(":");
+                                        withLinksDesc = withLinksDesc.replace(matchedLinks[m], NXUtils.getLinkForFeature(domain, matchElements[2], matchElements[0]));
+                                    }
+
+                                    return withLinksDesc;
+                                }
+
+                                return (description) ?  " ; " + _replacePotentialLinks(description) : "";
+                            }
+
+                            var variantObj = buildVariantObjectForTooltip(mapping);
+                            var descWithPotentialLinks = buildVariantDescriptionWithLinks(mapping.description);
+
+                            description = "<span class='variant-description'>" + variantObj.original + " → " + variantObj.variant + variantObj.description + "</span>";
+                            link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>" + descWithPotentialLinks;
 
                             variant = true;
-
-                            if (mapping.description) {
-                                var reg = /\[(.*?)\]/g;
-                                var matches = mapping.description.match(reg);
-                                var desc = mapping.description;
-                                for (var m in matches) {
-                                    var matchElements = matches[m].substring(1, matches[m].length - 1).split(":");
-                                    var desc = desc.replace(matches[m], NXUtils.getLinkForFeature(domain, matchElements[2], matchElements[0]));
-
-                                }
-                                link += " ; " + desc;
-                            }
                         }
+                        else if (category === "Antibody") {
+                            url = featMappings.xrefs[mapping.evidences[0].resourceId].resolvedUrl
+                            link = NXUtils.getLinkForFeature(url, description, description, category);
+                        }
+                        else {
+                            description = thisNXUtilsObject.truncateString(description, 80, " ... ", 40);
+                        }
+
                         if (!result[name]) result[name] = [];
                         var idStart = start ? start.toString() : "NA";
                         var idEnd = end ? end.toString() : "NA";
