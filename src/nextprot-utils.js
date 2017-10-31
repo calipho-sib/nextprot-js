@@ -188,13 +188,11 @@ var NXUtils = {
         if (type === "Peptide" || type === "SRM Peptide") {
             if (description) {
                 var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
-                return "<a class='ext-link' href='" + url + "' target='_blank'>" + description + "</a>";
+                return "<a class='extLink' href='" + url + "'>" + description + "</a>";
             }
-            else return "";
-        } else if (type === "Antibody") {
-            if(domain) return "<a class='ext-link' href='" + domain + "' target='_blank'>" + accession + "</a>";
-//            if(domain) return "<a class='ext-link' href='" + domain + "'>" + accession + "<span class='fa fa-external-link'></span></a>";
-            else return "";
+        } else if (type === "antibody") {
+            var url = accession;
+            return "<a class='extLink' href='" + url + "'>" + description + "</a>";
         } else if (type === "publication") {
             var url = domain + "/publication/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
@@ -212,13 +210,6 @@ var NXUtils = {
                 }
             }
             return "";
-        }
-        else if (category === "Antibody"){
-            for (var ev in elem.evidences) {
-                if (elem.evidences[ev].resourceDb === "HPA") {
-                    return elem.evidences[ev].resourceAccession;
-                }
-            }
         }
         else return elem.description;
     },
@@ -416,10 +407,6 @@ var NXUtils = {
                             link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>" + descWithPotentialLinks;
 
                             variant = true;
-                        }
-                        else if (category === "Antibody") {
-                            url = featMappings.xrefs[mapping.evidences[0].resourceId].resolvedUrl
-                            link = NXUtils.getLinkForFeature(url, description, description, category);
                         }
                         else {
                             description = thisNXUtilsObject.truncateString(description, 80, " ... ", 40);
