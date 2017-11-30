@@ -411,7 +411,7 @@
                 });
         };
 
-        NextprotClient.prototype.getResource = function (path) {
+        NextprotClient.prototype.getJSON = function (path) {
             return _getJSON(apiBaseUrl+"/"+path)
                 .then(function (data) {
                     return data;
