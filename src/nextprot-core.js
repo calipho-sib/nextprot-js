@@ -412,7 +412,10 @@
         };
 
         NextprotClient.prototype.getJSON = function (path) {
-            return _getJSON(apiBaseUrl+"/"+path)
+            path = (!path.startWith("/")) ? "/" + path : path;
+            path = (!path.endsWith(".json")) ? path+".json" : path;
+
+            return _getJSON(apiBaseUrl+path)
                 .then(function (data) {
                     return data;
                 });
