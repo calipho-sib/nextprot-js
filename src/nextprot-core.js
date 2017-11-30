@@ -411,6 +411,13 @@
                 });
         };
 
+        NextprotClient.prototype.getResource = function (path) {
+            return _getJSON(apiBaseUrl+"/"+path)
+                .then(function (data) {
+                    return data;
+                });
+        };
+
         //node.js compatibility
         if (typeof exports !== 'undefined') {
             exports.Client = NextprotClient;
