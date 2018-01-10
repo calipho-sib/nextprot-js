@@ -149,19 +149,15 @@ var NXUtils = {
         return family;
     },
     getProteinExistence: function(term){
-        var existence = term.split('_').join(' ').toLowerCase();
-        mainSentence = "Entry whose protein(s) existence is ";
-        based = "based on ";
+        var existence = term.toLowerCase();
+        var mainSentence = "Entry whose protein(s) existence is ";
         switch(existence) {
             case "uncertain":
                 return mainSentence + existence;
-                break;
             case "inferred from homology":
                 return mainSentence + existence;
-                break;
             default:
-                return mainSentence + based + existence;
-                break;
+                return mainSentence + "based on " + existence;
         }
     },
     getSequenceForIsoform: function (isoSequences, isoformName) {
