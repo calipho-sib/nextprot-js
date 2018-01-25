@@ -1,6 +1,6 @@
 $(function () {
 
-    var loadOverview = function (overview, nxEntryName, nxUrl) {
+    var loadOverview = function (overview, proteinExistence, nxEntryName, nxUrl) {
         if ($("#nx-overview").length > 0) {
             Handlebars.registerHelper('link_to', function (type, options) {
                 switch (type) {
@@ -68,8 +68,7 @@ $(function () {
                 "families": overview.families.map(function (f) {
                     return NXUtils.getFamily(f, {})
                 }),
-                "proteineEvidence": NXUtils.getProteinExistence(overview.proteinExistence.description),
-                "proteineEvidenceCaution": overview.proteinExistenceInfo,
+                "proteineEvidence": NXUtils.getProteinExistence(proteinExistence.description),
                 "integDate": overview.history.formattedNextprotIntegrationDate,
                 "lastUpdate": overview.history.formattedNextprotUpdateDate,
                 "UniprotIntegDate": overview.history.formattedUniprotIntegrationDate,
@@ -113,8 +112,12 @@ $(function () {
         var nxEntryName = nx.getEntryName();
         var nxUrl = nx.getNeXtProtUrl();
         nx.getProteinOverview().then(function (data) {
-            loadOverview(data, nxEntryName, nxUrl);
+            nx.getJSON("/entry/" + nxEntryName + "/protein-existences.json")
+                .then(function (proteinExistences) {
+                    var proteinEvidence = proteinExistences.proteinExistenceInferred.proteinExistence.description
 
+                    loadOverview(data, proteinEvidence, nxEntryName, nxUrl);
+                });
         });
         if (nx.getEnvironment() !== 'pro') {
             $("body").append("<span style='position: absolute; top: 0; left: 0; border: 0; color: darkred; margin: 20px; font-weight: bold'>" + nx.getEnvironment().toUpperCase() + " API</span>");
