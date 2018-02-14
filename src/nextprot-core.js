@@ -32,6 +32,7 @@
             var isoformMap = {};
             var xrefMap = {};
             var experimentalContexts = {};
+            var mdataMap = {};
             if (data.entry.publications){
                 data.entry.publications.forEach(function (p) {
                     publiMap[p.publicationId] = p;
@@ -45,6 +46,11 @@
             if (data.entry.experimentalContexts){
                 data.entry.experimentalContexts.forEach(function (c) {
                     experimentalContexts[c.contextId] = c;
+                });
+            }
+            if (data.entry.mdataList){
+                data.entry.mdataList.forEach(function (c) {
+                    mdataMap[c.id] = c;
                 });
             }
             data.entry.xrefs.forEach(function (p) {
@@ -63,7 +69,8 @@
                 publi: publiMap,
                 xrefs: xrefMap,
                 isoforms: isoformMap,
-                contexts: experimentalContexts
+                contexts: experimentalContexts,
+                mdata: mdataMap
 
             };
         };

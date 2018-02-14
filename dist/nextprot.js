@@ -32,6 +32,7 @@
             var isoformMap = {};
             var xrefMap = {};
             var experimentalContexts = {};
+            var mdataMap = {};
             if (data.entry.publications){
                 data.entry.publications.forEach(function (p) {
                     publiMap[p.publicationId] = p;
@@ -45,6 +46,11 @@
             if (data.entry.experimentalContexts){
                 data.entry.experimentalContexts.forEach(function (c) {
                     experimentalContexts[c.contextId] = c;
+                });
+            }
+            if (data.entry.mdataList){
+                data.entry.mdataList.forEach(function (c) {
+                    mdataMap[c.id] = c;
                 });
             }
             data.entry.xrefs.forEach(function (p) {
@@ -63,7 +69,8 @@
                 publi: publiMap,
                 xrefs: xrefMap,
                 isoforms: isoformMap,
-                contexts: experimentalContexts
+                contexts: experimentalContexts,
+                mdata: mdataMap
 
             };
         };
@@ -677,6 +684,14 @@ var NXUtils = {
         }
         else return true;
     },
+    getUnicity: function (elem){
+        if (elem.propertiesMap.hasOwnProperty("peptide unicity")){
+            var unicity = elem.propertiesMap["peptide unicity"][0].value;
+            var unicityValue = unicity === "PSEUDO_UNIQUE" ? "pseudo-unique" : unicity.replace("_"," ").toLowerCase();
+            return unicityValue;
+        }
+        return "";
+    },
     truncateString: function(str, lenMax, internalString, suffixLen) {
 
         if (str) {
@@ -694,6 +709,25 @@ var NXUtils = {
             }
         }
         return str;
+    },
+    getMdataPubLink: function (pubId){
+        return pubId.map(function(pb){
+            if (pb.db === "PubMed"){
+                return{
+                    url:'<a href="https://www.ncbi.nlm.nih.gov/pubmed?cmd=search&term='+pb.dbkey+'">'+pb.dbkey+'</a>',
+                    accession:pb.dbkey,
+                    label:"PubMed"
+                }
+            }
+            else if (pb.db === "DOI"){
+                return{
+                    //http://dx.doi.org/10.1021/pr300630k
+                    url:'<a href="http://dx.doi.org/'+pb.dbkey+'">'+pb.dbkey+'</a>',
+                    accession:pb.dbkey,
+                    label:"Full text"
+                }
+            }
+        })
     },
     convertMappingsToIsoformMap: function (featMappings, category, group, baseUrl) {
         var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://www.nextprot.org";
@@ -719,10 +753,12 @@ var NXUtils = {
                         var link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category);
                         var quality = mapping.qualityQualifier ? mapping.qualityQualifier.toLowerCase() : "";
                         var proteotypic = NXUtils.getProteotypicity(mapping.properties);
+                        var unicity = NXUtils.getUnicity(mapping);;
                         var variant = false;
                         var source = mapping.evidences.map(function (d) {
                             var pub = null;
                             var xref = null;
+                            var mdata = null;
                             var context = (featMappings.contexts[d.experimentalContextId]) ? featMappings.contexts[d.experimentalContextId] : false;
                             if (publiActive) {
                                 if (featMappings.publi[d.resourceId]) {
@@ -730,6 +766,21 @@ var NXUtils = {
                                 }
                                 if (featMappings.xrefs[d.resourceId]) {
                                     xref = featMappings.xrefs[d.resourceId];
+                                }
+                                if (featMappings.mdata[d.mdataId]) {
+                                    mdata = featMappings.mdata[d.mdataId].mdataContext;
+                                    if (mdata && mdata.publications && mdata.publications.publication) {
+//                                        mdata.publications = mdata.publications.publication.map(function(pb){
+//                                            return featMappings.publi[pb.db_xref.dbkey];
+//                                        })
+                                        var pubId = mdata.publications.publication.map(function(pb){
+//                                            return featMappings.publi[pb.db_xref.dbkey];
+//                                            return pb.db_xref.dbkey;
+                                            return pb.db_xref;
+                                        })
+                                        mdata.mdataPubLink = NXUtils.getMdataPubLink(pubId);
+                                        mdata.publications = null; null;
+                                    }
                                 }
                                 return {
                                     evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
@@ -751,7 +802,8 @@ var NXUtils = {
                                         name: xref.accession,
                                         url: xref.resolvedUrl
                                     } : null,
-                                    context: context
+                                    context: context,
+                                    mdata: mdata
                                 }
                             } else {
                                 return {
@@ -763,7 +815,8 @@ var NXUtils = {
                                     journal: "",
                                     volume: "",
                                     abstract: "",
-                                    context: context
+                                    context: context,
+                                    mdata:mdata
                                 }
                             }
                         });
@@ -866,6 +919,7 @@ var NXUtils = {
                             description: description,
                             quality: quality,
                             proteotypicity: proteotypic,
+                            unicity: unicity,
                             category: category,
                             group: group,
                             link: link,
