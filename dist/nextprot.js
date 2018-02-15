@@ -621,11 +621,19 @@ var NXUtils = {
         }
         return result;
     },
-    getLinkForFeature: function (domain, accession, description, type) {
+    getLinkForFeature: function (domain, accession, description, type, feature, xrefDict) {
+
+        //TOSEE WITH MATHIEU - On 15.02.2018 Daniel has added feature + xrefDict in the signature of this method. Is it still necessary to hardcode some other (resee signature because now fields are redudant)
         if (type === "Peptide" || type === "SRM Peptide") {
             if (description) {
-                var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
-                return "<a class='ext-link' href='" + url + "' target='_blank'>" + description + "</a>";
+                if(feature && feature.evidences && (feature.evidences.length > 0) && feature.evidences[0].resourceId && xrefDict){
+                    if(xrefDict[feature.evidences[0].resourceId]) {
+                        var url = xrefDict[feature.evidences[0].resourceId].resolvedUrl
+                        return "<a class='ext-link' href='" + url + "' target='_blank'>" + description + "</a>";
+                    }
+                }
+                console.warn("Could not find xref for evidence ", xrefDict[feature.evidences[0]]);
+                return ""
             }
             else return "";
         } else if (type === "Antibody") {
@@ -729,6 +737,7 @@ var NXUtils = {
         })
     },
     convertMappingsToIsoformMap: function (featMappings, category, group, baseUrl) {
+        var xrefsDict = featMappings.xrefs;
         var domain = baseUrl ? baseUrl : baseUrl === "" ? baseUrl : "https://www.nextprot.org";
         var mappings = jQuery.extend([], featMappings);
         var publiActive = false;
@@ -749,7 +758,7 @@ var NXUtils = {
                         var end = mapping.targetingIsoformsMap[name].lastPosition;
                         var length = start && end ? end - start + 1 : null;
                         var description = NXUtils.getDescription(mapping,category);
-                        var link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category);
+                        var link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category, mapping, xrefsDict);
                         var quality = mapping.qualityQualifier ? mapping.qualityQualifier.toLowerCase() : "";
                         var proteotypic = NXUtils.getProteotypicity(mapping.properties);
                         var unicity = NXUtils.getUnicity(mapping);;
