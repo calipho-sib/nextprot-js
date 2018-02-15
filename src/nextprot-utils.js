@@ -273,15 +273,14 @@ var NXUtils = {
         return pubId.map(function(pb){
             if (pb.db === "PubMed"){
                 return{
-                    url:'<a href="https://www.ncbi.nlm.nih.gov/pubmed?cmd=search&term='+pb.dbkey+'">'+pb.dbkey+'</a>',
-                    accession:pb.dbkey,
-                    label:"PubMed"
+                    url: "https://www.ncbi.nlm.nih.gov/pubmed?cmd=search&term=" + pb.dbkey,
+                    accession: pb.dbkey,
+                    label: "PubMed"
                 }
             }
             else if (pb.db === "DOI"){
                 return{
-                    //http://dx.doi.org/10.1021/pr300630k
-                    url:'<a href="http://dx.doi.org/'+pb.dbkey+'">'+pb.dbkey+'</a>',
+                    url: "http://dx.doi.org/" + pb.dbkey,
                     accession:pb.dbkey,
                     label:"Full text"
                 }
