@@ -769,11 +769,11 @@ var NXUtils = {
                                 }
                                 if (featMappings.mdata[d.mdataId]) {
                                     mdata = featMappings.mdata[d.mdataId].mdataContext;
-                                    if (mdata && mdata.publications && mdata.publications.publication) {
-//                                        mdata.publications = mdata.publications.publication.map(function(pb){
+                                    if (mdata && mdata.publications && mdata.publications.values) {
+//                                        mdata.publications = mdata.publications.values.map(function(pb){
 //                                            return featMappings.publi[pb.db_xref.dbkey];
 //                                        })
-                                        var pubId = mdata.publications.publication.map(function(pb){
+                                        var pubId = mdata.publications.values.map(function(pb){
 //                                            return featMappings.publi[pb.db_xref.dbkey];
 //                                            return pb.db_xref.dbkey;
                                             return pb.db_xref;
