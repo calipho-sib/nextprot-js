@@ -174,6 +174,11 @@
             return _getJSON(url);
         };
 
+        var _callTerm = function (cvTermAccession) {
+            var url = apiBaseUrl + "/term/" + cvTermAccession;
+            return _getJSON(url);
+        };
+
         var NextprotClient = function (appName, clientInformation) {
             applicationName = appName;
             clientInfo = clientInformation;
@@ -393,6 +398,12 @@
 
         NextprotClient.prototype.getTerminologyByName = function (terminologyName) {
             return _callTerminology(terminologyName).then(function (data) {
+                return data;
+            });
+        };
+
+        NextprotClient.prototype.getTermByAccession = function (cvTermAccession) {
+            return _callTerm(cvTermAccession).then(function (data) {
                 return data;
             });
         };

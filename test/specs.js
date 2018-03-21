@@ -206,3 +206,22 @@ QUnit.test("Should fail to execute a SPARQL without prefixes", function (assert)
         done();
     });
 });
+
+
+// TERM test added by Daniel on 22nd of March
+QUnit.test("Term  test", function (assert) {
+    var done = assert.async();
+    var promise = nx.getTermByAccession("TS-0079");
+    promise.then(function (data) {
+        assert.ok(data.cvTerm, 'should get a CV Term Json filled');
+        console.log(data.cvTerm.name);
+        if (data.cvTerm) {
+            assert.ok(data.cvTerm.id, 38286);
+            assert.ok(data.cvTerm.name, "Blood");
+        }
+        done();
+    }, function (error) {
+        assert.notOk("failed to cv term");
+        done();
+    });
+});
