@@ -226,12 +226,6 @@ var NXUtils = {
         }
         else return elem.description;
     },
-    getEvidenceCodeName: function (elem, category) {
-        if (category === "Peptide") {
-            return "EXP";
-        }
-        else return elem.evidenceCodeName;
-    },
     getAssignedBy: function (elem) {
         if (elem === "Uniprot") {
             return "UniprotKB";
@@ -350,7 +344,7 @@ var NXUtils = {
                                     }
                                 }
                                 return {
-                                    evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
+                                    evidenceCodeName: d.evidenceCodeName,
                                     assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                     resourceDb: d.resourceDb,
                                     externalDb: d.resourceDb !== "UniProt",
@@ -374,7 +368,7 @@ var NXUtils = {
                                 }
                             } else {
                                 return {
-                                    evidenceCodeName: NXUtils.getEvidenceCodeName(d, category),
+                                    evidenceCodeName: d.evidenceCodeName,
                                     assignedBy: NXUtils.getAssignedBy(d.assignedBy),
                                     publicationMD5: d.publicationMD5,
                                     title: "",
