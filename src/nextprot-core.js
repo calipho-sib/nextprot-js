@@ -429,9 +429,11 @@
                 });
         };
 
-        NextprotClient.prototype.getJSON = function (path) {
+        NextprotClient.prototype.getJSON = function (path, noappend) {
             path = (!path.startsWith("/")) ? "/" + path : path;
-            path = (!path.endsWith(".json")) ? path+".json" : path;
+
+            if((noappend === undefined) || !noappend)
+		path = (!path.endsWith(".json")) ? path+".json" : path;
 
             return _getJSON(apiBaseUrl+path)
                 .then(function (data) {
