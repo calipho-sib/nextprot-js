@@ -109,7 +109,7 @@
                 if (environment === 'dev') nextprotUrl = 'https://dev-search.nextprot.org';
                 else nextprotUrl = protocol + environment + "-search.nextprot.org";
             }
-            console.log("nx api base url : " + apiBaseUrl);
+            //console.log("nx api base url : " + apiBaseUrl);
             sparqlEndpoint = apiBaseUrl + "/sparql";
             sparqlFormat = "?output=json";
         }
