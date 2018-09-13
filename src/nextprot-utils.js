@@ -251,6 +251,11 @@ var NXUtils = {
             var unicityValue = unicity === "PSEUDO_UNIQUE" ? "pseudo-unique" : unicity.replace("_"," ").toLowerCase();
             return unicityValue;
         }
+        if (elem.propertiesMap.hasOwnProperty("antibody unicity")){
+            var unicity = elem.propertiesMap["antibody unicity"][0].value;
+            var unicityValue = unicity === "PSEUDO_UNIQUE" ? "pseudo-unique" : unicity == "UNIQUE" ? "unique" : "non unique";
+            return unicityValue;
+        }
         return "";
     },
     truncateString: function(str, lenMax, internalString, suffixLen) {
