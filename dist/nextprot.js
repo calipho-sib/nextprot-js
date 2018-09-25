@@ -713,7 +713,7 @@ var NXUtils = {
         }
         if (elem.propertiesMap.hasOwnProperty("antibody unicity")){
             var unicity = elem.propertiesMap["antibody unicity"][0].value;
-            var unicityValue = unicity === "PSEUDO_UNIQUE" ? "pseudo-unique" : unicity == "UNIQUE" ? "unique" : "non unique";
+            var unicityValue = unicity === "PSEUDO_UNIQUE" ? "pseudo-unique" : unicity == "UNIQUE" ? "unique" : "not unique";
             return unicityValue;
         }
         return "";
