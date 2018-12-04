@@ -608,8 +608,9 @@ var NXUtils = {
         }
         return family;
     },
-    getProteinExistence: function(term){
-        var existence = term.toLowerCase();
+    getProteinExistence: function(pe){
+        var description = pe.description;
+        var existence = description.toLowerCase();
         var mainSentence = "Entry whose protein(s) existence is ";
         switch(existence) {
             case "uncertain":
@@ -1101,7 +1102,7 @@ $(function () {
                 "families": overview.families.map(function (f) {
                     return NXUtils.getFamily(f, {})
                 }),
-                "proteineEvidence": NXUtils.getProteinExistence(overview.proteinExistences.proteinExistenceInferred.proteinExistence.description),
+                "proteineEvidence": NXUtils.getProteinExistence(overview.proteinExistence.description),
                 "integDate": overview.history.formattedNextprotIntegrationDate,
                 "lastUpdate": overview.history.formattedNextprotUpdateDate,
                 "UniprotIntegDate": overview.history.formattedUniprotIntegrationDate,
