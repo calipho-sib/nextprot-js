@@ -68,7 +68,7 @@ $(function () {
                 "families": overview.families.map(function (f) {
                     return NXUtils.getFamily(f, {})
                 }),
-                "proteineEvidence": NXUtils.getProteinExistence(overview.proteinExistences.proteinExistenceInferred.proteinExistence.description),
+                "proteineEvidence": NXUtils.getProteinExistence(overview.proteinExistence.description),
                 "integDate": overview.history.formattedNextprotIntegrationDate,
                 "lastUpdate": overview.history.formattedNextprotUpdateDate,
                 "UniprotIntegDate": overview.history.formattedUniprotIntegrationDate,

@@ -148,8 +148,9 @@ var NXUtils = {
         }
         return family;
     },
-    getProteinExistence: function(term){
-        var existence = term.toLowerCase();
+    getProteinExistence: function(pe){
+        var description = pe.description;
+        var existence = description.toLowerCase();
         var mainSentence = "Entry whose protein(s) existence is ";
         switch(existence) {
             case "uncertain":
