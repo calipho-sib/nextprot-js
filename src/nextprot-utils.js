@@ -370,7 +370,8 @@ var NXUtils = {
                                         url: xref.resolvedUrl
                                     } : null,
                                     context: context,
-                                    mdata: mdata
+                                    mdata: mdata,
+                                    properties: d.properties ? d.properties : null
                                 }
                             } else {
                                 return {
@@ -383,7 +384,8 @@ var NXUtils = {
                                     volume: "",
                                     abstract: "",
                                     context: context,
-                                    mdata:mdata
+                                    mdata: mdata,
+                                    properties: d.properties ? d.properties : null
                                 }
                             }
                         });
