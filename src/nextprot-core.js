@@ -103,11 +103,8 @@
             apiBaseUrl = "https://api.nextprot.org";
             nextprotUrl = "https://www.nextprot.org";
             if (environment !== 'pro') {
-                var protocol = environment === 'dev' ? "https://" : "http://";
-//            console.log("api protocol : " + protocol)
-                apiBaseUrl = protocol + environment + "-api.nextprot.org";
-                if (environment === 'dev') nextprotUrl = 'https://dev-search.nextprot.org';
-                else nextprotUrl = protocol + environment + "-search.nextprot.org";
+                apiBaseUrl = "https://" + environment + "-api.nextprot.org";
+                nextprotUrl = "https://" + environment + "-search.nextprot.org";
                 
                 if (environment === 'localhost') {
                     apiBaseUrl = protocol + "localhost:8080/nextprot-api-web";
