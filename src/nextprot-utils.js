@@ -408,10 +408,9 @@ var NXUtils = {
                                             formattedDescription += rawDescription.replace(/Ref\. \d+; /, "");
                                         }
                                         else if (category === "sequence variant") {
-                                            // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; may affect KCNQ1/KCNE2 channel
-                                            // => In LQT6; may affect KCNQ1/KCNE2 channel
-                                            var results = /In\s+\[([^:]+):[^\]]+\](.*)/.exec(rawDescription);
-                                            formattedDescription += (results) ? "In "+ results[1] + results[2] : rawDescription;
+                                            // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; may affect KCNQ1/KCNE2 channel; Causes [Rett Syndrome:NCI_DISEASE:C999]
+                                            // => In LQT6; may affect KCNQ1/KCNE2 channel; Causes Rett Syndrome
+                                            formattedDescription += rawDescription.replaceAll(/(\[([^:]+):[^\]]+\])/, "$2");
                                         }
                                         else {
                                             formattedDescription += rawDescription;
