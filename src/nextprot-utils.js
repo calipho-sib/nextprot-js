@@ -355,6 +355,10 @@ var NXUtils = {
                                     resourceDb: d.resourceDb,
                                     externalDb: d.resourceDb !== "UniProt",
                                     qualityQualifier: d.qualityQualifier ? d.qualityQualifier.toLowerCase() : "",
+                                    negative: d.negativeEvidence,
+                                    diseaseRelatedAccession: d.diseaseRelatedAccession,
+                                    diseaseRelatedName: d.diseaseRelatedName,
+                                    diseaseRelatedPrefix: d.diseaseRelatedPrefix,
                                     publicationMD5: d.publicationMD5,
                                     publication: pub ? featMappings.publi[pub]: null,
                                     dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
