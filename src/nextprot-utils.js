@@ -498,6 +498,7 @@ var NXUtils = {
                             evidenceLength: source.length,
                             source: source,
                             variant: variant,
+                            conflict: mapping.conflict,
                             context: featMappings.contexts
                         });
                     }
