@@ -464,11 +464,19 @@ var NXUtils = {
                                 return (description) ?  " ; " + _replacePotentialLinks(description) : "";
                             }
 
+                            function buildHGVSname(annotationName) {
+                                if (annotationName) {
+                                    return  " (" + annotationName.substring(annotationName.indexOf("-p.") + 1) + ")" ;
+                                }
+                                return "";
+                            }
+
                             var variantObj = buildVariantObjectForTooltip(mapping);
+                            var hgvsName = buildHGVSname(mapping.annotationName);
                             var descWithPotentialLinks = buildVariantDescriptionWithLinks(mapping.description);
 
                             description = "<span class='variant-description'>" + variantObj.original + " → " + variantObj.variant + variantObj.description + "</span>";
-                            link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>" + descWithPotentialLinks;
+                            link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>" + hgvsName + descWithPotentialLinks;
 
                             variant = true;
                         }
