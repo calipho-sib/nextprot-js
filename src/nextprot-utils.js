@@ -209,6 +209,9 @@ var NXUtils = {
         } else if (description) return description;
         else return "";
     },
+    setNotInBold: function (text) {
+        return text.replace(/Not /g, "<b>Not </b>")
+    },
     getDescription: function (elem, category) {
         if (category === "Peptide" || category === "SRM Peptide") {
             for (var ev in elem.evidences) {
@@ -459,7 +462,7 @@ var NXUtils = {
                                     return withLinksDesc;
                                 }
 
-                                return (description) ?  " ; " + _replacePotentialLinks(description) : "";
+                                return (description) ?  " ; " + NXUtils.setNotInBold(_replacePotentialLinks(description)) : "";
                             }
 
                             var variantObj = buildVariantObjectForTooltip(mapping);
@@ -562,7 +565,7 @@ var NXViewerUtils = {
                     y: annotation.end ? annotation.end : isoLengths && isoLengths[name] ? isoLengths[name] : 100000,
                     id: annotation.id,
                     category: annotation.category,
-                    description: annotation.description // tooltip description
+                    description: NXUtils.setNotInBold(annotation.description) // tooltip description
                 }
             });
             result[name] = meta;
