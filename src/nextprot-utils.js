@@ -320,6 +320,7 @@ var NXUtils = {
                         var uniqueName = mapping.uniqueName;
                         var start = mapping.targetingIsoformsMap[name].firstPosition;
                         var end = mapping.targetingIsoformsMap[name].lastPosition;
+                        var hgvs = mapping.targetingIsoformsMap[name].hgvs? " (" + mapping.targetingIsoformsMap[name].hgvs.split(":")[1] + ")" : "";
                         var length = start && end ? end - start + 1 : null;
                         var description = NXUtils.getDescription(mapping,category);
                         var link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category, mapping, xrefsDict);
@@ -471,7 +472,7 @@ var NXUtils = {
                             var descWithPotentialLinks = buildVariantDescriptionWithLinks(mapping.description);
 
                             description = "<span class='variant-description'>" + variantObj.original + " → " + variantObj.variant + variantObj.description + "</span>";
-                            link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>" + descWithPotentialLinks;
+                            link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>" + hgvs + descWithPotentialLinks;
 
                             variant = true;
                         }
