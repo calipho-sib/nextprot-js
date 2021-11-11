@@ -210,7 +210,9 @@ var NXUtils = {
         else return "";
     },
     setNotInBold: function (text) {
-        return text.replace(/Not /g, "<b>Not </b>")
+        if (text)
+            return text.replace(/Not /g, "<b>Not </b>");
+        return text;
     },
     getDescription: function (elem, category) {
         if (category === "Peptide" || category === "SRM Peptide") {
