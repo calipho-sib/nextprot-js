@@ -472,7 +472,7 @@ var NXUtils = {
                             var descWithPotentialLinks = buildVariantDescriptionWithLinks(mapping.description);
 
                             description = "<span class='variant-description'>" + variantObj.original + " → " + variantObj.variant + variantObj.description + "</span>";
-                            link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>" + hgvs + descWithPotentialLinks;
+                            link = "<span class='variant-description'>" + variantObj.original + " → " + mapping.variant.variant + "</span>" + hgvs + descWithPotentialLinks;
 
                             variant = true;
                         }
