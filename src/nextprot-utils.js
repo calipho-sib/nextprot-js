@@ -251,6 +251,17 @@ var NXUtils = {
         }
         else return true;
     },
+    getPhenotypicEffect: function (elem, domain, entryAcc) {
+        var effect = "";
+        if (elem) {
+            elem.forEach(function(p) {
+                if (p.name === "phenotypic effect") {
+                    effect = "; <a href='" + domain + "/" + entryAcc +"/phenotypes'>" + p.value + "</a>";
+                }
+            });
+        }
+        return effect;
+    },
     getUnicity: function (elem){
         if (elem.propertiesMap.hasOwnProperty("peptide unicity")){
             var unicity = elem.propertiesMap["peptide unicity"][0].value;
@@ -326,6 +337,7 @@ var NXUtils = {
                         var link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category, mapping, xrefsDict);
                         var quality = mapping.qualityQualifier ? mapping.qualityQualifier.toLowerCase() : "";
                         var proteotypic = NXUtils.getProteotypicity(mapping.properties);
+                        var phenotypicEffect = NXUtils.getPhenotypicEffect(mapping.properties, domain, name);
                         var unicity = NXUtils.getUnicity(mapping);;
                         var variant = false;
                         var source = mapping.evidences.map(function (d) {
@@ -472,7 +484,7 @@ var NXUtils = {
                             var descWithPotentialLinks = buildVariantDescriptionWithLinks(mapping.description);
 
                             description = "<span class='variant-description'>" + variantObj.original + " → " + variantObj.variant + variantObj.description + "</span>";
-                            link = "<span class='variant-description'>" + variantObj.original + " → " + mapping.variant.variant + "</span>" + hgvs + descWithPotentialLinks;
+                            link = "<span class='variant-description'>" + variantObj.original + " → " + mapping.variant.variant + "</span>" + hgvs + descWithPotentialLinks + phenotypicEffect;
 
                             variant = true;
                         }
