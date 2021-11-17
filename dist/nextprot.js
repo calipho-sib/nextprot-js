@@ -666,6 +666,11 @@ var NXUtils = {
         } else if (description) return description;
         else return "";
     },
+    setNotInBold: function (text) {
+        if (text)
+            return text.replace(/Not /g, "<b>Not </b>");
+        return text;
+    },
     getDescription: function (elem, category) {
         if (category === "Peptide" || category === "SRM Peptide") {
             for (var ev in elem.evidences) {
@@ -702,6 +707,17 @@ var NXUtils = {
             return proteo;
         }
         else return true;
+    },
+    getPhenotypicEffect: function (elem, domain, entryAcc) {
+        var effect = "";
+        if (elem) {
+            elem.forEach(function(p) {
+                if (p.name === "phenotypic effect") {
+                    effect = "; <a href='" + domain + "/" + entryAcc +"/phenotypes'>" + p.value + "</a>";
+                }
+            });
+        }
+        return effect;
     },
     getUnicity: function (elem){
         if (elem.propertiesMap.hasOwnProperty("peptide unicity")){
@@ -772,11 +788,13 @@ var NXUtils = {
                         var uniqueName = mapping.uniqueName;
                         var start = mapping.targetingIsoformsMap[name].firstPosition;
                         var end = mapping.targetingIsoformsMap[name].lastPosition;
+                        var hgvs = mapping.targetingIsoformsMap[name].hgvs? " (" + mapping.targetingIsoformsMap[name].hgvs.split(":")[1] + ")" : "";
                         var length = start && end ? end - start + 1 : null;
                         var description = NXUtils.getDescription(mapping,category);
                         var link = NXUtils.getLinkForFeature(domain, mapping.cvTermAccessionCode, description, category, mapping, xrefsDict);
                         var quality = mapping.qualityQualifier ? mapping.qualityQualifier.toLowerCase() : "";
                         var proteotypic = NXUtils.getProteotypicity(mapping.properties);
+                        var phenotypicEffect = NXUtils.getPhenotypicEffect(mapping.properties, domain, name);
                         var unicity = NXUtils.getUnicity(mapping);;
                         var variant = false;
                         var source = mapping.evidences.map(function (d) {
@@ -812,6 +830,8 @@ var NXUtils = {
                                     resourceDb: d.resourceDb,
                                     externalDb: d.resourceDb !== "UniProt",
                                     qualityQualifier: d.qualityQualifier ? d.qualityQualifier.toLowerCase() : "",
+                                    negative: d.negativeEvidence,
+                                    diseaseRelatedVariant: d.diseaseRelatedVariant,
                                     publicationMD5: d.publicationMD5,
                                     publication: pub ? featMappings.publi[pub]: null,
                                     dbXrefs: pub ? featMappings.publi[pub].dbXrefs ?featMappings.publi[pub].dbXrefs.map(function (o) {
@@ -865,10 +885,9 @@ var NXUtils = {
                                             formattedDescription += rawDescription.replace(/Ref\. \d+; /, "");
                                         }
                                         else if (category === "sequence variant") {
-                                            // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; may affect KCNQ1/KCNE2 channel
-                                            // => In LQT6; may affect KCNQ1/KCNE2 channel
-                                            var results = /In\s+\[([^:]+):[^\]]+\](.*)/.exec(rawDescription);
-                                            formattedDescription += (results) ? "In "+ results[1] + results[2] : rawDescription;
+                                            // ex: In [LQT6:UNIPROT_DISEASE:DI-00684]; may affect KCNQ1/KCNE2 channel; Causes [Rett Syndrome:NCI_DISEASE:C999]
+                                            // => In LQT6; may affect KCNQ1/KCNE2 channel; Causes Rett Syndrome
+                                            formattedDescription += rawDescription.replaceAll(/(\[([^:]+):[^\]]+\])/g, "$2");
                                         }
                                         else {
                                             formattedDescription += rawDescription;
@@ -915,14 +934,14 @@ var NXUtils = {
                                     return withLinksDesc;
                                 }
 
-                                return (description) ?  " ; " + _replacePotentialLinks(description) : "";
+                                return (description) ?  " ; " + NXUtils.setNotInBold(_replacePotentialLinks(description)) : "";
                             }
 
                             var variantObj = buildVariantObjectForTooltip(mapping);
                             var descWithPotentialLinks = buildVariantDescriptionWithLinks(mapping.description);
 
                             description = "<span class='variant-description'>" + variantObj.original + " → " + variantObj.variant + variantObj.description + "</span>";
-                            link = "<span class='variant-description'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>" + descWithPotentialLinks;
+                            link = "<span class='variant-description'>" + variantObj.original + " → " + mapping.variant.variant + "</span>" + hgvs + descWithPotentialLinks + phenotypicEffect;
 
                             variant = true;
                         }
@@ -952,6 +971,7 @@ var NXUtils = {
                             evidenceLength: source.length,
                             source: source,
                             variant: variant,
+                            conflict: mapping.conflict,
                             context: featMappings.contexts
                         });
                     }
@@ -1017,7 +1037,7 @@ var NXViewerUtils = {
                     y: annotation.end ? annotation.end : isoLengths && isoLengths[name] ? isoLengths[name] : 100000,
                     id: annotation.id,
                     category: annotation.category,
-                    description: annotation.description // tooltip description
+                    description: NXUtils.setNotInBold(annotation.description) // tooltip description
                 }
             });
             result[name] = meta;
