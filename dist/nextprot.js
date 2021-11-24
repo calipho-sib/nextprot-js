@@ -713,7 +713,7 @@ var NXUtils = {
         if (elem) {
             elem.forEach(function(p) {
                 if (p.name === "phenotypic effect") {
-                    effect = "; <a href='" + domain + "/" + entryAcc +"/phenotypes'>" + p.value + "</a>";
+                    effect = "; <a href='" + domain + "/entry/" + entryAcc +"/phenotypes'>" + p.value + "</a>";
                 }
             });
         }
