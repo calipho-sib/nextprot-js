@@ -648,8 +648,10 @@ var NXUtils = {
                     for (var ev in feature.evidences) {
                         if (feature.evidences[ev].resourceDb === "PeptideAtlas" || feature.evidences[ev].resourceDb === "SRMAtlas"
                             || feature.evidences[ev].resourceDb === "MassIVE") {
-                            var url = xrefDict[feature.evidences[ev].resourceId].resolvedUrl
-                            links.add("<a class='ext-link' href='" + url + "' target='_blank'>" + feature.evidences[ev].resourceAccession + "</a>");
+                            if (xrefDict[feature.evidences[ev].resourceId]) {
+                                var url = xrefDict[feature.evidences[ev].resourceId].resolvedUrl
+                                links.add("<a class='ext-link' href='" + url + "' target='_blank'>" + feature.evidences[ev].resourceAccession + "</a>");
+                            }
                         }
                     }
                     if (links.size > 0) {
