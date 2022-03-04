@@ -643,10 +643,17 @@ var NXUtils = {
         //TOSEE WITH MATHIEU - On 15.02.2018 Daniel has added feature + xrefDict in the signature of this method. Is it still necessary to hardcode some other (resee signature because now fields are redudant)
         if (type === "Peptide" || type === "SRM Peptide") {
             if (description) {
-                if(feature && feature.evidences && (feature.evidences.length > 0) && feature.evidences[0].resourceId && xrefDict){
-                    if(xrefDict[feature.evidences[0].resourceId]) {
-                        var url = xrefDict[feature.evidences[0].resourceId].resolvedUrl
-                        return "<a class='ext-link' href='" + url + "' target='_blank'>" + description + "</a>";
+                if(feature && feature.evidences && (feature.evidences.length > 0) && xrefDict){
+                    var links = new Set();
+                    for (var ev in feature.evidences) {
+                        if (feature.evidences[ev].resourceDb === "PeptideAtlas" || feature.evidences[ev].resourceDb === "SRMAtlas"
+                            || feature.evidences[ev].resourceDb === "MassIVE") {
+                            var url = xrefDict[feature.evidences[ev].resourceId].resolvedUrl
+                            links.add("<a class='ext-link' href='" + url + "' target='_blank'>" + feature.evidences[ev].resourceAccession + "</a>");
+                        }
+                    }
+                    if (links.size > 0) {
+                        return Array.from(links).join(' ');
                     }
                 }
                 console.warn("Could not find xref for evidence ", xrefDict[feature.evidences[0]]);
@@ -673,10 +680,15 @@ var NXUtils = {
     },
     getDescription: function (elem, category) {
         if (category === "Peptide" || category === "SRM Peptide") {
+            var accessions = new Set();
             for (var ev in elem.evidences) {
-                if (elem.evidences[ev].resourceDb === "PeptideAtlas" || elem.evidences[ev].resourceDb === "SRMAtlas") {
-                    return elem.evidences[ev].resourceAccession;
+                if (elem.evidences[ev].resourceDb === "PeptideAtlas" || elem.evidences[ev].resourceDb === "SRMAtlas"
+                    || elem.evidences[ev].resourceDb === "MassIVE") {
+                    accessions.add(elem.evidences[ev].resourceAccession);
                 }
+            }
+            if (accessions.size > 0) {
+                return Array.from(accessions).join(' ');
             }
             return "";
         }
