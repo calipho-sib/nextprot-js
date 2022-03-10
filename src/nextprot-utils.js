@@ -311,7 +311,7 @@ var NXUtils = {
         return pubId.map(function(pb){
             if (pb.db === "PubMed"){
                 return{
-                    url: "https://www.ncbi.nlm.nih.gov/pubmed?cmd=search&term=" + pb.dbkey,
+                    url: "https://pubmed.ncbi.nlm.nih.gov/" + pb.dbkey + "/",
                     accession: pb.dbkey,
                     label: "PubMed"
                 }
