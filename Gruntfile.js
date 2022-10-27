@@ -74,7 +74,7 @@ module.exports = function (grunt) {
                 tagName: 'v%VERSION%',
                 tagMessage: 'Version %VERSION%',
                 push: true,
-                pushTo: 'https://github.com/calipho-sib/nextprot-js.git',
+                pushTo: 'git@github.com:calipho-sib/nextprot-js.git',
                 gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
                 globalReplace: false,
                 prereleaseName: false,
