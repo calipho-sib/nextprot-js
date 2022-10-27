@@ -332,9 +332,9 @@
 
         NextprotClient.prototype.getAnnotationsbyCategories = function (entry, categories) {
 
-            let apiCategories = [];
+            var apiCategories = [];
             categories.forEach(function(category) {
-                let categoryToAdd;
+                var categoryToAdd;
                 if(Array.isArray(category)) {
                     categoryToAdd = category[0];
                 } else {
@@ -347,7 +347,7 @@
             categories = apiCategories;
             var url = apiBaseUrl + "/entry/" + entry + "/annotations.json?categories="+apiCategories.join(',');
             return _getJSON(url).then(function(data) {
-                let annotationsByCategories = {};
+                var annotationsByCategories = {};
                 Object.keys(data.entry.annotationsByCategory).forEach(function(category) {
                     annotationsByCategories[category] = {};
                     annotationsByCategories[category].annot = data.entry.annotationsByCategory[category];
@@ -374,13 +374,13 @@
                             }
 
                             if(evidence.resourceType === 'publication') {
-                                let publication = data.entry.publications.find(function(publication) {return publication.publicationId === evidence.resourceId});
+                                const publication = data.entry.publications.find(function(publication) {return publication.publicationId === evidence.resourceId});
                                 if(publication) {
                                     annotationsByCategories[category].publi[publication.publicationId] = publication;
                                 }
                             } else if(evidence.resourceType === 'database') {
 
-                                let xref = data.entry.xrefs.find(function(xref) {return xref.dbXrefId === evidence.resourceId});
+                                const xref = data.entry.xrefs.find(function(xref) {return xref.dbXrefId === evidence.resourceId});
                                 if(xref && xref.length > 0) {
                                     annotationsByCategories[category].xrefs[xref.dbXrefId] = xref;
                                 }

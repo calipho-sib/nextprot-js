@@ -602,8 +602,7 @@ var NXViewerUtils = {
                 // For peptides, highlight peptides based on unicity
                 if(meta.name === 'Peptide' || metadata.name === 'SRM Peptide') {
                     meta.showDescriptionRect = false;
-                    let unicity = annotation.unicity;
-                    console.log(annotation.id+ " " + unicity +" " + name)
+                    const unicity = annotation.unicity;
                     if (unicity) {
                         if (unicity === 'unique') {
                             meta.highlight.push({
