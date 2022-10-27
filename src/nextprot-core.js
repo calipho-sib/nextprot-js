@@ -331,7 +331,21 @@
         };
 
         NextprotClient.prototype.getAnnotationsbyCategories = function (entry, categories) {
-            var url = apiBaseUrl + "/entry/" + entry + "/annotations.json?categories="+categories.join(',');
+
+            let apiCategories = [];
+            categories.forEach(function(category) {
+                let categoryToAdd;
+                if(Array.isArray(category)) {
+                    categoryToAdd = category[0];
+                } else {
+                    categoryToAdd =category;
+                }
+                if(!apiCategories.includes(categoryToAdd)) {
+                    apiCategories.push(categoryToAdd);
+                }
+            });
+            categories = apiCategories;
+            var url = apiBaseUrl + "/entry/" + entry + "/annotations.json?categories="+apiCategories.join(',');
             return _getJSON(url).then(function(data) {
                 let annotationsByCategories = {};
                 Object.keys(data.entry.annotationsByCategory).forEach(function(category) {
