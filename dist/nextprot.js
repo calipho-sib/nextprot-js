@@ -381,7 +381,7 @@
                             } else if(evidence.resourceType === 'database') {
 
                                 const xref = data.entry.xrefs.find(function(xref) {return xref.dbXrefId === evidence.resourceId});
-                                if(xref && xref.length > 0) {
+                                if(xref) {
                                     annotationsByCategories[category].xrefs[xref.dbXrefId] = xref;
                                 }
                             }
