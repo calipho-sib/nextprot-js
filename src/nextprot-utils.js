@@ -181,6 +181,13 @@ var NXUtils = {
         }
         return result;
     },
+    addChebiLink: function (feature, propertyName) {
+        if (feature.propertiesMap && feature.propertiesMap.hasOwnProperty(propertyName)) {
+            var chebi = /(CHEBI:[0-9]+) !/.exec(feature.propertiesMap[propertyName][0].value)[1];
+            return " <a href='https://www.ebi.ac.uk/chebi/searchId.do?chebiId='" + chebi + "'>" + chebi + "</a>";
+        }
+        return "";
+    },
     getLinkForFeature: function (domain, accession, description, type, feature, xrefDict) {
 
         //TOSEE WITH MATHIEU - On 15.02.2018 Daniel has added feature + xrefDict in the signature of this method. Is it still necessary to hardcode some other (resee signature because now fields are redudant)
@@ -215,6 +222,11 @@ var NXUtils = {
         } else if (accession) {
             var url = domain + "/term/" + accession;
             return "<a href='" + url + "'>" + description + "</a>";
+        } else if(type === "Binding site") {
+            var desc = description;
+            desc += this.addChebiLink(feature, "ligand");
+            desc += this.addChebiLink(feature, "ligandPart");
+            return desc;
         } else if (description) return description;
         else return "";
     },
