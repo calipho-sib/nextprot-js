@@ -184,7 +184,7 @@ var NXUtils = {
     addChebiLink: function (feature, propertyName) {
         if (feature.propertiesMap && feature.propertiesMap.hasOwnProperty(propertyName)) {
             var chebi = /(CHEBI:[0-9]+) !/.exec(feature.propertiesMap[propertyName][0].value)[1];
-            return " <a href='https://www.ebi.ac.uk/chebi/searchId.do?chebiId='" + chebi + "'>" + chebi + "</a>";
+            return " <a href='https://www.ebi.ac.uk/chebi/searchId.do?chebiId=" + chebi + "'>" + chebi + "</a>";
         }
         return "";
     },
