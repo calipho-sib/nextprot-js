@@ -102,15 +102,22 @@
             environment = env||_getURLParameter("env") || 'pro'; //By default returns the production
             apiBaseUrl = "https://api.nextprot.org";
             nextprotUrl = "https://www.nextprot.org";
-            if (environment !== 'pro') {
-                apiBaseUrl = "https://" + environment + "-api.nextprot.org";
-                nextprotUrl = "https://" + environment + "-search.nextprot.org";
-
-                if (environment === 'localhost') {
-                    apiBaseUrl = protocol + "localhost:8080/nextprot-api-web";
-                    nextprotUrl = protocol + 'localhost:3000';
+            
+            if (environment === 'cn') {
+                apiBaseUrl = "http://api.nextprot.cn";
+                nextprotUrl = "http://www.nextprot.org";
+            } else {
+                if (environment !== 'pro') {
+                    apiBaseUrl = "https://" + environment + "-api.nextprot.org";
+                    nextprotUrl = "https://" + environment + "-search.nextprot.org";
+    
+                    if (environment === 'localhost') {
+                        apiBaseUrl = protocol + "localhost:8080/nextprot-api-web";
+                        nextprotUrl = protocol + 'localhost:3000';
+                    }
                 }
             }
+            
             //console.log("nx api base url : " + apiBaseUrl);
             sparqlEndpoint = apiBaseUrl + "/sparql";
             sparqlFormat = "?output=json";
