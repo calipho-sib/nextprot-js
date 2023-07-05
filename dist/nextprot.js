@@ -104,8 +104,8 @@
             nextprotUrl = "https://www.nextprot.org";
             
             if (environment === 'cn') {
-                apiBaseUrl = "http://api.nextprot.cn";
-                nextprotUrl = "http://www.nextprot.org";
+                apiBaseUrl = "https://api.nextprot.cn";
+                nextprotUrl = "https://www.nextprot.cn";
             } else {
                 if (environment !== 'pro') {
                     apiBaseUrl = "https://" + environment + "-api.nextprot.org";
