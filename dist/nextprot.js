@@ -178,6 +178,11 @@
             return _getJSON(url);
         };
 
+        var _callPepXPost = function (peptides, mode) {
+            var url = apiBaseUrl + "/entries/search/peptide-post?&modeIL=" + mode;
+            return _getJSON(url, peptides);
+        };
+
         var _callTerminology = function (terminologyName) {
             var url = apiBaseUrl + "/terminology/" + terminologyName;
             return _getJSON(url);
@@ -254,6 +259,12 @@
 
         NextprotClient.prototype.getEntryforPeptide = function (seq) {
             return _callPepX(seq, "true").then(function (data) {
+                return data;
+            });
+        };
+
+        NextprotClient.prototype.getEntryforPeptidePost = function (peptides) {
+            return _callPepXPost(peptides, "true").then(function (data) {
                 return data;
             });
         };
